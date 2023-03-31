@@ -3,81 +3,81 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 public struct SwiftPowerAssertMacro: ExpressionMacro {
-    public static func expansion(
-        of node: some FreestandingMacroExpansionSyntax,
-        in context: some MacroExpansionContext
-    ) -> ExprSyntax {
-        let generator = CodeGenerator(macro: node, context: context)
-        return generator.generate()
-    }
+  public static func expansion(
+    of node: some FreestandingMacroExpansionSyntax,
+    in context: some MacroExpansionContext
+  ) -> ExprSyntax {
+    let generator = CodeGenerator(macro: node, context: context)
+    return generator.generate()
+  }
 }
 
 private struct CodeGenerator {
-    let macro: FreestandingMacroExpansionSyntax
-    let context: MacroExpansionContext
+  let macro: FreestandingMacroExpansionSyntax
+  let context: MacroExpansionContext
 
-    func generate() -> ExprSyntax {
-        guard let expression = macro.argumentList.first else {
-            if let leadingTrivia = macro.leadingTrivia {
-                return ExprSyntax("()").with(\.leadingTrivia, leadingTrivia)
-            }
-            return "()"
-        }
-
-        let formatted = format(expression)
-        let expanded = expand(expression: formatted)
-
-        let assertSyntax = ExprSyntax(stringLiteral: expanded)
-        if let leadingTrivia = macro.leadingTrivia {
-            return assertSyntax.with(\.leadingTrivia, leadingTrivia)
-        }
-        return assertSyntax
+  func generate() -> ExprSyntax {
+    guard let expression = macro.argumentList.first else {
+      if let leadingTrivia = macro.leadingTrivia {
+        return ExprSyntax("()").with(\.leadingTrivia, leadingTrivia)
+      }
+      return "()"
     }
 
-    private func format(_ expression: some SyntaxProtocol) -> SyntaxProtocol {
-        SourceFileSyntax(stringLiteral: "\(expression.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
-            .split(separator: "\n")
-            .joined(separator: " ")
-            .split(separator: " ")
-            .joined(separator: " ")
-        )
+    let formatted = format(expression)
+    let expanded = expand(expression: formatted)
+
+    let assertSyntax = ExprSyntax(stringLiteral: expanded)
+    if let leadingTrivia = macro.leadingTrivia {
+      return assertSyntax.with(\.leadingTrivia, leadingTrivia)
     }
+    return assertSyntax
+  }
 
-    private func parseExpression(_ expression: SyntaxProtocol, storage: inout [Syntax]) {
-        let children = expression.children(viewMode: .fixedUp)
-        for child in children {
-            if child.syntaxNodeType == TokenSyntax.self {
-                continue
-            }
-            storage.append(child)
-            parseExpression(child, storage: &storage)
-        }
+  private func format(_ expression: some SyntaxProtocol) -> SyntaxProtocol {
+    SourceFileSyntax(stringLiteral: "\(expression.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+      .split(separator: "\n")
+      .joined(separator: " ")
+      .split(separator: " ")
+      .joined(separator: " ")
+    )
+  }
+
+  private func parseExpression(_ expression: SyntaxProtocol, storage: inout [Syntax]) {
+    let children = expression.children(viewMode: .fixedUp)
+    for child in children {
+      if child.syntaxNodeType == TokenSyntax.self {
+        continue
+      }
+      storage.append(child)
+      parseExpression(child, storage: &storage)
     }
+  }
 
-    private func findInAncestor<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
-        let node = node.parent
-        var cur: Syntax? = node
-        while let node = cur {
-            if node.syntaxNodeType == syntaxType {
-                return node.as(syntaxType)
-            }
-            cur = node.parent
-        }
-        return nil
+  private func findInAncestor<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
+    let node = node.parent
+    var cur: Syntax? = node
+    while let node = cur {
+      if node.syntaxNodeType == syntaxType {
+        return node.as(syntaxType)
+      }
+      cur = node.parent
     }
+    return nil
+  }
 
-    private func expand(expression: SyntaxProtocol) -> String {
-        var expressions = [Syntax]()
-        parseExpression(expression, storage: &expressions)
-        expressions = Array(expressions.dropFirst(2))
+  private func expand(expression: SyntaxProtocol) -> String {
+    var expressions = [Syntax]()
+    parseExpression(expression, storage: &expressions)
+    expressions = Array(expressions.dropFirst(2))
 
-        let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
-        let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
+    let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
+    let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
 
-        let sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
-        let startColumn = endLocation.column! - startLocation.column!
+    let sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
+    let startColumn = endLocation.column! - startLocation.column!
 
-        return """
+    return """
     PowerAssert.Assertion(#"\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"#, line: \(startLocation.line!))
     .assert(\(expressions.first!))
     \(
@@ -178,7 +178,7 @@ private struct CodeGenerator {
     )
     .render()
     """
-            .split(separator: "\n")
-            .joined()
-    }
+      .split(separator: "\n")
+      .joined()
+  }
 }

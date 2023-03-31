@@ -21,6 +21,9 @@ let mike = Person(name: "Mike", age: 13)
 #powerAssert(john.isTeenager)
 #powerAssert(mike.isTeenager && john.age < mike.age)
 
+#powerAssert("12345678901234567890".count == 0)
+#powerAssert("⌚⭐⺎⽋豈Ａ🚀".count == 0)
+
 struct Person {
   let name: String
   let age: Int

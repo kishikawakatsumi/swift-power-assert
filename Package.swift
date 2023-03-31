@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
   name: "SwiftPowerAssert",
   platforms: [
-    .iOS("13.0"),
-    .macOS("10.15")
+    .iOS(.v16),
+    .macOS(.v13)
   ],
   products: [
     .executable(
@@ -36,14 +36,23 @@ let package = Package(
         .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
       ]
     ),
-    .target(name: "SwiftPowerAssertLib",
-      dependencies: ["SwiftPowerAssertPlugin"] 
-    ),
-    .executableTarget(name: "SwiftPowerAssert",
+    .target(
+      name: "SwiftPowerAssertLib",
       dependencies: [
-        "SwiftPowerAssertLib"
+        "SwiftPowerAssertPlugin",
+        "StringWidth",
       ]
-    )
+    ),
+    .executableTarget(
+      name: "SwiftPowerAssert",
+      dependencies: [
+        "SwiftPowerAssertLib",
+      ]
+    ),
+    .target(
+      name: "StringWidth",
+      dependencies: []
+    ),
   ]
 )
 
