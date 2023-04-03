@@ -1,12 +1,13 @@
 import Foundation
 import StringWidth
-// #if canImport(XCTest)
-// import XCTest
-// #endif
+#if canImport(XCTest)
+import XCTest
+#endif
 
 public enum PowerAssert {
   public class Assertion {
     let assertion: String
+    let filePath: StaticString
     let lineNumber: UInt
     let verbose: Bool
     var result = true
@@ -14,8 +15,9 @@ public enum PowerAssert {
     var values = [Value]()
     var errors = [Swift.Error]()
 
-    public init(_ assertion: String, line: UInt, verbose: Bool = false) {
+    public init(_ assertion: String, file: StaticString, line: UInt, verbose: Bool = false) {
       self.assertion = assertion
+      self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
     }
@@ -63,11 +65,11 @@ public enum PowerAssert {
           message += "\n"
         }
         if !result {
-// #if canImport(XCTest)
-//           XCTFail("\(originalMessage)\n" + message, line: lineNumber)
-// #else
+#if canImport(XCTest)
+          XCTFail("\(originalMessage)\n" + message, file: filePath, line: lineNumber)
+#else
           print(message, terminator: "")
-// #endif
+#endif
         } else if verbose {
           print(message, terminator: "")
         }

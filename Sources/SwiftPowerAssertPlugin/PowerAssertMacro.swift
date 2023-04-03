@@ -72,14 +72,19 @@ private struct CodeGenerator {
     parseExpression(expression, storage: &expressions)
     expressions = Array(expressions.dropFirst(2))
 
+    let sourceLoccation: AbstractSourceLocation? = context.location(of: macro)
+
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
 
     let converter = SourceLocationConverter(file: "", tree: expression)
     let startColumn = endLocation.column! - startLocation.column!
 
+    let exp = StringLiteralExprSyntax(
+      content: "\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"
+    )
     return """
-    PowerAssert.Assertion(##"\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"##, line: \(startLocation.line!))
+    PowerAssert.Assertion(\(exp), file: \(sourceLoccation!.file), line: \(sourceLoccation!.line))
     .assert(\(expressions.first!))
     \(
       expressions
