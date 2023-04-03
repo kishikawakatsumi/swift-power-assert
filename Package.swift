@@ -34,6 +34,7 @@ let package = Package(
         .product(name: "SwiftParser", package: "swift-syntax"),
         .product(name: "SwiftParserDiagnostics", package: "swift-syntax"),
         .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+        "StringWidth",
       ]
     ),
     .target(
@@ -52,6 +53,10 @@ let package = Package(
     .target(
       name: "StringWidth",
       dependencies: []
+    ),
+    .testTarget(
+      name: "PowerAssertTests",
+      dependencies: ["SwiftPowerAssertLib"]
     ),
   ]
 )

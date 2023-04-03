@@ -1,7 +1,8 @@
 import Foundation
 
 public func stringWidth(_ string: String) -> Int {
-  stripANCIEscapes(string)
+  return stripANCIEscapes(string)
+    .precomposedStringWithCanonicalMapping
     .reduce(0) { (partialResult, character) in
       let first = character.unicodeScalars.first!
       return partialResult + codePointWidth(first)

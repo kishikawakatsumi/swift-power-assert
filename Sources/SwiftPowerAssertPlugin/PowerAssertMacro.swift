@@ -1,8 +1,9 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
+import StringWidth
 
-public struct SwiftPowerAssertMacro: ExpressionMacro {
+public struct PowerAssertMacro: ExpressionMacro {
   public static func expansion(
     of node: some FreestandingMacroExpansionSyntax,
     in context: some MacroExpansionContext
@@ -74,17 +75,16 @@ private struct CodeGenerator {
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
 
-    let sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
+    let converter = SourceLocationConverter(file: "", tree: expression)
     let startColumn = endLocation.column! - startLocation.column!
 
     return """
-    PowerAssert.Assertion(#"\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"#, line: \(startLocation.line!))
+    PowerAssert.Assertion(##"\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"##, line: \(startLocation.line!))
     .assert(\(expressions.first!))
     \(
       expressions
         .reduce("") { (result, syntax) in
-          let startLocation = syntax.startLocation(converter: sourceLocationConverter)
-          let column = startLocation.column! + startColumn
+          let column = graphemeColumn(syntax: syntax, expression: expression, converter: converter) + startColumn
           let syntaxType = syntax.syntaxNodeType
           if syntaxType == ArrayElementListSyntax.self
             || syntaxType == ArrayElementSyntax.self
@@ -157,8 +157,7 @@ private struct CodeGenerator {
             guard let _ = memberAccessExpr.base else {
               return result
             }
-            let startLocation = memberAccessExpr.name.startLocation(converter: sourceLocationConverter)
-            let column = startLocation.column! + startColumn
+            let column = graphemeColumn(syntax: memberAccessExpr.name, expression: expression, converter: converter) + startColumn
             if let parent = syntax.parent, parent.syntaxNodeType == FunctionCallExprSyntax.self {
               if let tryExpr = findInAncestor(syntaxType: TryExprSyntax.self, node: parent) {
                 let tryOperator = "\(tryExpr.tryKeyword)\(tryExpr.questionOrExclamationMark?.description ?? "")"
@@ -169,8 +168,7 @@ private struct CodeGenerator {
             return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
           }
           if syntaxType == SubscriptExprSyntax.self, let subscriptExpr = syntax.as(SubscriptExprSyntax.self) {
-            let startLocation = subscriptExpr.rightBracket.startLocation(converter: sourceLocationConverter)
-            let column = startLocation.column! + startColumn
+            let column = graphemeColumn(syntax: subscriptExpr.rightBracket, expression: expression, converter: converter) + startColumn
             return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
           }
           return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
@@ -180,5 +178,16 @@ private struct CodeGenerator {
     """
       .split(separator: "\n")
       .joined()
+  }
+
+  private func graphemeColumn(syntax: SyntaxProtocol, expression: SyntaxProtocol, converter: SourceLocationConverter) -> Int {
+    let startLocation = syntax.startLocation(converter: converter)
+    let column: Int
+    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column!)) {
+      column = stringWidth(graphemeClusters)
+    } else {
+      column = startLocation.column!
+    }
+    return column
   }
 }
