@@ -19,20 +19,14 @@ private struct CodeGenerator {
 
   func generate() -> ExprSyntax {
     guard let expression = macro.argumentList.first else {
-      if let leadingTrivia = macro.leadingTrivia {
-        return ExprSyntax("()").with(\.leadingTrivia, leadingTrivia)
-      }
-      return "()"
+      return ExprSyntax("()").with(\.leadingTrivia, macro.leadingTrivia)
     }
 
     let formatted = format(expression)
     let expanded = expand(expression: formatted)
 
     let assertSyntax = ExprSyntax(stringLiteral: expanded)
-    if let leadingTrivia = macro.leadingTrivia {
-      return assertSyntax.with(\.leadingTrivia, leadingTrivia)
-    }
-    return assertSyntax
+    return assertSyntax.with(\.leadingTrivia, macro.leadingTrivia)
   }
 
   private func format(_ expression: some SyntaxProtocol) -> SyntaxProtocol {
