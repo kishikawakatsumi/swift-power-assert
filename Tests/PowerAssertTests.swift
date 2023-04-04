@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftPowerAssertLib
+import PowerAssert
 
 final class PowerAssertTests: XCTestCase {
   func testStringWidth() async throws {

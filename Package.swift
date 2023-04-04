@@ -10,13 +10,9 @@ let package = Package(
     .macOS(.v13)
   ],
   products: [
-    .executable(
-      name: "SwiftPowerAssert",
-      targets: ["SwiftPowerAssert"]
-    ),
     .library(
-      name: "SwiftPowerAssertLib",
-      targets: ["SwiftPowerAssertLib"]
+      name: "PowerAssert",
+      targets: ["PowerAssert"]
     ),
   ],
   dependencies: [
@@ -26,7 +22,7 @@ let package = Package(
     ),
   ],
   targets: [
-    .macro(name: "SwiftPowerAssertPlugin",
+    .macro(name: "PowerAssertPlugin",
       dependencies: [
         .product(name: "SwiftSyntax", package: "swift-syntax"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
@@ -38,16 +34,10 @@ let package = Package(
       ]
     ),
     .target(
-      name: "SwiftPowerAssertLib",
+      name: "PowerAssert",
       dependencies: [
-        "SwiftPowerAssertPlugin",
+        "PowerAssertPlugin",
         "StringWidth",
-      ]
-    ),
-    .executableTarget(
-      name: "SwiftPowerAssert",
-      dependencies: [
-        "SwiftPowerAssertLib",
       ]
     ),
     .target(
@@ -56,7 +46,7 @@ let package = Package(
     ),
     .testTarget(
       name: "PowerAssertTests",
-      dependencies: ["SwiftPowerAssertLib"]
+      dependencies: ["PowerAssert"]
     ),
   ]
 )

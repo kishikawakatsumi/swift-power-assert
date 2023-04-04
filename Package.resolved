@@ -3,10 +3,10 @@
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax",
+      "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
         "branch" : "main",
-        "revision" : "b6adf00cecc3991b79a86a4e53e413efe1755c28"
+        "revision" : "cb3f64d9d4f0efeb23cab8fe458e5195b8900089"
       }
     }
   ],

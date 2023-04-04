@@ -3,7 +3,7 @@ import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
 @main
-struct MyPlugin: CompilerPlugin {
+struct PowerAssertPlugin: CompilerPlugin {
   let providingMacros: [Macro.Type] = [
     PowerAssertMacro.self,
   ]
