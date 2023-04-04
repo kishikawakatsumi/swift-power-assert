@@ -15,8 +15,9 @@ public enum PowerAssert {
     var values = [Value]()
     var errors = [Swift.Error]()
 
-    public init(_ assertion: String, file: StaticString, line: UInt, verbose: Bool = false) {
+    public init(_ assertion: String, message: String, file: StaticString, line: UInt, verbose: Bool = false) {
       self.assertion = assertion
+      self.originalMessage = message
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose

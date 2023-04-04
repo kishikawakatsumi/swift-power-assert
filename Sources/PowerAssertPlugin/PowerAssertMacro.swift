@@ -18,11 +18,11 @@ private struct CodeGenerator {
   let context: MacroExpansionContext
 
   func generate() -> ExprSyntax {
-    guard let expression = macro.argumentList.first else {
+    guard let assertion = macro.argumentList.first?.expression else {
       return ExprSyntax("()").with(\.leadingTrivia, macro.leadingTrivia)
     }
 
-    let formatted = format(expression)
+    let formatted = format(assertion)
     let expanded = expand(expression: formatted)
 
     let assertSyntax = ExprSyntax(stringLiteral: expanded)
@@ -62,6 +62,26 @@ private struct CodeGenerator {
   }
 
   private func expand(expression: SyntaxProtocol) -> String {
+    var message = ""
+    var file: String?
+    var line: String?
+    var verbose: String? = "false"
+
+    for argument in macro.argumentList.dropFirst() {
+      if argument.label == nil {
+        message = "\(argument.expression)"
+      }
+      if argument.label?.text == "file" {
+        file = "\(argument.expression)"
+      }
+      if argument.label?.text == "line" {
+        line = "\(argument.expression)"
+      }
+      if argument.label?.text == "verbose" {
+        verbose = "\(argument.expression)"
+      }
+    }
+
     var expressions = [Syntax]()
     parseExpression(expression, storage: &expressions)
     expressions = Array(expressions.dropFirst(2))
@@ -74,11 +94,28 @@ private struct CodeGenerator {
     let converter = SourceLocationConverter(file: "", tree: expression)
     let startColumn = endLocation.column! - startLocation.column!
 
-    let exp = StringLiteralExprSyntax(
+    let assertionLiteral = StringLiteralExprSyntax(
       content: "\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"
     )
+
+    let messageLiteral = StringLiteralExprSyntax(content: message)
+
+    let filePath: StringLiteralExprSyntax
+    if let file {
+      filePath = StringLiteralExprSyntax(content: file)
+    } else {
+      filePath = StringLiteralExprSyntax(content: "\(sourceLoccation!.file)")
+    }
+
+    let lineNumber: String
+    if let line {
+      lineNumber = line
+    } else {
+      lineNumber = "\(sourceLoccation!.line)"
+    }
+
     return """
-    PowerAssert.Assertion(\(exp), file: \(sourceLoccation!.file), line: \(sourceLoccation!.line))
+    PowerAssert.Assertion(\(assertionLiteral), message: \(messageLiteral), file: \(filePath), line: \(lineNumber), verbose: \(verbose!))
     .assert(\(expressions.first!))
     \(
       expressions
