@@ -30,11 +30,21 @@ private struct CodeGenerator {
   }
 
   private func format(_ expression: some SyntaxProtocol) -> SyntaxProtocol {
-    SourceFileSyntax(stringLiteral: "\(expression.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
-      .split(separator: "\n")
-      .joined(separator: " ")
-      .split(separator: " ")
-      .joined(separator: " ")
+    let formatted = expression.tokens(viewMode: .fixedUp)
+      .map {
+        "\($0.leadingTrivia)"
+          .split(separator: "\n")
+          .joined(separator: " ")
+          .removingExtraWhitespaces()
+        + "\($0.text)"
+        + "\($0.trailingTrivia)"
+          .split(separator: "\n")
+          .joined(separator: " ")
+          .removingExtraWhitespaces()
+      }
+      .joined()
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+    return SourceFileSyntax(stringLiteral: "\(formatted)"
     )
   }
 
@@ -42,6 +52,9 @@ private struct CodeGenerator {
     let children = expression.children(viewMode: .fixedUp)
     for child in children {
       if child.syntaxNodeType == TokenSyntax.self {
+        continue
+      }
+      if child.syntaxNodeType == ClosureExprSyntax.self {
         continue
       }
       storage.append(child)
@@ -152,14 +165,23 @@ private struct CodeGenerator {
           {
             return result
           }
-          if syntaxType == IdentifierExprSyntax.self && syntax.parent?.syntaxNodeType == FunctionCallExprSyntax.self {
-            return result
+          if syntaxType == IdentifierExprSyntax.self {
+            if syntax.parent?.syntaxNodeType == FunctionCallExprSyntax.self {
+              return result
+            }
+            let tokens = syntax.tokens(viewMode: .fixedUp).map { $0 }
+            if tokens.count == 1 {
+                if case .binaryOperator = tokens[0].tokenKind {
+                  return result
+                }
+            }
           }
           if syntaxType == KeyPathExprSyntax.self, let keyPathExpr = syntax.as(KeyPathExprSyntax.self) {
             guard let _ = keyPathExpr.root else {
               return result
             }
           }
+
           if syntaxType == ArrayTypeSyntax.self {
             return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
           }
@@ -185,6 +207,9 @@ private struct CodeGenerator {
             guard let _ = memberAccessExpr.base else {
               return result
             }
+            if let _ = findAncestors(syntaxType: MacroExpansionExprSyntax.self, node: syntax) {
+              return result
+            }
             let column = graphemeColumn(syntax: memberAccessExpr.name, expression: expression, converter: converter) + startColumn
             if let parent = syntax.parent, parent.syntaxNodeType == FunctionCallExprSyntax.self {
               if let tryExpr = findLeft(syntaxType: TryExprSyntax.self, start: index, in: expressions) {
@@ -199,6 +224,12 @@ private struct CodeGenerator {
             let column = graphemeColumn(syntax: subscriptExpr.rightBracket, expression: expression, converter: converter) + startColumn
             return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
           }
+          if let memberAccessExpr = findDescendants(syntaxType: MemberAccessExprSyntax.self, node: syntax) {
+            guard let _ = memberAccessExpr.base else {
+              return result
+            }
+          }
+
           return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
         }
     )
@@ -217,7 +248,7 @@ private struct CodeGenerator {
     return nil
   }
 
-  private func findAncestor<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
+  private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
     let node = node.parent
     var cur: Syntax? = node
     while let node = cur {
@@ -225,6 +256,22 @@ private struct CodeGenerator {
         return node.as(syntaxType)
       }
       cur = node.parent
+    }
+    return nil
+  }
+
+  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
+    let children = node.children(viewMode: .fixedUp)
+    for child in children {
+      if child.syntaxNodeType == TokenSyntax.self {
+        continue
+      }
+      if child.syntaxNodeType == syntaxType.self {
+        return child.as(syntaxType)
+      }
+      if let found = findDescendants(syntaxType: syntaxType, node: child) {
+        return found.as(syntaxType)
+      }
     }
     return nil
   }
@@ -238,5 +285,26 @@ private struct CodeGenerator {
       column = startLocation.column!
     }
     return column
+  }
+}
+
+private extension String {
+  func removingExtraWhitespaces() -> String {
+    var result = ""
+    var previousCharIsSpace = false
+
+    for char in self {
+      if char == " " {
+        if !previousCharIsSpace {
+          result.append(char)
+        }
+        previousCharIsSpace = true
+      } else {
+        result.append(char)
+        previousCharIsSpace = false
+      }
+    }
+
+    return result
   }
 }
