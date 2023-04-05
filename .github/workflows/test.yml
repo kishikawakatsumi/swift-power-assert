@@ -1,4 +1,4 @@
-name: Swift
+name: Test
 
 on:
   push:
@@ -21,3 +21,7 @@ jobs:
           swift build -v
       - name: Run tests
         run: swift test -v
+      - name: Run example
+        run: |
+          cd Example
+          swift test -v
