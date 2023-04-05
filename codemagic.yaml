@@ -3,6 +3,15 @@ workflows:
     name: Test
     max_build_duration: 120
     instance_type: mac_mini_m1
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: "*"
+          include: true
+          source: true
+      cancel_previous_builds: false
     scripts:
       - name: Install pre-release Swift toolchain
         script: |
