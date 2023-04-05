@@ -4,6 +4,8 @@
 
 # Swift Power Assert
 
+[![Codemagic build status](https://api.codemagic.io/apps/642dc9195f1acbc4a9aa8023/default-workflow/status_badge.svg)](https://codemagic.io/apps/642dc9195f1acbc4a9aa8023/default-workflow/latest_build)
+
 Power asserts (also known as diagrammed assertions) augment your assertion failures with information about the values produced during evaluation of a condition, and present it in an easily digestible form. Power asserts are a popular feature of [Spock](https://github.com/spockframework/spock) (and later the entire [Groovy](https://github.com/apache/groovy) language independent of Spock), [ScalaTest](http://www.scalatest.org/) and [Expecty](https://github.com/pniederw/expecty).
 
 Power asserts provide descriptive assertion messages for your tests, like the following examples:

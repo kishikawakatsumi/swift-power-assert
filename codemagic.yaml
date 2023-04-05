@@ -1,5 +1,5 @@
 workflows:
-  test-workflow:
+  default-workflow:
     name: Test
     max_build_duration: 120
     instance_type: mac_mini_m1
