@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
+    - name: Install Swift
+      uses: slashmo/install-swift@v0.4.0
+      with:
+        version: swift-DEVELOPMENT-SNAPSHOT-2023-04-04-a
     - uses: actions/checkout@v3
     - name: Build
       run: swift build -v
