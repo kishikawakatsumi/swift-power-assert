@@ -13,4 +13,8 @@ workflows:
       - name: Test
         script: |
           export TOOLCHAINS=org.swift.59202304041a
-          swift test -v
+          swift test
+      - name: Test Example
+        script: |
+          export TOOLCHAINS=org.swift.59202304041a
+          (cd Example && swift test)
