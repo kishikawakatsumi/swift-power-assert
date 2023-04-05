@@ -22,7 +22,9 @@ let package = Package(
     ),
   ],
   targets: [
-    .macro(name: "PowerAssertPlugin",
+    .macro(
+      name: "PowerAssertPlugin",
+      group: .package,
       dependencies: [
         .product(name: "SwiftSyntax", package: "swift-syntax"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
