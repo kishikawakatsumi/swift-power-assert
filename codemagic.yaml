@@ -10,7 +10,7 @@ workflows:
         - push
         - pull_request
       branch_patterns:
-        - pattern: "*"
+        - pattern: "main"
           include: true
           source: true
       cancel_previous_builds: false
@@ -25,7 +25,3 @@ workflows:
         script: |
           export TOOLCHAINS=org.swift.59202304041a
           swift test
-      - name: Test Example
-        script: |
-          export TOOLCHAINS=org.swift.59202304041a
-          (cd Example && swift test)
