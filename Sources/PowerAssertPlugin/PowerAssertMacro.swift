@@ -49,18 +49,6 @@ private struct CodeGenerator {
     }
   }
 
-  private func findInAncestor<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
-    let node = node.parent
-    var cur: Syntax? = node
-    while let node = cur {
-      if node.syntaxNodeType == syntaxType {
-        return node.as(syntaxType)
-      }
-      cur = node.parent
-    }
-    return nil
-  }
-
   private func expand(expression: SyntaxProtocol) -> String {
     var message = ""
     var file: String?
@@ -119,7 +107,11 @@ private struct CodeGenerator {
     .assert(\(expressions.first!))
     \(
       expressions
-        .reduce("") { (result, syntax) in
+        .enumerated()
+        .reduce("") { (result, enumerated) in
+          let index = enumerated.offset
+          let syntax = enumerated.element
+
           let column = graphemeColumn(syntax: syntax, expression: expression, converter: converter) + startColumn
           let syntaxType = syntax.syntaxNodeType
           if syntaxType == ArrayElementListSyntax.self
@@ -182,9 +174,9 @@ private struct CodeGenerator {
           if syntaxType == DictionaryTypeSyntax.self {
             return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
           }
-          if syntaxType == FunctionCallExprSyntax.self, let tryExpr = findInAncestor(syntaxType: TryExprSyntax.self, node: syntax) {
+          if syntaxType == FunctionCallExprSyntax.self, let tryExpr = findLeft(syntaxType: TryExprSyntax.self, start: index, in: expressions) {
             let tryOperator = "\(tryExpr.tryKeyword)\(tryExpr.questionOrExclamationMark?.description ?? "")"
-            return result + ".capture(expression:  \(tryOperator)\(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
+            return result + ".capture(expression: \(tryOperator)\(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
           }
           if syntaxType == IdentifierExprSyntax.self {
             return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
@@ -195,7 +187,7 @@ private struct CodeGenerator {
             }
             let column = graphemeColumn(syntax: memberAccessExpr.name, expression: expression, converter: converter) + startColumn
             if let parent = syntax.parent, parent.syntaxNodeType == FunctionCallExprSyntax.self {
-              if let tryExpr = findInAncestor(syntaxType: TryExprSyntax.self, node: parent) {
+              if let tryExpr = findLeft(syntaxType: TryExprSyntax.self, start: index, in: expressions) {
                 let tryOperator = "\(tryExpr.tryKeyword)\(tryExpr.questionOrExclamationMark?.description ?? "")"
                 return result + ".capture(expression: \(tryOperator)\(parent.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
               }
@@ -214,6 +206,27 @@ private struct CodeGenerator {
     """
       .split(separator: "\n")
       .joined()
+  }
+
+  private func findLeft<T: SyntaxProtocol>(syntaxType: T.Type, start: Int, in expressions: [Syntax]) -> T? {
+    for index in (0..<start).reversed() {
+      if expressions[index].syntaxNodeType == syntaxType {
+        return expressions[index].as(T.self)
+      }
+    }
+    return nil
+  }
+
+  private func findAncestor<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
+    let node = node.parent
+    var cur: Syntax? = node
+    while let node = cur {
+      if node.syntaxNodeType == syntaxType {
+        return node.as(syntaxType)
+      }
+      cur = node.parent
+    }
+    return nil
   }
 
   private func graphemeColumn(syntax: SyntaxProtocol, expression: SyntaxProtocol, converter: SourceLocationConverter) -> Int {
