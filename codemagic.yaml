@@ -1,0 +1,16 @@
+workflows:
+  test-workflow:
+    name: Test
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    scripts:
+      - name: Install pre-release Swift toolchain
+        script: |
+          file_name=swift-DEVELOPMENT-SNAPSHOT-2023-04-04-a-osx.pkg
+          wget https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2023-04-04-a/$file_name
+          xattr -dr com.apple.quarantine $file_name
+          installer -pkg $file_name -target CurrentUserHomeDirectory
+      - name: Test
+        script: |
+          export TOOLCHAINS=org.swift.59202304041a
+          swift test -v
