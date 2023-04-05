@@ -774,8 +774,10 @@ final class PowerAssertTests: XCTestCase {
       #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24, verbose: true)
     } completion: { (output) in
       print(output)
-      XCTAssertEqual(
-        output,
+
+      if ProcessInfo.processInfo.environment["CI"] == "true" {
+        XCTAssertEqual(
+          output,
         #"""
         #powerAssert(s[keyPath: pathToProperty] == 12)
                      |          |             | |  |
@@ -816,7 +818,52 @@ final class PowerAssertTests: XCTestCase {
                      OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
         """#
-      )
+        )
+      } else {
+        XCTAssertEqual(
+          output,
+        #"""
+        #powerAssert(s[keyPath: pathToProperty] == 12)
+                     |          |             | |  |
+                     |          |             | |  12
+                     |          |             | true
+                     |          |             12
+                     |          \SomeStructure.someValue
+                     SomeStructure(someValue: 12)
+        #powerAssert(s[keyPath: \SomeStructure.someValue] == 12)
+                     |          |                       | |  |
+                     |          |                       | |  12
+                     |          |                       | true
+                     |          |                       12
+                     |          \SomeStructure.someValue
+                     SomeStructure(someValue: 12)
+        #powerAssert(s.getValue(keyPath: \.someValue) == 12)
+                     | |                              |  |
+                     | 12                             |  12
+                     SomeStructure(someValue: 12)     true
+        #powerAssert(nested[keyPath: nestedKeyPath] == 24)
+                     |               |            | |  |
+                     |               |            | |  24
+                     |               |            | true
+                     |               |            24
+                     |               \OuterStructure.outer.someValue
+                     OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+        #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+                     |               |                              | |  |
+                     |               |                              | |  24
+                     |               |                              | true
+                     |               |                              24
+                     |               \OuterStructure.outer.someValue
+                     OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+        #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24)
+                     |      |                                    |  |
+                     |      24                                   |  24
+                     |                                           true
+                     OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+        """#
+        )
+      }
     }
   }
 
@@ -828,8 +875,31 @@ final class PowerAssertTests: XCTestCase {
       #powerAssert(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
     } completion: { (output) in
       print(output)
-      XCTAssertEqual(
-        output,
+      if ProcessInfo.processInfo.environment["CI"] == "true" {
+        XCTAssertEqual(
+          output,
+        #"""
+        #powerAssert(greetings[keyPath: \[String].[1]] == "hola")
+                     |                  ||        || | |  |
+                     |                  ||        |1 | |  "hola"
+                     |                  ||        |  | true
+                     |                  ||        |  "hola"
+                     |                  ||        [1]
+                     |                  |Array<String>
+                     |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
+                     ["hello", "hola", "bonjour", "안녕"]
+        #powerAssert(greetings[keyPath: \[String].first?.count] == 5)
+                     |                  ||                    | |  |
+                     |                  |Array<String>        5 |  5
+                     |                  |                       true
+                     |                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
+                     ["hello", "hola", "bonjour", "안녕"]
+
+        """#
+        )
+      } else {
+        XCTAssertEqual(
+          output,
         #"""
         #powerAssert(greetings[keyPath: \[String].[1]] == "hola")
                      |                  ||        || | |  |
@@ -848,7 +918,8 @@ final class PowerAssertTests: XCTestCase {
                      ["hello", "hola", "bonjour", "안녕"]
 
         """#
-      )
+        )
+      }
     }
   }
 
@@ -865,9 +936,10 @@ final class PowerAssertTests: XCTestCase {
       )
     } completion: { (output) in
       print(output)
-      // Dictionary order is not guaranteed
-      XCTAssertTrue(
-        output ==
+      if ProcessInfo.processInfo.environment["CI"] == "true" {
+        // Dictionary order is not guaranteed
+        XCTAssertTrue(
+          output ==
         #"""
         #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
                      ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
@@ -878,13 +950,13 @@ final class PowerAssertTests: XCTestCase {
                      ||                          ||        |      ["prime"]
                      ||                          ||        Array<Int>
                      ||                          |Dictionary<String, Array<Int>>
-                     ||                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
                      |["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
                      [2, 3, 5, 7, 11, 13, 15]
 
         """#
-        ||
-        output ==
+          ||
+          output ==
         #"""
         #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
                      ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
@@ -895,13 +967,13 @@ final class PowerAssertTests: XCTestCase {
                      ||                          ||        |      ["prime"]
                      ||                          ||        Array<Int>
                      ||                          |Dictionary<String, Array<Int>>
-                     ||                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
                      |["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
                      [2, 3, 5, 7, 11, 13, 15]
 
         """#
-        ||
-        output ==
+          ||
+          output ==
         #"""
         #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
                      ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
@@ -912,13 +984,13 @@ final class PowerAssertTests: XCTestCase {
                      ||                          ||        |      ["prime"]
                      ||                          ||        Array<Int>
                      ||                          |Dictionary<String, Array<Int>>
-                     ||                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
                      |["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
                      [2, 3, 5, 7, 11, 13, 15]
 
         """#
-        ||
-        output ==
+          ||
+          output ==
         #"""
         #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
                      ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
@@ -929,13 +1001,13 @@ final class PowerAssertTests: XCTestCase {
                      ||                          ||        |      ["prime"]
                      ||                          ||        Array<Int>
                      ||                          |Dictionary<String, Array<Int>>
-                     ||                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
                      |["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
                      [2, 3, 5, 7, 11, 13, 15]
 
         """#
-        ||
-        output ==
+          ||
+          output ==
         #"""
         #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
                      ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
@@ -946,13 +1018,13 @@ final class PowerAssertTests: XCTestCase {
                      ||                          ||        |      ["prime"]
                      ||                          ||        Array<Int>
                      ||                          |Dictionary<String, Array<Int>>
-                     ||                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
                      |["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
                      [2, 3, 5, 7, 11, 13, 15]
 
         """#
-        ||
-        output ==
+          ||
+          output ==
         #"""
         #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
                      ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
@@ -963,12 +1035,118 @@ final class PowerAssertTests: XCTestCase {
                      ||                          ||        |      ["prime"]
                      ||                          ||        Array<Int>
                      ||                          |Dictionary<String, Array<Int>>
-                     ||                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
                      |["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
                      [2, 3, 5, 7, 11, 13, 15]
 
         """#
-      )
+        )
+      } else {
+        // Dictionary order is not guaranteed
+        XCTAssertTrue(
+          output ==
+        #"""
+        #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+                     ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
+                     ||                          ||        |      |"prime" |  |  |2  3  5  7  11  13  15
+                     ||                          ||        |      |        |  |  [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      |        |  true
+                     ||                          ||        |      |        [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      ["prime"]
+                     ||                          ||        Array<Int>
+                     ||                          |Dictionary<String, Array<Int>>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                     |["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                     [2, 3, 5, 7, 11, 13, 15]
+
+        """#
+          ||
+          output ==
+        #"""
+        #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+                     ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
+                     ||                          ||        |      |"prime" |  |  |2  3  5  7  11  13  15
+                     ||                          ||        |      |        |  |  [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      |        |  true
+                     ||                          ||        |      |        [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      ["prime"]
+                     ||                          ||        Array<Int>
+                     ||                          |Dictionary<String, Array<Int>>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                     |["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                     [2, 3, 5, 7, 11, 13, 15]
+
+        """#
+          ||
+          output ==
+        #"""
+        #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+                     ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
+                     ||                          ||        |      |"prime" |  |  |2  3  5  7  11  13  15
+                     ||                          ||        |      |        |  |  [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      |        |  true
+                     ||                          ||        |      |        [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      ["prime"]
+                     ||                          ||        Array<Int>
+                     ||                          |Dictionary<String, Array<Int>>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                     |["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                     [2, 3, 5, 7, 11, 13, 15]
+
+        """#
+          ||
+          output ==
+        #"""
+        #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+                     ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
+                     ||                          ||        |      |"prime" |  |  |2  3  5  7  11  13  15
+                     ||                          ||        |      |        |  |  [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      |        |  true
+                     ||                          ||        |      |        [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      ["prime"]
+                     ||                          ||        Array<Int>
+                     ||                          |Dictionary<String, Array<Int>>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                     |["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                     [2, 3, 5, 7, 11, 13, 15]
+
+        """#
+          ||
+          output ==
+        #"""
+        #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+                     ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
+                     ||                          ||        |      |"prime" |  |  |2  3  5  7  11  13  15
+                     ||                          ||        |      |        |  |  [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      |        |  true
+                     ||                          ||        |      |        [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      ["prime"]
+                     ||                          ||        Array<Int>
+                     ||                          |Dictionary<String, Array<Int>>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                     |["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                     [2, 3, 5, 7, 11, 13, 15]
+
+        """#
+          ||
+          output ==
+        #"""
+        #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+                     ||                          ||        |      ||       |  |  ||  |  |  |  |   |   |
+                     ||                          ||        |      |"prime" |  |  |2  3  5  7  11  13  15
+                     ||                          ||        |      |        |  |  [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      |        |  true
+                     ||                          ||        |      |        [2, 3, 5, 7, 11, 13, 15]
+                     ||                          ||        |      ["prime"]
+                     ||                          ||        Array<Int>
+                     ||                          |Dictionary<String, Array<Int>>
+                     ||                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                     |["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                     [2, 3, 5, 7, 11, 13, 15]
+
+        """#
+        )
+      }
     }
   }
 
@@ -995,7 +1173,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["prime"] [0]  true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                     |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
         """#
@@ -1008,7 +1186,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["prime"] [0]  true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                     |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
         """#
@@ -1021,7 +1199,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["prime"] [0]  true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                     |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
         """#
@@ -1034,7 +1212,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["prime"] [0]  true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                     |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
         """#
@@ -1047,7 +1225,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["prime"] [0]  true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                     |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
         """#
@@ -1060,7 +1238,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["prime"] [0]  true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                     |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
         """#
@@ -1091,7 +1269,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]         true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
         """#
@@ -1104,7 +1282,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]         true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
         """#
@@ -1117,7 +1295,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]         true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
         """#
@@ -1130,7 +1308,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]         true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
         """#
@@ -1143,7 +1321,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]         true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
         """#
@@ -1156,7 +1334,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]         true
                      |                           ||        Array<Int>
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
         """#
@@ -1187,7 +1365,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]                | true
                      |                           ||        Array<Int>                          64
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
         """#
@@ -1200,7 +1378,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]                | true
                      |                           ||        Array<Int>                          64
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
         """#
@@ -1213,7 +1391,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]                | true
                      |                           ||        Array<Int>                          64
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
         """#
@@ -1226,7 +1404,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]                | true
                      |                           ||        Array<Int>                          64
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
         """#
@@ -1239,7 +1417,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]                | true
                      |                           ||        Array<Int>                          64
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
         """#
@@ -1252,7 +1430,7 @@ final class PowerAssertTests: XCTestCase {
                      |                           ||        |      ["hexagonal"]                | true
                      |                           ||        Array<Int>                          64
                      |                           |Dictionary<String, Array<Int>>
-                     |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                     |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                      ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
         """#
