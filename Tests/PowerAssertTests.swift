@@ -782,14 +782,14 @@ final class PowerAssertTests: XCTestCase {
                      |          |             | |  12
                      |          |             | true
                      |          |             12
-                     |          \SomeStructure.someValue
+                     |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                      SomeStructure(someValue: 12)
         #powerAssert(s[keyPath: \SomeStructure.someValue] == 12)
                      |          |                       | |  |
                      |          |                       | |  12
                      |          |                       | true
                      |          |                       12
-                     |          \SomeStructure.someValue
+                     |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                      SomeStructure(someValue: 12)
         #powerAssert(s.getValue(keyPath: \.someValue) == 12)
                      | |                              |  |
@@ -800,14 +800,14 @@ final class PowerAssertTests: XCTestCase {
                      |               |            | |  24
                      |               |            | true
                      |               |            24
-                     |               \OuterStructure.outer.someValue
+                     |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                      OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
         #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
                      |               |                              | |  |
                      |               |                              | |  24
                      |               |                              | true
                      |               |                              24
-                     |               \OuterStructure.outer.someValue
+                     |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                      OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
         #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24)
                      |      |                                    |  |
