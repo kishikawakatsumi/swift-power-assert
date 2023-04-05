@@ -16,6 +16,8 @@ jobs:
         version: swift-DEVELOPMENT-SNAPSHOT-2023-04-04-a
     - uses: actions/checkout@v3
     - name: Build
-      run: swift build -v
+      run: |
+        export TOOLCHAINS=org.swift.59202304041a
+        swift build -v
     - name: Run tests
       run: swift test -v
