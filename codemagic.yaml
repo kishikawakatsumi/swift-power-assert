@@ -10,7 +10,13 @@ workflows:
         - push
         - pull_request
       branch_patterns:
-        - pattern: "main"
+        - pattern: "*"
+          include: true
+          source: true
+        - pattern: excluded-target
+          include: false
+          source: false
+        - pattern: included-source
           include: true
           source: true
       cancel_previous_builds: false

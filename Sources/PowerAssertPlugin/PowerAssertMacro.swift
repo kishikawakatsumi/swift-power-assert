@@ -13,6 +13,39 @@ public struct PowerAssertMacro: ExpressionMacro {
   }
 }
 
+struct Parameters {
+  var message = "\(StringLiteralExprSyntax(content: ""))"
+  var file: String
+  var line: String
+  var verbose = "false"
+
+  init(macro: FreestandingMacroExpansionSyntax, context: MacroExpansionContext) {
+    let sourceLoccation: AbstractSourceLocation? = context.location(of: macro)
+
+    let file = StringLiteralExprSyntax(content: "\(sourceLoccation!.file)")
+    self.file = "\(file)"
+    self.line = "\(sourceLoccation!.line)"
+
+    for argument in macro.argumentList.dropFirst() {
+      if argument.label == nil {
+        let message = "\(argument.expression)"
+        self.message = "\(StringLiteralExprSyntax(content: message))"
+      }
+
+      if argument.label?.text == "file" {
+        let file = "\(argument.expression)"
+        self.file = "\(StringLiteralExprSyntax(content: file))"
+      }
+      if argument.label?.text == "line" {
+        self.line = "\(argument.expression)"
+      }
+      if argument.label?.text == "verbose" {
+        self.verbose = "\(argument.expression)"
+      }
+    }
+  }
+}
+
 private struct CodeGenerator {
   let macro: FreestandingMacroExpansionSyntax
   let context: MacroExpansionContext
@@ -22,11 +55,13 @@ private struct CodeGenerator {
       return ExprSyntax("()").with(\.leadingTrivia, macro.leadingTrivia)
     }
 
-    let formatted = format(assertion)
-    let expanded = expand(expression: formatted)
+    let expanded = expand(
+      expression: format(assertion),
+      parameters: Parameters(macro: macro, context: context)
+    )
 
-    let assertSyntax = ExprSyntax(stringLiteral: expanded)
-    return assertSyntax.with(\.leadingTrivia, macro.leadingTrivia)
+    let syntax = ExprSyntax(stringLiteral: expanded)
+    return syntax.with(\.leadingTrivia, macro.leadingTrivia)
   }
 
   private func format(_ expression: some SyntaxProtocol) -> SyntaxProtocol {
@@ -62,32 +97,10 @@ private struct CodeGenerator {
     }
   }
 
-  private func expand(expression: SyntaxProtocol) -> String {
-    var message = ""
-    var file: String?
-    var line: String?
-    var verbose: String? = "false"
-
-    for argument in macro.argumentList.dropFirst() {
-      if argument.label == nil {
-        message = "\(argument.expression)"
-      }
-      if argument.label?.text == "file" {
-        file = "\(argument.expression)"
-      }
-      if argument.label?.text == "line" {
-        line = "\(argument.expression)"
-      }
-      if argument.label?.text == "verbose" {
-        verbose = "\(argument.expression)"
-      }
-    }
-
+  private func expand(expression: SyntaxProtocol, parameters: Parameters) -> String {
     var expressions = [Syntax]()
     parseExpression(expression, storage: &expressions)
     expressions = Array(expressions.dropFirst(2))
-
-    let sourceLoccation: AbstractSourceLocation? = context.location(of: macro)
 
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
@@ -95,28 +108,12 @@ private struct CodeGenerator {
     let converter = SourceLocationConverter(file: "", tree: expression)
     let startColumn = endLocation.column! - startLocation.column!
 
-    let assertionLiteral = StringLiteralExprSyntax(
+    let assertion = StringLiteralExprSyntax(
       content: "\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"
     )
 
-    let messageLiteral = StringLiteralExprSyntax(content: message)
-
-    let filePath: StringLiteralExprSyntax
-    if let file {
-      filePath = StringLiteralExprSyntax(content: file)
-    } else {
-      filePath = StringLiteralExprSyntax(content: "\(sourceLoccation!.file)")
-    }
-
-    let lineNumber: String
-    if let line {
-      lineNumber = line
-    } else {
-      lineNumber = "\(sourceLoccation!.line)"
-    }
-
     return """
-    PowerAssert.Assertion(\(assertionLiteral), message: \(messageLiteral), file: \(filePath), line: \(lineNumber), verbose: \(verbose!))
+    PowerAssert.Assertion(\(assertion), message: \(parameters.message), file: \(parameters.file), line: \(parameters.line), verbose: \(parameters.verbose))
     .assert(\(expressions.first!))
     \(
       expressions
