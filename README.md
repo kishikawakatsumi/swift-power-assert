@@ -101,7 +101,7 @@ let package = Package(
     ...,
     .testTarget(
       name: "MyLibraryTests", .
-      Dependencies: [
+      dependencies: [
         ...,
         .product(name: "PowerAssert", package: "swift-power-assert"),
       ]
