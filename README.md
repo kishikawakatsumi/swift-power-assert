@@ -36,7 +36,7 @@ Assertion APIs, no need to remember them. Just create an expression that returns
 
 Swift Power Assert is implemented using [macros](https://github.com/apple/swift-evolution/blob/main/proposals/0382-expression-macros.md), an experimental feature of Swift. Therefore, you must use the pre-release version of the Swift toolchain to use this library.
 
-1. Download and install the toolchain from [the development snapshot on Swift.org](https://www.swift.org/download/) after April 4, 2023.
+1. Download and install the toolchain from [the development snapshot on Swift.org](https://www.swift.org/download/) after April 6, 2023.
 2. Set the toolchain identifier in the `TOOLCHAINS` environment variable to use the pre-release toolchain.
    For example:
 
