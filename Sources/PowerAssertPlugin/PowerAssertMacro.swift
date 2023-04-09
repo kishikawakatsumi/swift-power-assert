@@ -88,11 +88,11 @@ private class PowerAssertRewriter: SyntaxRewriter {
     return apply(ExprSyntax(visitedNode), column: startLocation.column!)
   }
 
-//  override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
-//    let startLocation = node.startLocation(converter: sourceLocationConverter)
-//    let visitedNode = super.visit(node)
-//    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
-//  }
+  override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
 
   override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
     let startLocation: SourceLocation
@@ -151,6 +151,12 @@ private class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: OptionalChainingExprSyntax) -> ExprSyntax {
     let startLocation = node.startLocation(converter: sourceLocationConverter)
     let visitedNode = super.visit(node)
     return apply(ExprSyntax(visitedNode), column: startLocation.column!)
