@@ -1,6 +1,7 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
+import SwiftOperators
 import StringWidth
 
 public struct PowerAssertMacro: ExpressionMacro {
@@ -56,7 +57,12 @@ private class PowerAssertRewriter: SyntaxRewriter {
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
     startColumn = endLocation.column! - startLocation.column!
 
-    self.expression = expression
+    if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
+      self.expression = folded
+    } else {
+      self.expression = expression
+    }
+
     self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
   }
 
@@ -106,6 +112,12 @@ private class PowerAssertRewriter: SyntaxRewriter {
     let startLocation = node.startLocation(converter: sourceLocationConverter)
     let visitedNode = super.visit(node)
     return apply(ExprSyntax("\(visitedNode).self").with(\.leadingTrivia, visitedNode.leadingTrivia).with(\.trailingTrivia, visitedNode.trailingTrivia), column: startLocation.column!)
+  }
+
+  override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
+    let startLocation = node.operatorOperand.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
   }
 
   override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
