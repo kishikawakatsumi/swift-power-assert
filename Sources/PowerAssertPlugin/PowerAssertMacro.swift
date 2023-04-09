@@ -106,7 +106,10 @@ private class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
-    guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self  else {
+    if case .binaryOperator = node.identifier.tokenKind {
+      return super.visit(node)
+    }
+    guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self else {
       return super.visit(node)
     }
     let startLocation = node.startLocation(converter: sourceLocationConverter)
