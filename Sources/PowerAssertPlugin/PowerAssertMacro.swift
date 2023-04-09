@@ -178,7 +178,7 @@ private class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: SubscriptExprSyntax) -> ExprSyntax {
-    let startLocation = node.leftBracket.startLocation(converter: sourceLocationConverter)
+    let startLocation = node.rightBracket.startLocation(converter: sourceLocationConverter)
     let visitedNode = super.visit(node)
     return apply(ExprSyntax(visitedNode), column: startLocation.column!)
   }
