@@ -13,7 +13,7 @@ public struct PowerAssertMacro: ExpressionMacro {
   }
 }
 
-struct Parameters {
+private struct Parameters {
   var message = "\(StringLiteralExprSyntax(content: ""))"
   var file: String
   var line: String
@@ -43,6 +43,192 @@ struct Parameters {
         self.verbose = "\(argument.expression)"
       }
     }
+  }
+}
+
+private class PowerAssertRewriter: SyntaxRewriter {
+  let expression: SyntaxProtocol
+  let sourceLocationConverter: SourceLocationConverter
+  let startColumn: Int
+
+  init(macro: FreestandingMacroExpansionSyntax, expression: SyntaxProtocol) {
+    let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
+    let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
+    startColumn = endLocation.column! - startLocation.column!
+
+    self.expression = expression
+    self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
+  }
+
+  func rewrite() -> SyntaxProtocol {
+    visit(expression.cast(SourceFileSyntax.self))
+  }
+
+  override func visit(_ node: ArrayExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: BooleanLiteralExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: DictionaryExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+//  override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
+//    let startLocation = node.startLocation(converter: sourceLocationConverter)
+//    let visitedNode = super.visit(node)
+//    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+//  }
+
+  override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+    let startLocation: SourceLocation
+    if let function = node.calledExpression.children(viewMode: .fixedUp).last {
+      startLocation = function.startLocation(converter: sourceLocationConverter)
+    } else {
+      startLocation = node.startLocation(converter: sourceLocationConverter)
+    }
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
+    guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self  else {
+      return super.visit(node)
+    }
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax("\(visitedNode).self").with(\.leadingTrivia, visitedNode.leadingTrivia).with(\.trailingTrivia, visitedNode.trailingTrivia), column: startLocation.column!)
+  }
+
+  override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: KeyPathExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
+    guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self  else {
+      return super.visit(node)
+    }
+    let startLocation = node.name.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: PrefixOperatorExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {
+    guard let binaryOperatorExpr = findDescendants(syntaxType: BinaryOperatorExprSyntax.self, node: Syntax(node)) else  {
+      return super.visit(node)
+    }
+    let startLocation = binaryOperatorExpr.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: SubscriptExprSyntax) -> ExprSyntax {
+    let startLocation = node.leftBracket.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: TernaryExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  override func visit(_ node: TupleExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
+  private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
+    return FunctionCallExprSyntax(
+      leadingTrivia: node.leadingTrivia,
+      calledExpression: IdentifierExprSyntax(identifier: TokenSyntax(.identifier("$0.capture"), presence: .present)),
+      leftParen: TokenSyntax.leftParenToken(),
+      argumentList: TupleExprElementListSyntax([
+        TupleExprElementSyntax(
+          expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
+          trailingComma: TokenSyntax.commaToken(),
+          trailingTrivia: Trivia.space
+        ),
+        TupleExprElementSyntax(
+          label: TokenSyntax.identifier("column"),
+          colon: TokenSyntax.colonToken().with(\.trailingTrivia, .space),
+          expression: IntegerLiteralExprSyntax(digits: TokenSyntax.integerLiteral("\(column + startColumn)"))
+        ),
+      ]),
+      rightParen: TokenSyntax.rightParenToken(),
+      trailingTrivia: node.trailingTrivia
+    )
+    .cast(ExprSyntax.self)
+  }
+
+  private func findAncestors(node: ExprSyntax) -> ExprSyntax? {
+    let node = node.parent
+    var cur: Syntax? = node
+    while let node = cur {
+      if node.isProtocol(ExprSyntaxProtocol.self) {
+        return ExprSyntax(node)
+      }
+      cur = node.parent
+    }
+    return nil
+  }
+
+  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
+    let children = node.children(viewMode: .fixedUp)
+    for child in children {
+      if child.syntaxNodeType == TokenSyntax.self {
+        continue
+      }
+      if child.syntaxNodeType == syntaxType.self {
+        return child.as(syntaxType)
+      }
+      if let found = findDescendants(syntaxType: syntaxType, node: child) {
+        return found.as(syntaxType)
+      }
+    }
+    return nil
   }
 }
 
@@ -79,8 +265,7 @@ private struct CodeGenerator {
       }
       .joined()
       .trimmingCharacters(in: .whitespacesAndNewlines)
-    return SourceFileSyntax(stringLiteral: "\(formatted)"
-    )
+    return SourceFileSyntax(stringLiteral: "\(formatted)")
   }
 
   private func parseExpression(_ expression: SyntaxProtocol, storage: inout [Syntax]) {
@@ -102,136 +287,22 @@ private struct CodeGenerator {
     parseExpression(expression, storage: &expressions)
     expressions = Array(expressions.dropFirst(2))
 
-    let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
-    let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
-
-    let converter = SourceLocationConverter(file: "", tree: expression)
-    let startColumn = endLocation.column! - startLocation.column!
-
     let assertion = StringLiteralExprSyntax(
       content: "\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"
     )
+    let message = parameters.message
+    let file = parameters.file
+    let line = parameters.line
+    let verbose = parameters.verbose
 
+    let rewriter = PowerAssertRewriter(macro: macro, expression: expression)
+    print("=> \(rewriter.rewrite())")
     return """
-    PowerAssert.Assertion(\(assertion), message: \(parameters.message), file: \(parameters.file), line: \(parameters.line), verbose: \(parameters.verbose))
-    .assert(\(expressions.first!))
-    \(
-      expressions
-        .enumerated()
-        .reduce("") { (result, enumerated) in
-          let index = enumerated.offset
-          let syntax = enumerated.element
-
-          let column = graphemeColumn(syntax: syntax, expression: expression, converter: converter) + startColumn
-          let syntaxType = syntax.syntaxNodeType
-          if syntaxType == ArrayElementListSyntax.self
-            || syntaxType == ArrayElementSyntax.self
-            || syntaxType == AsExprSyntax.self
-            || syntaxType == DeclNameArgumentListSyntax.self
-            || syntaxType == DeclNameArgumentsSyntax.self
-            || syntaxType == DeclNameArgumentSyntax.self
-            || syntaxType == DictionaryElementListSyntax.self
-            || syntaxType == DictionaryElementSyntax.self
-            || syntaxType == ExprListSyntax.self
-            || syntaxType == KeyPathComponentListSyntax.self
-            || syntaxType == KeyPathComponentSyntax.self
-            || syntaxType == KeyPathOptionalComponentSyntax.self
-            || syntaxType == KeyPathPropertyComponentSyntax.self
-            || syntaxType == NilLiteralExprSyntax.self
-            || syntaxType == OptionalChainingExprSyntax.self
-            || syntaxType == SequenceExprSyntax.self
-            || syntaxType == SimpleTypeIdentifierSyntax.self
-            || syntaxType == StringLiteralSegmentsSyntax.self
-            || syntaxType == StringSegmentSyntax.self
-            || syntaxType == SuperRefExprSyntax.self
-            || syntaxType == TryExprSyntax.self
-            || syntaxType == TupleExprElementListSyntax.self
-            || syntaxType == TupleExprElementSyntax.self
-            || syntaxType == TypeExprSyntax.self
-            || syntaxType == UnresolvedAsExprSyntax.self
-            || syntaxType == UnresolvedTernaryExprSyntax.self
-          {
-            return result
-          }
-          if let parent = syntax.parent, parent.syntaxNodeType == MacroExpansionExprSyntax.self {
-            return result
-          }
-          if syntaxType == FunctionCallExprSyntax.self,
-            let child = syntax.children(viewMode: .fixedUp).first,
-            child.syntaxNodeType == MemberAccessExprSyntax.self
-          {
-            return result
-          }
-          if syntaxType == IdentifierExprSyntax.self {
-            if syntax.parent?.syntaxNodeType == FunctionCallExprSyntax.self {
-              return result
-            }
-            let tokens = syntax.tokens(viewMode: .fixedUp).map { $0 }
-            if tokens.count == 1 {
-                if case .binaryOperator = tokens[0].tokenKind {
-                  return result
-                }
-            }
-          }
-          if syntaxType == KeyPathExprSyntax.self, let keyPathExpr = syntax.as(KeyPathExprSyntax.self) {
-            guard let _ = keyPathExpr.root else {
-              return result
-            }
-          }
-
-          if syntaxType == ArrayTypeSyntax.self {
-            return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
-          }
-          if syntaxType == BinaryOperatorExprSyntax.self, let binaryOperatorExpr = syntax.as(BinaryOperatorExprSyntax.self) {
-            let op = binaryOperatorExpr.operatorToken.text
-            if op == "==" || op == "!=" || op == ">" || op == "<" || op == "=>" || op == "=<" || op == "&&" || op == "||" {
-              return result + ".capture(expression: \(syntax.parent!.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
-            } else {
-              return result
-            }
-          }
-          if syntaxType == DictionaryTypeSyntax.self {
-            return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
-          }
-          if syntaxType == FunctionCallExprSyntax.self, let tryExpr = findLeft(syntaxType: TryExprSyntax.self, start: index, in: expressions) {
-            let tryOperator = "\(tryExpr.tryKeyword)\(tryExpr.questionOrExclamationMark?.description ?? "")"
-            return result + ".capture(expression: \(tryOperator)\(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
-          }
-          if syntaxType == IdentifierExprSyntax.self {
-            return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
-          }
-          if syntaxType == MemberAccessExprSyntax.self, let memberAccessExpr = syntax.as(MemberAccessExprSyntax.self) {
-            guard let _ = memberAccessExpr.base else {
-              return result
-            }
-            if let _ = findAncestors(syntaxType: MacroExpansionExprSyntax.self, node: syntax) {
-              return result
-            }
-            let column = graphemeColumn(syntax: memberAccessExpr.name, expression: expression, converter: converter) + startColumn
-            if let parent = syntax.parent, parent.syntaxNodeType == FunctionCallExprSyntax.self {
-              if let tryExpr = findLeft(syntaxType: TryExprSyntax.self, start: index, in: expressions) {
-                let tryOperator = "\(tryExpr.tryKeyword)\(tryExpr.questionOrExclamationMark?.description ?? "")"
-                return result + ".capture(expression: \(tryOperator)\(parent.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
-              }
-              return result + ".capture(expression: \(parent.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
-            }
-            return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])).self, column: \(column))"
-          }
-          if syntaxType == SubscriptExprSyntax.self, let subscriptExpr = syntax.as(SubscriptExprSyntax.self) {
-            let column = graphemeColumn(syntax: subscriptExpr.rightBracket, expression: expression, converter: converter) + startColumn
-            return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
-          }
-          if let memberAccessExpr = findDescendants(syntaxType: MemberAccessExprSyntax.self, node: syntax) {
-            guard let _ = memberAccessExpr.base else {
-              return result
-            }
-          }
-
-          return result + ".capture(expression: \(syntax.with(\.leadingTrivia, []).with(\.trailingTrivia, [])), column: \(column))"
-        }
-    )
-    .render()
-    """
+      PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose)) {
+        \(rewriter.rewrite())
+      }
+      .render()
+      """
       .split(separator: "\n")
       .joined()
   }
