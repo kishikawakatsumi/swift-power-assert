@@ -227,613 +227,613 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testMultilineExpression1() {
-//    captureConsoleOutput {
-//      let bar = Bar(foo: Foo(val: 2), val: 3)
-//
-//      #powerAssert(bar.val != bar.foo.val, verbose: true)
-//      #powerAssert(bar
-//        .val !=
-//             bar.foo.val, verbose: true)
-//      #powerAssert(bar
-//        .val !=
-//             bar
-//        .foo        .val, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(bar.val != bar.foo.val)
-//                     |   |   |  |   |   |
-//                     |   3   |  |   |   2
-//                     |       |  |   Foo(val: 2)
-//                     |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//                     |       true
-//                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//        #powerAssert(bar .val != bar.foo.val)
-//                     |    |   |  |   |   |
-//                     |    3   |  |   |   2
-//                     |        |  |   Foo(val: 2)
-//                     |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//                     |        true
-//                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//        #powerAssert(bar .val != bar .foo .val)
-//                     |    |   |  |    |    |
-//                     |    3   |  |    |    2
-//                     |        |  |    Foo(val: 2)
-//                     |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//                     |        true
-//                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testMultilineExpression2() {
-//    captureConsoleOutput {
-//      let zero = 0
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//      let array = [one, two, three]
-//
-//      #powerAssert(array    .        firstIndex(
-//        of:    zero)
-//             != two,
-//                   verbose: true
-//      )
-//
-//      #powerAssert(array
-//        .
-//                   firstIndex(
-//
-//              of:
-//                zero)
-//             != two
-//
-//                   ,     verbose: true
-//      )
-//
-//      #powerAssert(array
-//        .firstIndex(
-//          of:
-//            zero)
-//             != two,
-//
-//                   verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(array . firstIndex( of: zero) != two)
-//                     |       |               |     |  |
-//                     |       nil             0     |  Optional(2)
-//                     [1, 2, 3]                     true
-//        #powerAssert(array . firstIndex( of: zero) != two)
-//                     |       |               |     |  |
-//                     |       nil             0     |  Optional(2)
-//                     [1, 2, 3]                     true
-//        #powerAssert(array .firstIndex( of: zero) != two)
-//                     |      |               |     |  |
-//                     |      nil             0     |  Optional(2)
-//                     [1, 2, 3]                    true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testMultilineExpression3() {
-//    captureConsoleOutput {
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      let array = [one, two, three]
-//      #powerAssert(array
-//        .description
-//        .hasPrefix(    "["
-//                  )
-//             == true && array
-//        .description
-//        .hasPrefix    ("Hello"    ) ==
-//             false
-//             , verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(array .description .hasPrefix( "[" ) == true && array .description .hasPrefix ("Hello" ) == false)
-//                     |      |            |          |     |  |    |  |      |            |          |         |  |
-//                     |      "[1, 2, 3]"  true       "["   |  true |  |      "[1, 2, 3]"  false      "Hello"   |  false
-//                     [1, 2, 3]                            true    |  [1, 2, 3]                                true
-//                                                                  true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testMultilineExpression4() {
-//    captureConsoleOutput {
-//      let zero = 0
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      let array = [one, two, three]
-//
-//      let bar = Bar(foo: Foo(val: 2), val: 3)
-//
-//      #powerAssert(
-//
-//        array.firstIndex(
-//          of: zero
-//        )
-//        !=
-//        two
-//        &&
-//        bar
-//          .val
-//        != bar
-//          .foo
-//          .val
-//        , verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(array.firstIndex( of: zero ) != two && bar .val != bar .foo .val)
-//                     |     |               |      |  |   |  |    |   |  |    |    |
-//                     |     nil             0      |  |   |  |    3   |  |    |    2
-//                     [1, 2, 3]                    |  |   |  |        |  |    Foo(val: 2)
-//                                                  |  |   |  |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//                                                  |  |   |  |        true
-//                                                  |  |   |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//                                                  |  |   true
-//                                                  |  Optional(2)
-//                                                  true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testMultilineExpression5() {
-//    captureConsoleOutput {
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      let array = [one, two, three]
-//      #powerAssert(
-//
-//        array
-//          .distance(
-//            from: 2,
-//            to: 3)
-//        != 4
-//        , verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(array .distance( from: 2, to: 3) != 4)
-//                     |      |               |      |  |  |
-//                     |      1               2      3  |  4
-//                     [1, 2, 3]                        true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testMultilineExpression6() {
-//    captureConsoleOutput {
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      #powerAssert([one,
-//              two
-//              , three]
-//        .count
-//             != 10
-//                   , verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert([one, two , three] .count != 10)
-//                     ||    |     |       |     |  |
-//                     |1    2     3       3     |  10
-//                     [1, 2, 3]                 true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testTryExpression() {
-//    captureConsoleOutput {
-//      let landmark = Landmark(
-//        name: "Tokyo Tower",
-//        foundingYear: 1957,
-//        location: Coordinate(latitude: 35.658581, longitude: 139.745438)
-//      )
-//
-//      #powerAssert(
-//        try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8),
-//        verbose: true
-//      )
-//      #powerAssert(
-//        try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8),
-//        verbose: true
-//      )
-//      #powerAssert(
-//        try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark),
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        #"""
-//        #powerAssert(try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8))
-//                          |             |      |         |  |                          |           |      |        |
-//                          |             |      |         |  |                          |           String Encoding Unicode (UTF-8)
-//                          |             |      |         |  |                          Optional(22 bytes)
-//                          |             |      |         |  "{\"name\":\"Tokyo Tower\"}"
-//                          |             |      |         true
-//                          |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
-//                          |             Optional(116 bytes)
-//                          Foundation.JSONEncoder
-//        #powerAssert(try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8))
-//                          |             |      |         |  |                                                                                                                        |            |
-//                          |             |      |         |  |                                                                                                                        |            Unicode (UTF-8)
-//                          |             |      |         |  |                                                                                                                        Optional(116 bytes)
-//                          |             |      |         |  "{\"name\":\"Tokyo Tower\",\"location\":{\"longitude\":139.74543800000001,\"latitude\":35.658580999999998},\"foundingYear\":1957}"
-//                          |             |      |         true
-//                          |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
-//                          |             Optional(116 bytes)
-//                          Foundation.JSONEncoder
-//        #powerAssert(try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark))
-//                          |                          |           |      |        |     |  |             |      |
-//                          |                          |           String Encoding |     |  |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
-//                          |                          Optional(22 bytes)          |     |  |             Optional(116 bytes)
-//                          "{\"name\":\"Tokyo Tower\"}"                           |     |  Foundation.JSONEncoder
-//                                                                                 |     true
-//                                                                                 Unicode (UTF-8)
-//
-//        """#
-//      )
-//    }
-//  }
-//
-//  func testNilLiteral() {
-//    captureConsoleOutput {
-//      let string = "1234"
-//      let number = Int(string)
-//
-//      #powerAssert(number != nil && number == 1234, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(number != nil && number == 1234)
-//                     |      |  |   |  |      |  |
-//                     |      |  nil |  |      |  Optional(1234)
-//                     |      true   |  |      true
-//                     |             |  Optional(1234)
-//                     |             true
-//                     Optional(1234)
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testTernaryConditionalOperator1() {
-//    captureConsoleOutput {
-//      let string = "1234"
-//      let number = Int(string)
-//      let hello = "hello"
-//
-//      #powerAssert((number != nil ? string : hello) == string, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert((number != nil ? string : hello) == string)
-//                     |||     |  |     |               |  |
-//                     ||"1234"|  nil   "1234"          |  "1234"
-//                     ||      true                     true
-//                     |Optional(1234)
-//                     "1234"
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testTernaryConditionalOperator2() {
-//    captureConsoleOutput {
-//      let string = "1234"
-//      let number = Int(string)
-//      let hello = "hello"
-//
-//      #powerAssert((number == nil ? string : hello) != string, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert((number == nil ? string : hello) != string)
-//                     |||     |  |              |      |  |
-//                     |||     |  nil            |      |  "1234"
-//                     |||     false             |      true
-//                     ||"hello"                 "hello"
-//                     |Optional(1234)
-//                     "hello"
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testArrayLiteralExpression() {
-//    captureConsoleOutput {
-//      let zero = 0
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      #powerAssert([one, two, three].firstIndex(of: zero) != two, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert([one, two, three].firstIndex(of: zero) != two)
-//                     ||    |    |      |              |     |  |
-//                     |1    2    3      nil            0     |  Optional(2)
-//                     [1, 2, 3]                              true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testDictionaryLiteralExpression() {
-//    captureConsoleOutput {
-//      let zero = 0
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      #powerAssert([zero: one, two: three].count != three, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      // Dictionary order is not guaranteed
-//      XCTAssertTrue(
-//        output ==
-//        """
-//        #powerAssert([zero: one, two: three].count != three)
-//                     ||     |    |    |      |     |  |
-//                     |0     1    2    3      2     |  3
-//                     [0: 1, 2: 3]                  true
-//
-//        """
-//        ||
-//        output ==
-//        """
-//        #powerAssert([zero: one, two: three].count != three)
-//                     ||     |    |    |      |     |  |
-//                     |0     1    2    3      2     |  3
-//                     [2: 3, 0: 1]                  true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testMagicLiteralExpression() {
-//    captureConsoleOutput {
-//      #powerAssert(
-//        #file != "*.swift" && #line != 1 && #column != 2 && #function != "function",
-//        verbose: true
-//      )
-//      #powerAssert(
-//        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
-//          .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-//                     |     |  |         |  |     |  | |  |       |  | |  |         |  |
-//                     |     |  "*.swift" |  2     |  1 |  467     |  2 |  |         |  "function"
-//                     |     true         true     true true       true |  |         true
-//                     |                                                |  "testMagicLiteralExpression()"
-//                     |                                                true
-//                     "@__swiftmacro_16PowerAssertTestsAAC26testMagicLiteralExpressionyyFyyXEfU_05powerB0fMf_.swift"
-//        #powerAssert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
-//                     |                                                                                 |  |   |    |   |    |  |                                                                                 |
-//                     Optional(sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1)               |  |   |    |   |    |  Optional(sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1)               1.0
-//                                                                                                       |  |   |    |   |    true
-//                                                                                                       |  |   |    |   Optional(sRGB IEC61966-2.1 colorspace 0 0 1 1)
-//                                                                                                       |  |   |    true
-//                                                                                                       |  |   Optional(sRGB IEC61966-2.1 colorspace 0 0 1 1)
-//                                                                                                       |  true
-//                                                                                                       1.0
-//        #powerAssert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-//                     |     |  |         |  |     |  | |  |       |  | |  |         |  |
-//                     |     |  "*.swift" |  2     |  1 |  912     |  2 |  |         |  "function"
-//                     |     true         true     true true       true |  |         true
-//                     |                                                |  "testMagicLiteralExpression()"
-//                     |                                                true
-//                     "@__swiftmacro_16PowerAssertTestsAAC26testMagicLiteralExpressionyyFyyXEfU_05powerB0fMf_.swift"
-//        #powerAssert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
-//                     |                  |                    |                    |                    |  |        |        |  |                  |                    |                    |                    |
-//                     |                  0.8078431487         0.02745098062        0.3333333433         1  true     true     |  |                  0.8078431487         0.02745098062        0.3333333433         1
-//                     sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                                              |  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
-//                                                                                                                            true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testSelfExpression() {
-//    captureConsoleOutput {
-//      #powerAssert(
-//        self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9,
-//        verbose: true
-//      )
-//      #powerAssert(super.continueAfterFailure == true, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9)
-//                     |    |           |  |        |  |    |        |  |   |  |    |           |  |
-//                     |    "string"    |  "string" |  |    100      |  100 |  |    999.9       |  999.9
-//                     |                true        |  |             true   |  |                true
-//                     |                            |  |                    |  -[PowerAssertTests testSelfExpression]
-//                     |                            |  |                    true
-//                     |                            |  -[PowerAssertTests testSelfExpression]
-//                     |                            true
-//                     -[PowerAssertTests testSelfExpression]
-//        #powerAssert(super.continueAfterFailure == true)
-//                           |                    |  |
-//                           true                 |  true
-//                                                true
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testImplicitMemberExpression() {
-//    captureConsoleOutput {
-//      let i = 64
-//      #powerAssert(i == .bitWidth && i == Double.Exponent.bitWidth, verbose: true)
-//
-//      let mask: CAAutoresizingMask = [.layerMaxXMargin, .layerMaxYMargin]
-//      #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
-//
-//      #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin], verbose: true)
-//
-//      #powerAssert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
-//
-//      #powerAssert(mask == [.layerMaxXMargin, .layerMaxYMargin], verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(i == .bitWidth && i == Double.Exponent.bitWidth)
-//                     | |   |        |  | |  |      |        |
-//                     | |   64       |  | |  Double Int      64
-//                     | true         |  | true
-//                     64             |  64
-//                                    true
-//        #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
-//                     |    |  ||                  |                |                  |
-//                     |    |  |CAAutoresizingMask |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
-//                     |    |  |                   CAAutoresizingMask(rawValue: 4)
-//                     |    |  CAAutoresizingMask(rawValue: 36)
-//                     |    true
-//                     CAAutoresizingMask(rawValue: 36)
-//        #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
-//                     |    |  ||                  |                 |
-//                     |    |  |CAAutoresizingMask |                 CAAutoresizingMask(rawValue: 32)
-//                     |    |  |                   CAAutoresizingMask(rawValue: 4)
-//                     |    |  CAAutoresizingMask(rawValue: 36)
-//                     |    true
-//                     CAAutoresizingMask(rawValue: 36)
-//        #powerAssert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
-//                     |    |  | |                |                  |
-//                     |    |  | |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
-//                     |    |  | CAAutoresizingMask(rawValue: 4)
-//                     |    |  CAAutoresizingMask(rawValue: 36)
-//                     |    true
-//                     CAAutoresizingMask(rawValue: 36)
-//        #powerAssert(mask == [.layerMaxXMargin, .layerMaxYMargin])
-//                     |    |  | |                 |
-//                     |    |  | |                 CAAutoresizingMask(rawValue: 32)
-//                     |    |  | CAAutoresizingMask(rawValue: 4)
-//                     |    |  CAAutoresizingMask(rawValue: 36)
-//                     |    true
-//                     CAAutoresizingMask(rawValue: 36)
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testTupleExpression() {
-//    captureConsoleOutput {
-//      let dc1 = DateComponents(
-//        calendar: Calendar(identifier: .gregorian), timeZone: TimeZone(abbreviation: "JST")!, year: 1980, month: 10, day: 28
-//      )
-//      let date1 = dc1.date!
-//      let dc2 = DateComponents(
-//        calendar: Calendar(identifier: .gregorian), timeZone: TimeZone(abbreviation: "JST")!, year: 2000, month: 12, day: 31
-//      )
-//      let date2 = dc2.date!
-//
-//      let tuple = (name: "Katsumi", age: 37, birthday: date1)
-//
-//      #powerAssert(tuple != (name: "Katsumi", age: 37, birthday: date2), verbose: true)
-//      #powerAssert(tuple != ("Katsumi", 37, date2), verbose: true)
-//      #powerAssert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(tuple != (name: "Katsumi", age: 37, birthday: date2))
-//                     |     |  |      |               |             |
-//                     |     |  |      "Katsumi"       37            2000-12-30 15:00:00 +0000
-//                     |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
-//                     |     true
-//                     ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple != ("Katsumi", 37, date2))
-//                     |     |  ||          |   |
-//                     |     |  |"Katsumi"  37  2000-12-30 15:00:00 +0000
-//                     |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
-//                     |     true
-//                     ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
-//                     |     |    |  ||          |   |      | |
-//                     |     |    |  |"Katsumi"  37  |      | true
-//                     |     |    |  |               |      "Katsumi"
-//                     |     |    |  |               2000-12-30 15:00:00 +0000
-//                     |     |    |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
-//                     |     |    true
-//                     |     "Katsumi"
-//                     (name: "Katsumi", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//
-//        """
-//      )
-//    }
-//  }
-//
+  func testMultilineExpression1() {
+    captureConsoleOutput {
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+
+      #powerAssert(bar.val != bar.foo.val, verbose: true)
+      #powerAssert(bar
+        .val !=
+             bar.foo.val, verbose: true)
+      #powerAssert(bar
+        .val !=
+             bar
+        .foo        .val, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(bar.val != bar.foo.val)
+                     |   |   |  |   |   |
+                     |   3   |  |   |   2
+                     |       |  |   Foo(val: 2)
+                     |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                     |       true
+                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+        #powerAssert(bar .val != bar.foo.val)
+                     |    |   |  |   |   |
+                     |    3   |  |   |   2
+                     |        |  |   Foo(val: 2)
+                     |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                     |        true
+                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+        #powerAssert(bar .val != bar .foo .val)
+                     |    |   |  |    |    |
+                     |    3   |  |    |    2
+                     |        |  |    Foo(val: 2)
+                     |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                     |        true
+                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        """
+      )
+    }
+  }
+
+  func testMultilineExpression2() {
+    captureConsoleOutput {
+      let zero = 0
+      let one = 1
+      let two = 2
+      let three = 3
+      let array = [one, two, three]
+
+      #powerAssert(array    .        firstIndex(
+        of:    zero)
+             != two,
+                   verbose: true
+      )
+
+      #powerAssert(array
+        .
+                   firstIndex(
+
+              of:
+                zero)
+             != two
+
+                   ,     verbose: true
+      )
+
+      #powerAssert(array
+        .firstIndex(
+          of:
+            zero)
+             != two,
+
+                   verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(array . firstIndex( of: zero) != two)
+                     |       |               |     |  |
+                     |       nil             0     |  Optional(2)
+                     [1, 2, 3]                     true
+        #powerAssert(array . firstIndex( of: zero) != two)
+                     |       |               |     |  |
+                     |       nil             0     |  Optional(2)
+                     [1, 2, 3]                     true
+        #powerAssert(array .firstIndex( of: zero) != two)
+                     |      |               |     |  |
+                     |      nil             0     |  Optional(2)
+                     [1, 2, 3]                    true
+
+        """
+      )
+    }
+  }
+
+  func testMultilineExpression3() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+      #powerAssert(array
+        .description
+        .hasPrefix(    "["
+                  )
+             == true && array
+        .description
+        .hasPrefix    ("Hello"    ) ==
+             false
+             , verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(array .description .hasPrefix( "[" ) == true && array .description .hasPrefix ("Hello" ) == false)
+                     |      |            |          |     |  |    |  |      |            |          |         |  |
+                     |      "[1, 2, 3]"  true       "["   |  true |  |      "[1, 2, 3]"  false      "Hello"   |  false
+                     [1, 2, 3]                            true    |  [1, 2, 3]                                true
+                                                                  true
+
+        """
+      )
+    }
+  }
+
+  func testMultilineExpression4() {
+    captureConsoleOutput {
+      let zero = 0
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+
+      #powerAssert(
+
+        array.firstIndex(
+          of: zero
+        )
+        !=
+        two
+        &&
+        bar
+          .val
+        != bar
+          .foo
+          .val
+        , verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(array.firstIndex( of: zero ) != two && bar .val != bar .foo .val)
+                     |     |               |      |  |   |  |    |   |  |    |    |
+                     |     nil             0      |  |   |  |    3   |  |    |    2
+                     [1, 2, 3]                    |  |   |  |        |  |    Foo(val: 2)
+                                                  |  |   |  |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                                                  |  |   |  |        true
+                                                  |  |   |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                                                  |  |   true
+                                                  |  Optional(2)
+                                                  true
+
+        """
+      )
+    }
+  }
+
+  func testMultilineExpression5() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+      #powerAssert(
+
+        array
+          .distance(
+            from: 2,
+            to: 3)
+        != 4
+        , verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(array .distance( from: 2, to: 3) != 4)
+                     |      |               |      |  |  |
+                     |      1               2      3  |  4
+                     [1, 2, 3]                        true
+
+        """
+      )
+    }
+  }
+
+  func testMultilineExpression6() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      #powerAssert([one,
+              two
+              , three]
+        .count
+             != 10
+                   , verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert([one, two , three] .count != 10)
+                     ||    |     |       |     |  |
+                     |1    2     3       3     |  10
+                     [1, 2, 3]                 true
+
+        """
+      )
+    }
+  }
+
+  func testTryExpression() {
+    captureConsoleOutput {
+      let landmark = Landmark(
+        name: "Tokyo Tower",
+        foundingYear: 1957,
+        location: Coordinate(latitude: 35.658581, longitude: 139.745438)
+      )
+
+      #powerAssert(
+        try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8),
+        verbose: true
+      )
+      #powerAssert(
+        try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8),
+        verbose: true
+      )
+      #powerAssert(
+        try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark),
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8))
+                          |             |      |         |  |                          |           |      |        |
+                          |             |      |         |  |                          |           String Encoding Unicode (UTF-8)
+                          |             |      |         |  |                          Optional(22 bytes)
+                          |             |      |         |  "{\"name\":\"Tokyo Tower\"}"
+                          |             |      |         true
+                          |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
+                          |             Optional(116 bytes)
+                          Foundation.JSONEncoder
+        #powerAssert(try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8))
+                          |             |      |         |  |                                                                                                                        |            |
+                          |             |      |         |  |                                                                                                                        |            Unicode (UTF-8)
+                          |             |      |         |  |                                                                                                                        Optional(116 bytes)
+                          |             |      |         |  "{\"name\":\"Tokyo Tower\",\"location\":{\"longitude\":139.74543800000001,\"latitude\":35.658580999999998},\"foundingYear\":1957}"
+                          |             |      |         true
+                          |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
+                          |             Optional(116 bytes)
+                          Foundation.JSONEncoder
+        #powerAssert(try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark))
+                          |                          |           |      |        |     |  |             |      |
+                          |                          |           String Encoding |     |  |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
+                          |                          Optional(22 bytes)          |     |  |             Optional(116 bytes)
+                          "{\"name\":\"Tokyo Tower\"}"                           |     |  Foundation.JSONEncoder
+                                                                                 |     true
+                                                                                 Unicode (UTF-8)
+
+        """#
+      )
+    }
+  }
+
+  func testNilLiteral() {
+    captureConsoleOutput {
+      let string = "1234"
+      let number = Int(string)
+
+      #powerAssert(number != nil && number == 1234, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(number != nil && number == 1234)
+                     |      |  |   |  |      |  |
+                     |      |  nil |  |      |  Optional(1234)
+                     |      true   |  |      true
+                     |             |  Optional(1234)
+                     |             true
+                     Optional(1234)
+
+        """
+      )
+    }
+  }
+
+  func testTernaryConditionalOperator1() {
+    captureConsoleOutput {
+      let string = "1234"
+      let number = Int(string)
+      let hello = "hello"
+
+      #powerAssert((number != nil ? string : hello) == string, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert((number != nil ? string : hello) == string)
+                     |||     |  |     |               |  |
+                     ||"1234"|  nil   "1234"          |  "1234"
+                     ||      true                     true
+                     |Optional(1234)
+                     "1234"
+
+        """
+      )
+    }
+  }
+
+  func testTernaryConditionalOperator2() {
+    captureConsoleOutput {
+      let string = "1234"
+      let number = Int(string)
+      let hello = "hello"
+
+      #powerAssert((number == nil ? string : hello) != string, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert((number == nil ? string : hello) != string)
+                     |||     |  |              |      |  |
+                     |||     |  nil            |      |  "1234"
+                     |||     false             |      true
+                     ||"hello"                 "hello"
+                     |Optional(1234)
+                     "hello"
+
+        """
+      )
+    }
+  }
+
+  func testArrayLiteralExpression() {
+    captureConsoleOutput {
+      let zero = 0
+      let one = 1
+      let two = 2
+      let three = 3
+
+      #powerAssert([one, two, three].firstIndex(of: zero) != two, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert([one, two, three].firstIndex(of: zero) != two)
+                     ||    |    |      |              |     |  |
+                     |1    2    3      nil            0     |  Optional(2)
+                     [1, 2, 3]                              true
+
+        """
+      )
+    }
+  }
+
+  func testDictionaryLiteralExpression() {
+    captureConsoleOutput {
+      let zero = 0
+      let one = 1
+      let two = 2
+      let three = 3
+
+      #powerAssert([zero: one, two: three].count != three, verbose: true)
+    } completion: { (output) in
+      print(output)
+      // Dictionary order is not guaranteed
+      XCTAssertTrue(
+        output ==
+        """
+        #powerAssert([zero: one, two: three].count != three)
+                     ||     |    |    |      |     |  |
+                     |0     1    2    3      2     |  3
+                     [0: 1, 2: 3]                  true
+
+        """
+        ||
+        output ==
+        """
+        #powerAssert([zero: one, two: three].count != three)
+                     ||     |    |    |      |     |  |
+                     |0     1    2    3      2     |  3
+                     [2: 3, 0: 1]                  true
+
+        """
+      )
+    }
+  }
+
+  func testMagicLiteralExpression() {
+    captureConsoleOutput {
+      #powerAssert(
+        #file != "*.swift" && #line != 1 && #column != 2 && #function != "function",
+        verbose: true
+      )
+      #powerAssert(
+        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
+          .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
+                     |     |  |         |  |     |  | |  |       |  | |  |         |  |
+                     |     |  "*.swift" |  2     |  1 |  467     |  2 |  |         |  "function"
+                     |     true         true     true true       true |  |         true
+                     |                                                |  "testMagicLiteralExpression()"
+                     |                                                true
+                     "@__swiftmacro_16PowerAssertTestsAAC26testMagicLiteralExpressionyyFyyXEfU_05powerB0fMf_.swift"
+        #powerAssert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
+                     |                                                                                 |  |   |    |   |    |  |                                                                                 |
+                     Optional(sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1)               |  |   |    |   |    |  Optional(sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1)               1.0
+                                                                                                       |  |   |    |   |    true
+                                                                                                       |  |   |    |   Optional(sRGB IEC61966-2.1 colorspace 0 0 1 1)
+                                                                                                       |  |   |    true
+                                                                                                       |  |   Optional(sRGB IEC61966-2.1 colorspace 0 0 1 1)
+                                                                                                       |  true
+                                                                                                       1.0
+        #powerAssert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
+                     |     |  |         |  |     |  | |  |       |  | |  |         |  |
+                     |     |  "*.swift" |  2     |  1 |  912     |  2 |  |         |  "function"
+                     |     true         true     true true       true |  |         true
+                     |                                                |  "testMagicLiteralExpression()"
+                     |                                                true
+                     "@__swiftmacro_16PowerAssertTestsAAC26testMagicLiteralExpressionyyFyyXEfU_05powerB0fMf_.swift"
+        #powerAssert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
+                     |                  |                    |                    |                    |  |        |        |  |                  |                    |                    |                    |
+                     |                  0.8078431487         0.02745098062        0.3333333433         1  true     true     |  |                  0.8078431487         0.02745098062        0.3333333433         1
+                     sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                                              |  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+                                                                                                                            true
+
+        """
+      )
+    }
+  }
+
+  func testSelfExpression() {
+    captureConsoleOutput {
+      #powerAssert(
+        self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9,
+        verbose: true
+      )
+      #powerAssert(super.continueAfterFailure == true, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9)
+                     |    |           |  |        |  |    |        |  |   |  |    |           |  |
+                     |    "string"    |  "string" |  |    100      |  100 |  |    999.9       |  999.9
+                     |                true        |  |             true   |  |                true
+                     |                            |  |                    |  -[PowerAssertTests testSelfExpression]
+                     |                            |  |                    true
+                     |                            |  -[PowerAssertTests testSelfExpression]
+                     |                            true
+                     -[PowerAssertTests testSelfExpression]
+        #powerAssert(super.continueAfterFailure == true)
+                           |                    |  |
+                           true                 |  true
+                                                true
+
+        """
+      )
+    }
+  }
+
+  func testImplicitMemberExpression() {
+    captureConsoleOutput {
+      let i = 64
+      #powerAssert(i == .bitWidth && i == Double.Exponent.bitWidth, verbose: true)
+
+      let mask: CAAutoresizingMask = [.layerMaxXMargin, .layerMaxYMargin]
+      #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
+
+      #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin], verbose: true)
+
+      #powerAssert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
+
+      #powerAssert(mask == [.layerMaxXMargin, .layerMaxYMargin], verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(i == .bitWidth && i == Double.Exponent.bitWidth)
+                     | |   |        |  | |  |      |        |
+                     | |   64       |  | |  Double Int      64
+                     | true         |  | true
+                     64             |  64
+                                    true
+        #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+                     |    |  ||                  |                |                  |
+                     |    |  |CAAutoresizingMask |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
+                     |    |  |                   CAAutoresizingMask(rawValue: 4)
+                     |    |  CAAutoresizingMask(rawValue: 36)
+                     |    true
+                     CAAutoresizingMask(rawValue: 36)
+        #powerAssert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
+                     |    |  ||                  |                 |
+                     |    |  |CAAutoresizingMask |                 CAAutoresizingMask(rawValue: 32)
+                     |    |  |                   CAAutoresizingMask(rawValue: 4)
+                     |    |  CAAutoresizingMask(rawValue: 36)
+                     |    true
+                     CAAutoresizingMask(rawValue: 36)
+        #powerAssert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+                     |    |  | |                |                  |
+                     |    |  | |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
+                     |    |  | CAAutoresizingMask(rawValue: 4)
+                     |    |  CAAutoresizingMask(rawValue: 36)
+                     |    true
+                     CAAutoresizingMask(rawValue: 36)
+        #powerAssert(mask == [.layerMaxXMargin, .layerMaxYMargin])
+                     |    |  | |                 |
+                     |    |  | |                 CAAutoresizingMask(rawValue: 32)
+                     |    |  | CAAutoresizingMask(rawValue: 4)
+                     |    |  CAAutoresizingMask(rawValue: 36)
+                     |    true
+                     CAAutoresizingMask(rawValue: 36)
+
+        """
+      )
+    }
+  }
+
+  func testTupleExpression() {
+    captureConsoleOutput {
+      let dc1 = DateComponents(
+        calendar: Calendar(identifier: .gregorian), timeZone: TimeZone(abbreviation: "JST")!, year: 1980, month: 10, day: 28
+      )
+      let date1 = dc1.date!
+      let dc2 = DateComponents(
+        calendar: Calendar(identifier: .gregorian), timeZone: TimeZone(abbreviation: "JST")!, year: 2000, month: 12, day: 31
+      )
+      let date2 = dc2.date!
+
+      let tuple = (name: "Katsumi", age: 37, birthday: date1)
+
+      #powerAssert(tuple != (name: "Katsumi", age: 37, birthday: date2), verbose: true)
+      #powerAssert(tuple != ("Katsumi", 37, date2), verbose: true)
+      #powerAssert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(tuple != (name: "Katsumi", age: 37, birthday: date2))
+                     |     |  |      |               |             |
+                     |     |  |      "Katsumi"       37            2000-12-30 15:00:00 +0000
+                     |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
+                     |     true
+                     ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple != ("Katsumi", 37, date2))
+                     |     |  ||          |   |
+                     |     |  |"Katsumi"  37  2000-12-30 15:00:00 +0000
+                     |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
+                     |     true
+                     ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
+                     |     |    |  ||          |   |      | |
+                     |     |    |  |"Katsumi"  37  |      | true
+                     |     |    |  |               |      "Katsumi"
+                     |     |    |  |               2000-12-30 15:00:00 +0000
+                     |     |    |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
+                     |     |    true
+                     |     "Katsumi"
+                     (name: "Katsumi", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        """
+      )
+    }
+  }
+
 //  func testKeyPathExpression() {
 //    captureConsoleOutput {
 //      let s = SomeStructure(someValue: 12)
