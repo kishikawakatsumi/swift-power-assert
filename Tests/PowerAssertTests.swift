@@ -2376,7 +2376,7 @@ final class PowerAssertTests: XCTestCase {
 //    }
 //  }
 
-  func testMessageParameters() {
+  func testMessageParameter() {
     captureConsoleOutput {
       let one = 1
       let two = 2
