@@ -834,177 +834,177 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testKeyPathExpression() {
-//    captureConsoleOutput {
-//      let s = SomeStructure(someValue: 12)
-//      let pathToProperty = \SomeStructure.someValue
-//
-//      #powerAssert(s[keyPath: pathToProperty] == 12, verbose: true)
-//      #powerAssert(s[keyPath: \SomeStructure.someValue] == 12, verbose: true)
-//      #powerAssert(s.getValue(keyPath: \.someValue) == 12, verbose: true)
-//
-//      let nested = OuterStructure(someValue: 24)
-//      let nestedKeyPath = \OuterStructure.outer.someValue
-//
-//      #powerAssert(nested[keyPath: nestedKeyPath] == 24, verbose: true)
-//      #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24, verbose: true)
-//      #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//
-//      if ProcessInfo.processInfo.environment["CI"] == "true" {
-//        XCTAssertEqual(
-//          output,
-//          #"""
-//          #powerAssert(s[keyPath: pathToProperty] == 12)
-//                       |          |             | |  |
-//                       |          |             | |  12
-//                       |          |             | true
-//                       |          |             12
-//                       |          \SomeStructure.someValue
-//                       SomeStructure(someValue: 12)
-//          #powerAssert(s[keyPath: \SomeStructure.someValue] == 12)
-//                       |          |                       | |  |
-//                       |          |                       | |  12
-//                       |          |                       | true
-//                       |          |                       12
-//                       |          \SomeStructure.someValue
-//                       SomeStructure(someValue: 12)
-//          #powerAssert(s.getValue(keyPath: \.someValue) == 12)
-//                       | |                 |            |  |
-//                       | 12                |            |  12
-//                       |                   |            true
-//                       |                   \SomeStructure.someValue
-//                       SomeStructure(someValue: 12)
-//          #powerAssert(nested[keyPath: nestedKeyPath] == 24)
-//                       |               |            | |  |
-//                       |               |            | |  24
-//                       |               |            | true
-//                       |               |            24
-//                       |               \OuterStructure.outer.someValue
-//                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-//          #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
-//                       |               |                              | |  |
-//                       |               |                              | |  24
-//                       |               |                              | true
-//                       |               |                              24
-//                       |               \OuterStructure.outer.someValue
-//                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-//          #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24)
-//                       |      |                 |                  |  |
-//                       |      24                |                  |  24
-//                       |                        |                  true
-//                       |                        \OuterStructure.outer.someValue
-//                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-//
-//          """#
-//        )
-//      } else {
-//        XCTAssertEqual(
-//          output,
-//          #"""
-//          #powerAssert(s[keyPath: pathToProperty] == 12)
-//                       |          |             | |  |
-//                       |          |             | |  12
-//                       |          |             | true
-//                       |          |             12
-//                       |          \SomeStructure.someValue
-//                       SomeStructure(someValue: 12)
-//          #powerAssert(s[keyPath: \SomeStructure.someValue] == 12)
-//                       |          |                       | |  |
-//                       |          |                       | |  12
-//                       |          |                       | true
-//                       |          |                       12
-//                       |          \SomeStructure.someValue
-//                       SomeStructure(someValue: 12)
-//          #powerAssert(s.getValue(keyPath: \.someValue) == 12)
-//                       | |                 |            |  |
-//                       | 12                |            |  12
-//                       |                   |            true
-//                       |                   \SomeStructure.someValue
-//                       SomeStructure(someValue: 12)
-//          #powerAssert(nested[keyPath: nestedKeyPath] == 24)
-//                       |               |            | |  |
-//                       |               |            | |  24
-//                       |               |            | true
-//                       |               |            24
-//                       |               \OuterStructure.outer.someValue
-//                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-//          #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
-//                       |               |                              | |  |
-//                       |               |                              | |  24
-//                       |               |                              | true
-//                       |               |                              24
-//                       |               \OuterStructure.outer.someValue
-//                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-//          #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24)
-//                       |      |                 |                  |  |
-//                       |      24                |                  |  24
-//                       |                        |                  true
-//                       |                        \OuterStructure.outer.someValue
-//                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-//
-//          """#
-//        )
-//      }
-//    }
-//  }
-//
-//  func testSubscriptKeyPathExpression1() {
-//    captureConsoleOutput {
-//      let greetings = ["hello", "hola", "bonjour", "안녕"]
-//
-//      #powerAssert(greetings[keyPath: \[String].[1]] == "hola", verbose: true)
-//      #powerAssert(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      if ProcessInfo.processInfo.environment["CI"] == "true" {
-//        XCTAssertEqual(
-//          output,
-//          #"""
-//          #powerAssert(greetings[keyPath: \[String].[1]] == "hola")
-//                       |                  ||        || | |  |
-//                       |                  ||        |1 | |  "hola"
-//                       |                  ||        |  | true
-//                       |                  ||        |  "hola"
-//                       |                  ||        [1]
-//                       |                  |Array<String>
-//                       |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
-//                       ["hello", "hola", "bonjour", "안녕"]
-//          #powerAssert(greetings[keyPath: \[String].first?.count] == 5)
-//                       |                  ||                    | |  |
-//                       |                  |Array<String>        5 |  5
-//                       |                  |                       true
-//                       |                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
-//                       ["hello", "hola", "bonjour", "안녕"]
-//
-//          """#
-//        )
-//      } else {
-//        XCTAssertEqual(
-//          output,
-//          #"""
-//          #powerAssert(greetings[keyPath: \[String].[1]] == "hola")
-//                       |                  |          | | |  |
-//                       |                  |          1 | |  "hola"
-//                       |                  |            | true
-//                       |                  |            "hola"
-//                       |                  \Array<String>.<computed 0x00000001a128ad3c (String)>
-//                       ["hello", "hola", "bonjour", "안녕"]
-//          #powerAssert(greetings[keyPath: \[String].first?.count] == 5)
-//                       |                  |                     | |  |
-//                       |                  |                     | |  Optional(5)
-//                       |                  |                     | true
-//                       |                  |                     Optional(5)
-//                       |                  \Array<String>.first?.count?
-//                       ["hello", "hola", "bonjour", "안녕"]
-//
-//          """#
-//        )
-//      }
-//    }
-//  }
-//
+  func testKeyPathExpression() {
+    captureConsoleOutput {
+      let s = SomeStructure(someValue: 12)
+      let pathToProperty = \SomeStructure.someValue
+
+      #powerAssert(s[keyPath: pathToProperty] == 12, verbose: true)
+      #powerAssert(s[keyPath: \SomeStructure.someValue] == 12, verbose: true)
+      #powerAssert(s.getValue(keyPath: \.someValue) == 12, verbose: true)
+
+      let nested = OuterStructure(someValue: 24)
+      let nestedKeyPath = \OuterStructure.outer.someValue
+
+      #powerAssert(nested[keyPath: nestedKeyPath] == 24, verbose: true)
+      #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24, verbose: true)
+      #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24, verbose: true)
+    } completion: { (output) in
+      print(output)
+
+      if ProcessInfo.processInfo.environment["CI"] == "true" {
+        XCTAssertEqual(
+          output,
+          #"""
+          #powerAssert(s[keyPath: pathToProperty] == 12)
+                       |          |             | |  |
+                       |          |             | |  12
+                       |          |             | true
+                       |          |             12
+                       |          \SomeStructure.someValue
+                       SomeStructure(someValue: 12)
+          #powerAssert(s[keyPath: \SomeStructure.someValue] == 12)
+                       |          |                       | |  |
+                       |          |                       | |  12
+                       |          |                       | true
+                       |          |                       12
+                       |          \SomeStructure.someValue
+                       SomeStructure(someValue: 12)
+          #powerAssert(s.getValue(keyPath: \.someValue) == 12)
+                       | |                 |            |  |
+                       | 12                |            |  12
+                       |                   |            true
+                       |                   \SomeStructure.someValue
+                       SomeStructure(someValue: 12)
+          #powerAssert(nested[keyPath: nestedKeyPath] == 24)
+                       |               |            | |  |
+                       |               |            | |  24
+                       |               |            | true
+                       |               |            24
+                       |               \OuterStructure.outer.someValue
+                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+          #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+                       |               |                              | |  |
+                       |               |                              | |  24
+                       |               |                              | true
+                       |               |                              24
+                       |               \OuterStructure.outer.someValue
+                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+          #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24)
+                       |      |                 |                  |  |
+                       |      24                |                  |  24
+                       |                        |                  true
+                       |                        \OuterStructure.outer.someValue
+                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          """#
+        )
+      } else {
+        XCTAssertEqual(
+          output,
+          #"""
+          #powerAssert(s[keyPath: pathToProperty] == 12)
+                       |          |             | |  |
+                       |          |             | |  12
+                       |          |             | true
+                       |          |             12
+                       |          \SomeStructure.someValue
+                       SomeStructure(someValue: 12)
+          #powerAssert(s[keyPath: \SomeStructure.someValue] == 12)
+                       |          |                       | |  |
+                       |          |                       | |  12
+                       |          |                       | true
+                       |          |                       12
+                       |          \SomeStructure.someValue
+                       SomeStructure(someValue: 12)
+          #powerAssert(s.getValue(keyPath: \.someValue) == 12)
+                       | |                 |            |  |
+                       | 12                |            |  12
+                       |                   |            true
+                       |                   \SomeStructure.someValue
+                       SomeStructure(someValue: 12)
+          #powerAssert(nested[keyPath: nestedKeyPath] == 24)
+                       |               |            | |  |
+                       |               |            | |  24
+                       |               |            | true
+                       |               |            24
+                       |               \OuterStructure.outer.someValue
+                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+          #powerAssert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+                       |               |                              | |  |
+                       |               |                              | |  24
+                       |               |                              | true
+                       |               |                              24
+                       |               \OuterStructure.outer.someValue
+                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+          #powerAssert(nested.getValue(keyPath: \.outer.someValue) == 24)
+                       |      |                 |                  |  |
+                       |      24                |                  |  24
+                       |                        |                  true
+                       |                        \OuterStructure.outer.someValue
+                       OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          """#
+        )
+      }
+    }
+  }
+
+  func testSubscriptKeyPathExpression1() {
+    captureConsoleOutput {
+      let greetings = ["hello", "hola", "bonjour", "안녕"]
+
+      #powerAssert(greetings[keyPath: \[String].[1]] == "hola", verbose: true)
+      #powerAssert(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
+    } completion: { (output) in
+      print(output)
+      if ProcessInfo.processInfo.environment["CI"] == "true" {
+        XCTAssertEqual(
+          output,
+          #"""
+          #powerAssert(greetings[keyPath: \[String].[1]] == "hola")
+                       |                  ||        || | |  |
+                       |                  ||        |1 | |  "hola"
+                       |                  ||        |  | true
+                       |                  ||        |  "hola"
+                       |                  ||        [1]
+                       |                  |Array<String>
+                       |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
+                       ["hello", "hola", "bonjour", "안녕"]
+          #powerAssert(greetings[keyPath: \[String].first?.count] == 5)
+                       |                  ||                    | |  |
+                       |                  |Array<String>        5 |  5
+                       |                  |                       true
+                       |                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
+                       ["hello", "hola", "bonjour", "안녕"]
+
+          """#
+        )
+      } else {
+        XCTAssertEqual(
+          output,
+          #"""
+          #powerAssert(greetings[keyPath: \[String].[1]] == "hola")
+                       |                  |          | | |  |
+                       |                  |          1 | |  "hola"
+                       |                  |            | true
+                       |                  |            "hola"
+                       |                  \Array<String>.<computed 0x00000001a128ad3c (String)>
+                       ["hello", "hola", "bonjour", "안녕"]
+          #powerAssert(greetings[keyPath: \[String].first?.count] == 5)
+                       |                  |                     | |  |
+                       |                  |                     | |  Optional(5)
+                       |                  |                     | true
+                       |                  |                     Optional(5)
+                       |                  \Array<String>.first?.count?
+                       ["hello", "hola", "bonjour", "안녕"]
+
+          """#
+        )
+      }
+    }
+  }
+
 //  func testSubscriptKeyPathExpression2() {
 //    captureConsoleOutput {
 //      let interestingNumbers = [
