@@ -11,25 +11,25 @@ Power asserts (also known as diagrammed assertions) augment your assertion failu
 Power asserts provide descriptive assertion messages for your tests, like the following examples:
 
 ```swift
-#powerAssert(max(a, b) == c)
-             |   |  |  |  |
-             7   4  7  |  12
-                       false
+#expect(max(a, b) == c)
+        |   |  |  |  |
+        7   4  7  |  12
+                  false
 
-#powerAssert(xs.contains(4))
-             |  |        |
-             |  false    4
-             [1, 2, 3]
+#expect(xs.contains(4))
+        |  |        |
+        |  false    4
+        [1, 2, 3]
 
-#powerAssert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
-             |       |         |    |  |         |         |
-             "hello" true      "h"  |  "goodbye" false     "y"
-                                    false
+#expect("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
+        |       |         |    |  |         |         |
+        "hello" true      "h"  |  "goodbye" false     "y"
+                              false
 ```
 
 ## Why Power Assert?
 
-When writing tests, we need to use different assertion functions. With Power Assert you only use the `#powerAssert()` function. There are many
+When writing tests, we need to use different assertion functions. With Power Assert you only use the `#expect()` function. There are many
 Assertion APIs, no need to remember them. Just create an expression that returns a boolean value and Power Assert will automatically display rich error information.
 
 ## Getting Started
@@ -66,15 +66,15 @@ Test Suite 'swift-power-assert-examplePackageTests.xctest' started at 2023-04-05
 Test Suite 'PowerAssertTests' started at 2023-04-05 07:17:58.801
 Test Case '-[ExampleTests.PowerAssertTests testExample]' started.
 /swift-power-assert/Example/"ExampleTests/ExampleTests.swift":8: error: -[ExampleTests.PowerAssertTests testExample] : failed -
-#powerAssert(a * b == 91)
-             |   | |  |
-             10  9 |  91
-                   false
+#expect(a * b == 91)
+        |   | |  |
+        10  9 |  91
+              false
 /swift-power-assert/Example/"ExampleTests/ExampleTests.swift":11: error: -[ExampleTests.PowerAssertTests testExample] : failed -
-#powerAssert(xs.contains(4))
-             |  |        |
-             |  false    4
-             [1, 2, 3]
+#expect(xs.contains(4))
+        |  |        |
+        |  false    4
+        [1, 2, 3]
 ...
 ```
 
@@ -110,7 +110,7 @@ let package = Package(
 )
 ```
 
-Next, you can use Power Assert in your tests with the `#powerAssert()` macro.
+Next, you can use Power Assert in your tests with the `#expect()` macro.
 
 ```swift
 // MyLibraryTests.swift
@@ -124,7 +124,7 @@ final class MyLibraryTests: XCTestCase {
     let b = 4
     let c = 12
 
-    #powerAssert(max(a, b) == c)
+    #expect(max(a, b) == c)
   }
 }
 ```
@@ -135,14 +135,14 @@ Swift Power Assert is still in the early stages of development. If you could hel
 
 ## Frequently Asked Questions
 
-**Q: I want to display the result even if the test is successful (i.e. the expression in the `#powerAssert()` function evaluates to `true`).**
+**Q: I want to display the result even if the test is successful (i.e. the expression in the `#expect()` function evaluates to `true`).**
 
-A: By default, the `#powerAssert()` function does not display the result if the expression evaluates to `true`, because the test was successful. To always print the result, set the `verbose` argument to true.
+A: By default, the `#expect()` function does not display the result if the expression evaluates to `true`, because the test was successful. To always print the result, set the `verbose` argument to true.
 
 For example:
 
 ```swift
-#powerAssert(x == y, verbose: true)
+#expect(x == y, verbose: true)
 ```
 
 ## Author
