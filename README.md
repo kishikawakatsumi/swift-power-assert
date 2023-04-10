@@ -153,7 +153,7 @@ For example:
 
 ```shell
 $ cd Example
-swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
+$ swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
 ```
 
 If you run the above with the `-dump-macro-expansions` option, you will get the following output.
