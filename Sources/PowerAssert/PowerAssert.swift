@@ -42,6 +42,18 @@ public enum PowerAssert {
       return val
     }
 
+    public func capture(_ expr: @autoclosure () throws -> Float, column: Int) rethrows -> Float {
+      let val = try expr()
+      store(value: val, column: column)
+      return val
+    }
+
+    public func capture(_ expr: @autoclosure () throws -> Double, column: Int) rethrows -> Double {
+      let val = try expr()
+      store(value: val, column: column)
+      return val
+    }
+
     public func store<T>(value: T, column: Int) {
       values.append(Value(value: valueToString(value), column: column))
     }
