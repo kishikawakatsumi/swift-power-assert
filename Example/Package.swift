@@ -6,7 +6,7 @@ let package = Package(
   name: "swift-power-assert-example",
   platforms: [
     .iOS(.v16),
-    .macOS(.v13)
+    .macOS(.v13),
   ],
   dependencies: [
     .package(
@@ -18,7 +18,7 @@ let package = Package(
     .testTarget(
       name: "ExampleTests",
       dependencies: [
-        .product(name: "PowerAssert", package: "swift-power-assert")
+        .product(name: "PowerAssert", package: "swift-power-assert"),
       ]
     ),
   ]
