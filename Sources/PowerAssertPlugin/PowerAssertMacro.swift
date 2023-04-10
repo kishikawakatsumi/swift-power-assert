@@ -94,6 +94,12 @@ private class PowerAssertRewriter: SyntaxRewriter {
     return apply(ExprSyntax(visitedNode), column: startLocation.column!)
   }
 
+  override func visit(_ node: ForcedValueExprSyntax) -> ExprSyntax {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+  }
+
   override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
     let startLocation: SourceLocation
     if let function = node.calledExpression.children(viewMode: .fixedUp).last {
@@ -147,7 +153,11 @@ private class PowerAssertRewriter: SyntaxRewriter {
     }
     let startLocation = node.name.startLocation(converter: sourceLocationConverter)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    if let optionalChainingExpr = findDescendants(syntaxType: OptionalChainingExprSyntax.self, node: node) {
+      return ExprSyntax("\(apply(ExprSyntax(visitedNode), column: startLocation.column!))\(optionalChainingExpr.questionMark)")
+    } else {
+      return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    }
   }
 
   override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
@@ -159,7 +169,7 @@ private class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: OptionalChainingExprSyntax) -> ExprSyntax {
     let startLocation = node.startLocation(converter: sourceLocationConverter)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return visitedNode
   }
 
   override func visit(_ node: PrefixOperatorExprSyntax) -> ExprSyntax {
@@ -224,19 +234,19 @@ private class PowerAssertRewriter: SyntaxRewriter {
     .cast(ExprSyntax.self)
   }
 
-  private func findAncestors(node: ExprSyntax) -> ExprSyntax? {
+  private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
     let node = node.parent
     var cur: Syntax? = node
     while let node = cur {
-      if node.isProtocol(ExprSyntaxProtocol.self) {
-        return ExprSyntax(node)
+      if node.syntaxNodeType == syntaxType.self {
+        return node.as(syntaxType)
       }
       cur = node.parent
     }
     return nil
   }
 
-  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
+  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
     let children = node.children(viewMode: .fixedUp)
     for child in children {
       if child.syntaxNodeType == TokenSyntax.self {
@@ -324,43 +334,6 @@ private struct CodeGenerator {
       }
       .render()
       """
-  }
-
-  private func findLeft<T: SyntaxProtocol>(syntaxType: T.Type, start: Int, in expressions: [Syntax]) -> T? {
-    for index in (0..<start).reversed() {
-      if expressions[index].syntaxNodeType == syntaxType {
-        return expressions[index].as(T.self)
-      }
-    }
-    return nil
-  }
-
-  private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
-    let node = node.parent
-    var cur: Syntax? = node
-    while let node = cur {
-      if node.syntaxNodeType == syntaxType {
-        return node.as(syntaxType)
-      }
-      cur = node.parent
-    }
-    return nil
-  }
-
-  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: Syntax) -> T? {
-    let children = node.children(viewMode: .fixedUp)
-    for child in children {
-      if child.syntaxNodeType == TokenSyntax.self {
-        continue
-      }
-      if child.syntaxNodeType == syntaxType.self {
-        return child.as(syntaxType)
-      }
-      if let found = findDescendants(syntaxType: syntaxType, node: child) {
-        return found.as(syntaxType)
-      }
-    }
-    return nil
   }
 
   private func graphemeColumn(syntax: SyntaxProtocol, expression: SyntaxProtocol, converter: SourceLocationConverter) -> Int {

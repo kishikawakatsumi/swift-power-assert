@@ -1318,11 +1318,11 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           |                 |         | | |  |
-                       |                           |                 "prime"   0 2 |  2
-                       |                           |                               true
-                       |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
-                       ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  |                           |                 |         | | |  |
+                  |                           |                 "prime"   0 2 |  2
+                  |                           |                               true
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
           ||
@@ -1746,220 +1746,242 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testForcedUnwrapExpression() {
-//    captureConsoleOutput {
-//      let x: Int? = 0
-//      let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
-//
-//      #powerAssert(x! == 0, verbose: true)
-//      #powerAssert(someDictionary["a"]![0] == 1, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      // Dictionary order is not guaranteed
-//      XCTAssertTrue(
-//        output ==
-//        """
-//        #powerAssert(x! == 0)
-//                     |  |  |
-//                     |  |  0
-//                     |  true
-//                     Optional(0)
-//        #powerAssert(someDictionary["a"]![0] == 1)
-//                     |              |  |  || |  |
-//                     |              |  |  |1 |  1
-//                     |              |  |  0  true
-//                     |              |  Optional([1, 2, 3])
-//                     |              "a"
-//                     ["a": [1, 2, 3], "b": [10, 20]]
-//
-//        """
-//        ||
-//        output ==
-//        """
-//        #powerAssert(x! == 0)
-//                     |  |  |
-//                     |  |  0
-//                     |  true
-//                     Optional(0)
-//        #powerAssert(someDictionary["a"]![0] == 1)
-//                     |              |  |  || |  |
-//                     |              |  |  |1 |  1
-//                     |              |  |  0  true
-//                     |              |  Optional([1, 2, 3])
-//                     |              "a"
-//                     |["b": [10, 20], "a": [1, 2, 3]]
-//
-//        """
-//      )
-//    }
-//  }
+  func testForcedUnwrapExpression() {
+    captureConsoleOutput {
+      let x: Int? = 0
+      let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
 
-//  func testOptionalChainingExpression() {
-//    captureConsoleOutput {
-//      var c: SomeClass?
-//      #powerAssert(c?.property.performAction() == nil, verbose: true)
-//
-//      c = SomeClass()
-//      #powerAssert((c?.property.performAction())!, verbose: true)
-//      #powerAssert(c?.property.performAction() != nil, verbose: true)
-//
-//      let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
-//      #powerAssert(someDictionary["not here"]?[0] != 99, verbose: true)
-//      #powerAssert(someDictionary["a"]?[0] != 99, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      // Dictionary order is not guaranteed
-//      XCTAssertTrue(
-//        output ==
-//        """
-//        #powerAssert(c?.property.performAction() == nil)
-//                     |  |        |               |
-//                     |  nil      nil             true
-//                     nil
-//        #powerAssert((c?.property.performAction())!)
-//                     ||| |        |
-//                     ||| |        true
-//                     ||| PowerAssertTests.OtherClass
-//                     ||PowerAssertTests.SomeClass
-//                     |true
-//                     true
-//        #powerAssert(c?.property.performAction() != nil)
-//                     |  |        |               |
-//                     |  |        true            true
-//                     |  PowerAssertTests.OtherClass
-//                     PowerAssertTests.SomeClass
-//        #powerAssert(someDictionary["not here"]?[0] != 99)
-//                     |              |         |  || |  |
-//                     |              |         |  || |  99
-//                     |              |         |  || true
-//                     |              |         |  |nil
-//                     |              |         |  0
-//                     |              |         nil
-//                     |              "not here"
-//                     ["a": [1, 2, 3], "b": [10, 20]]
-//        #powerAssert(someDictionary["a"]?[0] != 99)
-//                     |              |  |  || |  |
-//                     |              |  |  |1 |  99
-//                     |              |  |  0  true
-//                     |              |  [1, 2, 3]
-//                     |              "a"
-//                     ["a": [1, 2, 3], "b": [10, 20]]
-//
-//        """
-//        ||
-//        output ==
-//        """
-//        #powerAssert(c?.property.performAction() == nil)
-//                     |  |        |               |
-//                     |  nil      nil             true
-//                     nil
-//        #powerAssert((c?.property.performAction())!)
-//                     ||| |        |
-//                     ||| |        true
-//                     ||| PowerAssertTests.OtherClass
-//                     ||PowerAssertTests.SomeClass
-//                     |true
-//                     true
-//        #powerAssert(c?.property.performAction() != nil)
-//                     |  |        |               |
-//                     |  |        true            true
-//                     |  PowerAssertTests.OtherClass
-//                     PowerAssertTests.SomeClass
-//        #powerAssert(someDictionary["not here"]?[0] != 99)
-//                     |              |         |  || |  |
-//                     |              |         |  || |  99
-//                     |              |         |  || true
-//                     |              |         |  |nil
-//                     |              |         |  0
-//                     |              |         nil
-//                     |              "not here"
-//                     ["b": [10, 20], "a": [1, 2, 3]]
-//        #powerAssert(someDictionary["a"]?[0] != 99)
-//                     |              |  |  || |  |
-//                     |              |  |  |1 |  99
-//                     |              |  |  0  true
-//                     |              |  [1, 2, 3]
-//                     |              "a"
-//                     ["a": [1, 2, 3], "b": [10, 20]]
-//
-//        """
-//        ||
-//        output ==
-//        """
-//        #powerAssert(c?.property.performAction() == nil)
-//                     |  |        |               |
-//                     |  nil      nil             true
-//                     nil
-//        #powerAssert((c?.property.performAction())!)
-//                     ||| |        |
-//                     ||| |        true
-//                     ||| PowerAssertTests.OtherClass
-//                     ||PowerAssertTests.SomeClass
-//                     |true
-//                     true
-//        #powerAssert(c?.property.performAction() != nil)
-//                     |  |        |               |
-//                     |  |        true            true
-//                     |  PowerAssertTests.OtherClass
-//                     PowerAssertTests.SomeClass
-//        #powerAssert(someDictionary["not here"]?[0] != 99)
-//                     |              |         |  || |  |
-//                     |              |         |  || |  99
-//                     |              |         |  || true
-//                     |              |         |  |nil
-//                     |              |         |  0
-//                     |              |         nil
-//                     |              "not here"
-//                     ["a": [1, 2, 3], "b": [10, 20]]
-//        #powerAssert(someDictionary["a"]?[0] != 99)
-//                     |              |  |  || |  |
-//                     |              |  |  |1 |  99
-//                     |              |  |  0  true
-//                     |              |  [1, 2, 3]
-//                     |              "a"
-//                     ["b": [10, 20], "a": [1, 2, 3]]
-//
-//        """
-//        ||
-//        output ==
-//        """
-//        #powerAssert(c?.property.performAction() == nil)
-//                     |  |        |               |
-//                     |  nil      nil             true
-//                     nil
-//        #powerAssert((c?.property.performAction())!)
-//                     ||| |        |
-//                     ||| |        true
-//                     ||| PowerAssertTests.OtherClass
-//                     ||PowerAssertTests.SomeClass
-//                     |true
-//                     true
-//        #powerAssert(c?.property.performAction() != nil)
-//                     |  |        |               |
-//                     |  |        true            true
-//                     |  PowerAssertTests.OtherClass
-//                     PowerAssertTests.SomeClass
-//        #powerAssert(someDictionary["not here"]?[0] != 99)
-//                     |              |         |  || |  |
-//                     |              |         |  || |  99
-//                     |              |         |  || true
-//                     |              |         |  |nil
-//                     |              |         |  0
-//                     |              |         nil
-//                     |              "not here"
-//                     ["b": [10, 20], "a": [1, 2, 3]]
-//        #powerAssert(someDictionary["a"]?[0] != 99)
-//                     |              |  |  || |  |
-//                     |              |  |  |1 |  99
-//                     |              |  |  0  true
-//                     |              |  [1, 2, 3]
-//                     |              "a"
-//                     ["b": [10, 20], "a": [1, 2, 3]]
-//
-//        """
-//      )
-//    }
-//  }
+      #expect(x! == 0, verbose: true)
+      #expect(someDictionary["a"]![0] == 1, verbose: true)
+    } completion: { (output) in
+      print(output)
+      // Dictionary order is not guaranteed
+      XCTAssertTrue(
+        output ==
+        """
+        #expect(x! == 0)
+                || |  |
+                |0 |  0
+                |  true
+                Optional(0)
+        #expect(someDictionary["a"]![0] == 1)
+                ||             |  |  || |  |
+                |[1, 2, 3]     |  |  |1 |  1
+                |              |  |  0  true
+                |              |  Optional([1, 2, 3])
+                |              "a"
+                ["a": [1, 2, 3], "b": [10, 20]]
+
+        """
+        ||
+        output ==
+        """
+        #expect(x! == 0)
+                || |  |
+                |0 |  0
+                |  true
+                Optional(0)
+        #expect(someDictionary["a"]![0] == 1)
+                ||             |  |  || |  |
+                |[1, 2, 3]     |  |  |1 |  1
+                |              |  |  0  true
+                |              |  Optional([1, 2, 3])
+                |              "a"
+                ["b": [10, 20], "a": [1, 2, 3]]
+
+        """
+      )
+    }
+  }
+
+  func testOptionalChainingExpression1() {
+    captureConsoleOutput {
+      var c: SomeClass?
+      #expect(c?.property.performAction() == nil, verbose: true)
+
+      c = SomeClass()
+      #expect((c?.property.performAction())!, verbose: true)
+      #expect(c?.property.performAction() != nil, verbose: true)
+
+      let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
+      #expect(someDictionary["not here"]?[0] != 99, verbose: true)
+      #expect(someDictionary["a"]?[0] != 99, verbose: true)
+    } completion: { (output) in
+      print(output)
+      // Dictionary order is not guaranteed
+      XCTAssertTrue(
+        output ==
+          """
+          #expect(c?.property.performAction() == nil)
+                  |  |        |               |  |
+                  |  nil      nil             |  nil
+                  nil                         true
+          #expect((c?.property.performAction())!)
+                  ||| |        |
+                  ||| |        Optional(true)
+                  ||| Optional(PowerAssertTests.OtherClass)
+                  ||Optional(PowerAssertTests.SomeClass)
+                  |true
+                  Optional(true)
+          #expect(c?.property.performAction() != nil)
+                  |  |        |               |  |
+                  |  |        Optional(true)  |  nil
+                  |  |                        true
+                  |  Optional(PowerAssertTests.OtherClass)
+                  Optional(PowerAssertTests.SomeClass)
+          #expect(someDictionary["not here"]?[0] != 99)
+                  |              |         |   | |  |
+                  |              |         nil | |  Optional(99)
+                  |              "not here"    | true
+                  |                            nil
+                  ["a": [1, 2, 3], "b": [10, 20]]
+          #expect(someDictionary["a"]?[0] != 99)
+                  |              |  |  || |  |
+                  |              |  |  || |  Optional(99)
+                  |              |  |  || true
+                  |              |  |  |Optional(1)
+                  |              |  |  0
+                  |              |  Optional([1, 2, 3])
+                  |              "a"
+                  ["a": [1, 2, 3], "b": [10, 20]]
+
+          """
+        ||
+        output ==
+          """
+          #expect(c?.property.performAction() == nil)
+                  |  |        |               |  |
+                  |  nil      nil             |  nil
+                  nil                         true
+          #expect((c?.property.performAction())!)
+                  ||| |        |
+                  ||| |        Optional(true)
+                  ||| Optional(PowerAssertTests.OtherClass)
+                  ||Optional(PowerAssertTests.SomeClass)
+                  |true
+                  Optional(true)
+          #expect(c?.property.performAction() != nil)
+                  |  |        |               |  |
+                  |  |        Optional(true)  |  nil
+                  |  |                        true
+                  |  Optional(PowerAssertTests.OtherClass)
+                  Optional(PowerAssertTests.SomeClass)
+          #expect(someDictionary["not here"]?[0] != 99)
+                  |              |         |   | |  |
+                  |              |         nil | |  Optional(99)
+                  |              "not here"    | true
+                  |                            nil
+                  ["b": [10, 20], "a": [1, 2, 3]]
+          #expect(someDictionary["a"]?[0] != 99)
+                  |              |  |  || |  |
+                  |              |  |  || |  Optional(99)
+                  |              |  |  || true
+                  |              |  |  |Optional(1)
+                  |              |  |  0
+                  |              |  Optional([1, 2, 3])
+                  |              "a"
+                  ["a": [1, 2, 3], "b": [10, 20]]
+
+          """
+        ||
+        output ==
+          """
+          #expect(c?.property.performAction() == nil)
+                  |  |        |               |  |
+                  |  nil      nil             |  nil
+                  nil                         true
+          #expect((c?.property.performAction())!)
+                  ||| |        |
+                  ||| |        Optional(true)
+                  ||| Optional(PowerAssertTests.OtherClass)
+                  ||Optional(PowerAssertTests.SomeClass)
+                  |true
+                  Optional(true)
+          #expect(c?.property.performAction() != nil)
+                  |  |        |               |  |
+                  |  |        Optional(true)  |  nil
+                  |  |                        true
+                  |  Optional(PowerAssertTests.OtherClass)
+                  Optional(PowerAssertTests.SomeClass)
+          #expect(someDictionary["not here"]?[0] != 99)
+                  |              |         |   | |  |
+                  |              |         nil | |  Optional(99)
+                  |              "not here"    | true
+                  |                            nil
+                  ["a": [1, 2, 3], "b": [10, 20]]
+          #expect(someDictionary["a"]?[0] != 99)
+                  |              |  |  || |  |
+                  |              |  |  || |  Optional(99)
+                  |              |  |  || true
+                  |              |  |  |Optional(1)
+                  |              |  |  0
+                  |              |  Optional([1, 2, 3])
+                  |              "a"
+                  ["b": [10, 20], "a": [1, 2, 3]]
+
+          """
+        ||
+        output ==
+          """
+          #expect(c?.property.performAction() == nil)
+                  |  |        |               |  |
+                  |  nil      nil             |  nil
+                  nil                         true
+          #expect((c?.property.performAction())!)
+                  ||| |        |
+                  ||| |        Optional(true)
+                  ||| Optional(PowerAssertTests.OtherClass)
+                  ||Optional(PowerAssertTests.SomeClass)
+                  |true
+                  Optional(true)
+          #expect(c?.property.performAction() != nil)
+                  |  |        |               |  |
+                  |  |        Optional(true)  |  nil
+                  |  |                        true
+                  |  Optional(PowerAssertTests.OtherClass)
+                  Optional(PowerAssertTests.SomeClass)
+          #expect(someDictionary["not here"]?[0] != 99)
+                  |              |         |   | |  |
+                  |              |         nil | |  Optional(99)
+                  |              "not here"    | true
+                  |                            nil
+                  ["b": [10, 20], "a": [1, 2, 3]]
+          #expect(someDictionary["a"]?[0] != 99)
+                  |              |  |  || |  |
+                  |              |  |  || |  Optional(99)
+                  |              |  |  || true
+                  |              |  |  |Optional(1)
+                  |              |  |  0
+                  |              |  Optional([1, 2, 3])
+                  |              "a"
+                  ["b": [10, 20], "a": [1, 2, 3]]
+
+          """
+      )
+    }
+  }
+
+  func testOptionalChainingExpression2() {
+    captureConsoleOutput {
+      var c: SomeClass?
+      #expect(c?.optionalProperty?.property.optionalProperty?.performAction() == nil, verbose: true)
+      c = SomeClass()
+//      #expect(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil, verbose: true)
+    } completion: { (output) in
+      print(output)
+      // Dictionary order is not guaranteed
+      XCTAssertEqual(
+        output,
+        """
+        #expect(c?.optionalProperty?.property.optionalProperty?.performAction() == nil)
+                |  |                 |        |                 |               |  |
+                |  nil               nil      nil               nil             |  nil
+                nil                                                             true
+
+        """
+      )
+    }
+  }
 
   func testNonAsciiCharacters1() {
     captureConsoleOutput {
@@ -2924,10 +2946,42 @@ struct OuterStructure {
 
 class SomeClass {
   var property = OtherClass()
+  var optionalProperty: OtherClass?
+
   init() {}
+
+  func performAction() -> Bool {
+    return true
+  }
 }
 
 class OtherClass {
+  var property = AnotherClass()
+  var optionalProperty: AnotherClass?
+
+  init() {}
+
+  func performAction() -> Bool {
+    return true
+  }
+}
+
+class AnotherClass {
+  var property = TheClass()
+  var optionalProperty: TheClass?
+
+  init() {}
+
+  func performAction() -> Bool {
+    return true
+  }
+}
+
+class TheClass {
+  var optionalProperty: SomeClass?
+
+  init() {}
+
   func performAction() -> Bool {
     return true
   }
