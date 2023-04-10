@@ -7,7 +7,7 @@ let package = Package(
   name: "SwiftPowerAssert",
   platforms: [
     .iOS(.v16),
-    .macOS(.v13)
+    .macOS(.v13),
   ],
   products: [
     .library(
