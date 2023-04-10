@@ -145,6 +145,32 @@ For example:
 #expect(x == y, verbose: true)
 ```
 
+**Q: I want to know how the compiler actually expanded the macro.**
+
+A: You can use the `-dump-macro-expansions` option to dump the macro expansion.
+
+For example:
+
+```shell
+$ cd Example
+swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
+```
+
+If you run the above with the `-dump-macro-expansions` option, you will get the following output.
+
+```shell
+...
+@__swiftmacro_12ExampleTests011PowerAssertB0C04testA0yyF6expectfMf_.swift as ()
+------------------------------
+
+        PowerAssert.Assertion("#expect(a * b == 91)", message: "", file: #""ExampleTests/ExampleTests.swift""#, line: 8, verbose: false) {
+  $0.capture($0.capture($0.capture(a .self, column: 8) * $0.capture(b .self, column: 12), column: 10) == $0.capture(91, column: 17), column: 14)
+}
+.render()
+------------------------------
+...
+```
+
 ## Author
 
 [Kishikawa Katsumi](https://github.com/kishikawakatsumi)
