@@ -10,35 +10,40 @@ public enum PowerAssert {
     let filePath: StaticString
     let lineNumber: UInt
     let verbose: Bool
-    var result = true
-    var originalMessage = ""
+    var result: Bool = true
+    let originalMessage: String
     var values = [Value]()
     var errors = [Swift.Error]()
 
-    public init(_ assertion: String, message: String, file: StaticString, line: UInt, verbose: Bool = false) {
+    public init(_ assertion: String, message: String = "", file: StaticString, line: UInt, verbose: Bool = false, evaluate: (Assertion) -> Bool = { _ in true }) {
       self.assertion = assertion
       self.originalMessage = message
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
+      self.result = evaluate(self)
     }
 
-    public func capture<T>(expression: @autoclosure () throws -> T?, column: Int) -> Assertion {
-      do {
-        values.append(Value(value: PowerAssert.valueToString(try expression()), column: column))
-      } catch {
-        errors.append(error)
-      }
-      return self
+    public func capture<T>(_ expr: @autoclosure () throws -> T, column: Int) rethrows -> T {
+      let val = try expr()
+      store(value: val, column: column)
+      return val
     }
 
-    public func assert(_ expression: @autoclosure () throws -> Bool, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) -> Assertion {
-      do {
-        result = try expression()
-      } catch {
-        errors.append(error)
-      }
-      return self
+    public func capture<T>(_ expr: @autoclosure () throws -> [T], column: Int) rethrows -> [T] {
+      let val = try expr()
+      store(value: val, column: column)
+      return val
+    }
+
+    public func capture<T>(_ expr: @autoclosure () throws -> T?, column: Int) rethrows -> T? {
+      let val = try expr()
+      store(value: val, column: column)
+      return val
+    }
+
+    public func store<T>(value: T, column: Int) {
+      values.append(Value(value: valueToString(value), column: column))
     }
 
     public func render() {
