@@ -48,9 +48,9 @@ private struct Parameters {
 }
 
 private class PowerAssertRewriter: SyntaxRewriter {
-  let expression: SyntaxProtocol
-  let sourceLocationConverter: SourceLocationConverter
-  let startColumn: Int
+  private let expression: SyntaxProtocol
+  private let sourceLocationConverter: SourceLocationConverter
+  private let startColumn: Int
 
   init(macro: FreestandingMacroExpansionSyntax, expression: SyntaxProtocol) {
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
@@ -167,7 +167,6 @@ private class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: OptionalChainingExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
     let visitedNode = super.visit(node)
     return visitedNode
   }
@@ -261,6 +260,17 @@ private class PowerAssertRewriter: SyntaxRewriter {
     }
     return nil
   }
+
+  private func graphemeColumn(syntax: SyntaxProtocol, expression: SyntaxProtocol, converter: SourceLocationConverter) -> Int {
+    let startLocation = syntax.startLocation(converter: converter)
+    let column: Int
+    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column!)) {
+      column = stringWidth(graphemeClusters)
+    } else {
+      column = startLocation.column!
+    }
+    return column
+  }
 }
 
 private struct CodeGenerator {
@@ -334,17 +344,6 @@ private struct CodeGenerator {
       }
       .render()
       """
-  }
-
-  private func graphemeColumn(syntax: SyntaxProtocol, expression: SyntaxProtocol, converter: SourceLocationConverter) -> Int {
-    let startLocation = syntax.startLocation(converter: converter)
-    let column: Int
-    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column!)) {
-      column = stringWidth(graphemeClusters)
-    } else {
-      column = startLocation.column!
-    }
-    return column
   }
 }
 
