@@ -71,44 +71,44 @@ private class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: ArrayExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: BooleanLiteralExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: DictionaryExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: ForcedValueExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-    let startLocation: SourceLocation
+    let column: Int
     if let function = node.calledExpression.children(viewMode: .fixedUp).last {
-      startLocation = function.startLocation(converter: sourceLocationConverter)
+      column = graphemeColumn(function)
     } else {
-      startLocation = node.startLocation(converter: sourceLocationConverter)
+      column = graphemeColumn(node)
     }
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
@@ -118,52 +118,55 @@ private class PowerAssertRewriter: SyntaxRewriter {
     guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self else {
       return super.visit(node)
     }
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax("\(visitedNode).self").with(\.leadingTrivia, visitedNode.leadingTrivia).with(\.trailingTrivia, visitedNode.trailingTrivia), column: startLocation.column!)
+    return apply(
+      ExprSyntax("\(visitedNode).self").with(\.leadingTrivia, visitedNode.leadingTrivia).with(\.trailingTrivia, visitedNode.trailingTrivia),
+      column: column
+    )
   }
 
   override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
-    let startLocation = node.operatorOperand.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node.operatorOperand)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: KeyPathExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
     guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self  else {
       return super.visit(node)
     }
-    let startLocation = node.name.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node.name)
     let visitedNode = super.visit(node)
     if let optionalChainingExpr = findDescendants(syntaxType: OptionalChainingExprSyntax.self, node: node) {
-      return ExprSyntax("\(apply(ExprSyntax(visitedNode), column: startLocation.column!))\(optionalChainingExpr.questionMark)")
+      return ExprSyntax("\(apply(ExprSyntax(visitedNode), column: column))\(optionalChainingExpr.questionMark)")
     } else {
-      return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+      return apply(ExprSyntax(visitedNode), column: column)
     }
   }
 
   override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: OptionalChainingExprSyntax) -> ExprSyntax {
@@ -172,42 +175,42 @@ private class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: PrefixOperatorExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {
     guard let binaryOperatorExpr = findDescendants(syntaxType: BinaryOperatorExprSyntax.self, node: Syntax(node)) else  {
       return super.visit(node)
     }
-    let startLocation = binaryOperatorExpr.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(binaryOperatorExpr)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: SubscriptExprSyntax) -> ExprSyntax {
-    let startLocation = node.rightBracket.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node.rightBracket)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: TernaryExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: TupleExprSyntax) -> ExprSyntax {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: startLocation.column!)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
@@ -261,8 +264,8 @@ private class PowerAssertRewriter: SyntaxRewriter {
     return nil
   }
 
-  private func graphemeColumn(syntax: SyntaxProtocol, expression: SyntaxProtocol, converter: SourceLocationConverter) -> Int {
-    let startLocation = syntax.startLocation(converter: converter)
+  private func graphemeColumn(_ node: SyntaxProtocol) -> Int {
+    let startLocation = node.startLocation(converter: sourceLocationConverter)
     let column: Int
     if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column!)) {
       column = stringWidth(graphemeClusters)

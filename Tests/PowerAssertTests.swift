@@ -2148,7 +2148,6 @@ final class PowerAssertTests: XCTestCase {
       let date = dc.date!
 
       let kanjiName = "岸川克己"
-      let emojiName = "😇岸川克己🇯🇵"
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
@@ -2162,40 +2161,40 @@ final class PowerAssertTests: XCTestCase {
         output,
         """
         #expect(tuple == (name: "岸川克己", age: 37, birthday: date))
-                |     |  |      |                    |             |
-                |     |  |      |                    37            1980-10-27 15:00:00 +0000
+                |     |  |      |                |             |
+                |     |  |      |                37            1980-10-27 15:00:00 +0000
                 |     |  |      "岸川克己"
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
         #expect(tuple == ("岸川克己", 37, date))
-                |     |  ||               |   |
-                |     |  ||               37  1980-10-27 15:00:00 +0000
+                |     |  ||           |   |
+                |     |  ||           37  1980-10-27 15:00:00 +0000
                 |     |  |"岸川克己"
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
         #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
-                |     |    |  ||               |   |     | |
-                |     |    |  ||               37  |     | true
-                |     |    |  ||                   |     "岸川克己"
-                |     |    |  ||                   1980-10-27 15:00:00 +0000
+                |     |    |  ||           |   |     | |
+                |     |    |  ||           37  |     | true
+                |     |    |  ||               |     "岸川克己"
+                |     |    |  ||               1980-10-27 15:00:00 +0000
                 |     |    |  |"岸川克己"
                 |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
         #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
-                |     |    |  ||               |   |     | |  |     |   |  ||               |   |     |
-                |     |    |  ||               37  |     | |  |     37  |  ||               37  |     37
-                |     |    |  ||                   |     | |  |         |  ||                   1980-10-27 15:00:00 +0000
-                |     |    |  ||                   |     | |  |         |  |"岸川克己"
-                |     |    |  ||                   |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                |     |    |  ||                   |     | |  |         true
-                |     |    |  ||                   |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                |     |    |  ||                   |     | true
-                |     |    |  ||                   |     "岸川克己"
-                |     |    |  ||                   1980-10-27 15:00:00 +0000
+                |     |    |  ||           |   |     | |  |     |   |  ||           |   |     |
+                |     |    |  ||           37  |     | |  |     37  |  ||           37  |     37
+                |     |    |  ||               |     | |  |         |  ||               1980-10-27 15:00:00 +0000
+                |     |    |  ||               |     | |  |         |  |"岸川克己"
+                |     |    |  ||               |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                |     |    |  ||               |     | |  |         true
+                |     |    |  ||               |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                |     |    |  ||               |     | true
+                |     |    |  ||               |     "岸川克己"
+                |     |    |  ||               1980-10-27 15:00:00 +0000
                 |     |    |  |"岸川克己"
                 |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     |    true
@@ -2207,87 +2206,87 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testNonAsciiCharacters4() {
-//    captureConsoleOutput {
-//      let dc = DateComponents(
-//        calendar: Calendar(identifier: .gregorian),
-//        timeZone: TimeZone(abbreviation: "JST")!,
-//        year: 1980,
-//        month: 10,
-//        day: 28
-//      )
-//      let date = dc.date!
-//
-//      let kanjiName = "岸川克己"
-//
-//      let tuple = (name: kanjiName, age: 37, birthday: date)
-//
-//      #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
-//      #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
-//      #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
-//      #powerAssert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
-//                     |     |    |  ||                           |   |     | |
-//                     |     |    |  ||                           37  |     | true
-//                     |     |    |  ||                               |     "😇岸川克己🇯🇵"
-//                     |     |    |  ||                               1980-10-27 15:00:00 +0000
-//                     |     |    |  |"😇岸川克己🇯🇵"
-//                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
-//                     |     |    |  ||               |   |     | |
-//                     |     |    |  ||               37  |     | true
-//                     |     |    |  ||                   |     "岸川克己"
-//                     |     |    |  ||                   1980-10-27 15:00:00 +0000
-//                     |     |    |  |"岸川克己"
-//                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
-//                     |     |    |  ||                           |   |     | |  |     |   |  ||               |   |     |
-//                     |     |    |  ||                           37  |     | |  |     37  |  ||               37  |     37
-//                     |     |    |  ||                               |     | |  |         |  ||                   1980-10-27 15:00:00 +0000
-//                     |     |    |  ||                               |     | |  |         |  |"岸川克己"
-//                     |     |    |  ||                               |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||                               |     | |  |         true
-//                     |     |    |  ||                               |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||                               |     | true
-//                     |     |    |  ||                               |     "😇岸川克己🇯🇵"
-//                     |     |    |  ||                               1980-10-27 15:00:00 +0000
-//                     |     |    |  |"😇岸川克己🇯🇵"
-//                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
-//                     |     |    |  ||               |   |     | |  |     |   |  ||                           |   |     |
-//                     |     |    |  ||               37  |     | |  |     37  |  ||                           37  |     37
-//                     |     |    |  ||                   |     | |  |         |  ||                               1980-10-27 15:00:00 +0000
-//                     |     |    |  ||                   |     | |  |         |  |"😇岸川克己🇯🇵"
-//                     |     |    |  ||                   |     | |  |         |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||                   |     | |  |         true
-//                     |     |    |  ||                   |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||                   |     | true
-//                     |     |    |  ||                   |     "岸川克己"
-//                     |     |    |  ||                   1980-10-27 15:00:00 +0000
-//                     |     |    |  |"岸川克己"
-//                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//
-//        """
-//      )
-//    }
-//  }
+  func testNonAsciiCharacters4() {
+    captureConsoleOutput {
+      let dc = DateComponents(
+        calendar: Calendar(identifier: .gregorian),
+        timeZone: TimeZone(abbreviation: "JST")!,
+        year: 1980,
+        month: 10,
+        day: 28
+      )
+      let date = dc.date!
+
+      let kanjiName = "岸川克己"
+
+      let tuple = (name: kanjiName, age: 37, birthday: date)
+
+      #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
+      #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
+                |     |    |  ||              |   |     | |
+                |     |    |  ||              37  |     | true
+                |     |    |  ||                  |     "😇岸川克己🇯🇵"
+                |     |    |  ||                  1980-10-27 15:00:00 +0000
+                |     |    |  |"😇岸川克己🇯🇵"
+                |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                |     |    true
+                |     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
+                |     |    |  ||           |   |     | |
+                |     |    |  ||           37  |     | true
+                |     |    |  ||               |     "岸川克己"
+                |     |    |  ||               1980-10-27 15:00:00 +0000
+                |     |    |  |"岸川克己"
+                |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                |     |    true
+                |     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+                |     |    |  ||              |   |     | |  |     |   |  ||           |   |     |
+                |     |    |  ||              37  |     | |  |     37  |  ||           37  |     37
+                |     |    |  ||                  |     | |  |         |  ||               1980-10-27 15:00:00 +0000
+                |     |    |  ||                  |     | |  |         |  |"岸川克己"
+                |     |    |  ||                  |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                |     |    |  ||                  |     | |  |         true
+                |     |    |  ||                  |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                |     |    |  ||                  |     | true
+                |     |    |  ||                  |     "😇岸川克己🇯🇵"
+                |     |    |  ||                  1980-10-27 15:00:00 +0000
+                |     |    |  |"😇岸川克己🇯🇵"
+                |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                |     |    true
+                |     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
+                |     |    |  ||           |   |     | |  |     |   |  ||              |   |     |
+                |     |    |  ||           37  |     | |  |     37  |  ||              37  |     37
+                |     |    |  ||               |     | |  |         |  ||                  1980-10-27 15:00:00 +0000
+                |     |    |  ||               |     | |  |         |  |"😇岸川克己🇯🇵"
+                |     |    |  ||               |     | |  |         |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                |     |    |  ||               |     | |  |         true
+                |     |    |  ||               |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                |     |    |  ||               |     | true
+                |     |    |  ||               |     "岸川克己"
+                |     |    |  ||               1980-10-27 15:00:00 +0000
+                |     |    |  |"岸川克己"
+                |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                |     |    true
+                |     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        """
+      )
+    }
+  }
 
   func testConditionalCompilationBlock() {
     captureConsoleOutput {
@@ -2415,6 +2414,107 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
+        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                |     |           |         |    |  |     |  |     |           |         |        |  |
+                |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                          true
+
+        """
+      )
+    }
+  }
+
+  func testFileParameter() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+      #expect(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        file: "path/to/Tests.swift",
+        verbose: true
+      )
+      #expect(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        "message",
+        file: "path/to/Tests.swift",
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                |     |           |         |    |  |     |  |     |           |         |        |  |
+                |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                          true
+        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                |     |           |         |    |  |     |  |     |           |         |        |  |
+                |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                          true
+
+        """
+      )
+    }
+  }
+
+  func testLineParameter() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+      #expect(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        line: 999,
+        verbose: true
+      )
+      #expect(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        "message",
+        line: 999,
+        verbose: true
+      )
+      #expect(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        file: "path/to/Tests.swift",
+        line: 999,
+        verbose: true
+      )
+      #expect(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        "message",
+        file: "path/to/Tests.swift",
+        line: 999,
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                |     |           |         |    |  |     |  |     |           |         |        |  |
+                |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                          true
+        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                |     |           |         |    |  |     |  |     |           |         |        |  |
+                |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                          true
+        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                |     |           |         |    |  |     |  |     |           |         |        |  |
+                |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                          true
         #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
@@ -2690,25 +2790,25 @@ final class PowerAssertTests: XCTestCase {
                 100.0   |  200.0      20000.0
                         true
         #expect(√number2 == 14.142135623730951)
-                |  |       |  |
-                |  200.0   |  14.142135623730951
-                |          true
+                | |       |  |
+                | 200.0   |  14.142135623730951
+                |         true
                 14.142135623730951
         #expect(√√number2 != 200.0)
-                |     |       |  |
-                |     200.0   |  200.0
-                |             true
+                |   |       |  |
+                |   200.0   |  200.0
+                |           true
                 3.760603093086394
         #expect(3.760603093086394 == √√number2)
-                |                 |  |     |
-                3.760603093086394 |  |     200.0
+                |                 |  |   |
+                3.760603093086394 |  |   200.0
                                   |  3.760603093086394
                                   true
         #expect(√number2 != √√number2)
-                |  |       |  |     |
-                |  200.0   |  |     200.0
-                |          |  3.760603093086394
-                |          true
+                | |       |   |  |
+                | 200.0   |   |  200.0
+                |         |   3.760603093086394
+                |         true
                 14.142135623730951
 
         """
