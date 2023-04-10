@@ -1250,11 +1250,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           ||        |      ||        || | |  |
-                       |                           ||        |      |"prime"  |0 2 |  2
-                       |                           ||        |      ["prime"] [0]  true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |         | | |  |
+                       |                           |                 "prime"   0 2 |  2
+                       |                           |                               true
                        |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -1263,11 +1261,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           ||        |      ||        || | |  |
-                       |                           ||        |      |"prime"  |0 2 |  2
-                       |                           ||        |      ["prime"] [0]  true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |         | | |  |
+                       |                           |                 "prime"   0 2 |  2
+                       |                           |                               true
                        |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -1276,11 +1272,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           ||        |      ||        || | |  |
-                       |                           ||        |      |"prime"  |0 2 |  2
-                       |                           ||        |      ["prime"] [0]  true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |         | | |  |
+                       |                           |                 "prime"   0 2 |  2
+                       |                           |                               true
                        |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -1289,11 +1283,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           ||        |      ||        || | |  |
-                       |                           ||        |      |"prime"  |0 2 |  2
-                       |                           ||        |      ["prime"] [0]  true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |         | | |  |
+                       |                           |                 "prime"   0 2 |  2
+                       |                           |                               true
                        |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -1302,11 +1294,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           ||        |      ||        || | |  |
-                       |                           ||        |      |"prime"  |0 2 |  2
-                       |                           ||        |      ["prime"] [0]  true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |         | | |  |
+                       |                           |                 "prime"   0 2 |  2
+                       |                           |                               true
                        |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -1315,11 +1305,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
-                       |                           ||        |      ||        || | |  |
-                       |                           ||        |      |"prime"  |0 2 |  2
-                       |                           ||        |      ["prime"] [0]  true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |         | | |  |
+                       |                           |                 "prime"   0 2 |  2
+                       |                           |                               true
                        |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -1416,11 +1404,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
-                       |                           ||        |      ||                  | |  |
-                       |                           ||        |      |"hexagonal"        7 |  7
-                       |                           ||        |      ["hexagonal"]         true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                  | |  |
+                       |                           |                 "hexagonal"        7 |  7
+                       |                           |                                      true
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -1429,11 +1415,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
-                       |                           ||        |      ||                  | |  |
-                       |                           ||        |      |"hexagonal"        7 |  7
-                       |                           ||        |      ["hexagonal"]         true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                  | |  |
+                       |                           |                 "hexagonal"        7 |  7
+                       |                           |                                      true
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -1442,11 +1426,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
-                       |                           ||        |      ||                  | |  |
-                       |                           ||        |      |"hexagonal"        7 |  7
-                       |                           ||        |      ["hexagonal"]         true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                  | |  |
+                       |                           |                 "hexagonal"        7 |  7
+                       |                           |                                      true
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -1455,11 +1437,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
-                       |                           ||        |      ||                  | |  |
-                       |                           ||        |      |"hexagonal"        7 |  7
-                       |                           ||        |      ["hexagonal"]         true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                  | |  |
+                       |                           |                 "hexagonal"        7 |  7
+                       |                           |                                      true
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -1468,11 +1448,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
-                       |                           ||        |      ||                  | |  |
-                       |                           ||        |      |"hexagonal"        7 |  7
-                       |                           ||        |      ["hexagonal"]         true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                  | |  |
+                       |                           |                 "hexagonal"        7 |  7
+                       |                           |                                      true
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -1481,11 +1459,9 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
-                       |                           ||        |      ||                  | |  |
-                       |                           ||        |      |"hexagonal"        7 |  7
-                       |                           ||        |      ["hexagonal"]         true
-                       |                           ||        Array<Int>
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                  | |  |
+                       |                           |                 "hexagonal"        7 |  7
+                       |                           |                                      true
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -1582,11 +1558,10 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
-                       |                           ||        |      ||                           | |  |
-                       |                           ||        |      |"hexagonal"                 | |  64
-                       |                           ||        |      ["hexagonal"]                | true
-                       |                           ||        Array<Int>                          64
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                           | |  |
+                       |                           |                 "hexagonal"                 | |  64
+                       |                           |                                             | true
+                       |                           |                                             64
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -1595,11 +1570,10 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
-                       |                           ||        |      ||                           | |  |
-                       |                           ||        |      |"hexagonal"                 | |  64
-                       |                           ||        |      ["hexagonal"]                | true
-                       |                           ||        Array<Int>                          64
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                           | |  |
+                       |                           |                 "hexagonal"                 | |  64
+                       |                           |                                             | true
+                       |                           |                                             64
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -1608,11 +1582,10 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
-                       |                           ||        |      ||                           | |  |
-                       |                           ||        |      |"hexagonal"                 | |  64
-                       |                           ||        |      ["hexagonal"]                | true
-                       |                           ||        Array<Int>                          64
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                           | |  |
+                       |                           |                 "hexagonal"                 | |  64
+                       |                           |                                             | true
+                       |                           |                                             64
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -1621,11 +1594,10 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
-                       |                           ||        |      ||                           | |  |
-                       |                           ||        |      |"hexagonal"                 | |  64
-                       |                           ||        |      ["hexagonal"]                | true
-                       |                           ||        Array<Int>                          64
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                           | |  |
+                       |                           |                 "hexagonal"                 | |  64
+                       |                           |                                             | true
+                       |                           |                                             64
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -1634,11 +1606,10 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
-                       |                           ||        |      ||                           | |  |
-                       |                           ||        |      |"hexagonal"                 | |  64
-                       |                           ||        |      ["hexagonal"]                | true
-                       |                           ||        Array<Int>                          64
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                           | |  |
+                       |                           |                 "hexagonal"                 | |  64
+                       |                           |                                             | true
+                       |                           |                                             64
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -1647,11 +1618,10 @@ final class PowerAssertTests: XCTestCase {
           output ==
           #"""
           #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
-                       |                           ||        |      ||                           | |  |
-                       |                           ||        |      |"hexagonal"                 | |  64
-                       |                           ||        |      ["hexagonal"]                | true
-                       |                           ||        Array<Int>                          64
-                       |                           |Dictionary<String, Array<Int>>
+                       |                           |                 |                           | |  |
+                       |                           |                 "hexagonal"                 | |  64
+                       |                           |                                             | true
+                       |                           |                                             64
                        |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                        ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -1752,30 +1722,30 @@ final class PowerAssertTests: XCTestCase {
 //    }
 //  }
 
-//  func testPostfixSelfExpression() {
-//    captureConsoleOutput {
-//      #powerAssert(String.self != Int.self && "string".self == "string", verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(String.self != Int.self && "string".self == "string")
-//                     |      |    |  |   |    |  |        |    |  |
-//                     |      |    |  |   |    |  "string" |    |  "string"
-//                     |      |    |  |   |    true        |    true
-//                     |      |    |  |   |                "string"
-//                     |      |    |  |   Optional(Swift.Int)
-//                     |      |    |  Optional(Swift.Int)
-//                     |      |    true
-//                     |      Optional(Swift.String)
-//                     Optional(Swift.String)
-//
-//        """
-//      )
-//    }
-//  }
-//
+  func testPostfixSelfExpression() {
+    captureConsoleOutput {
+      #powerAssert(String.self != Int.self && "string".self == "string", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(String.self != Int.self && "string".self == "string")
+                     |      |    |  |   |    |  |        |    |  |
+                     |      |    |  |   |    |  "string" |    |  "string"
+                     |      |    |  |   |    true        |    true
+                     |      |    |  |   |                "string"
+                     |      |    |  |   Optional(Swift.Int)
+                     |      |    |  Optional(Swift.Int)
+                     |      |    true
+                     |      Optional(Swift.String)
+                     Optional(Swift.String)
+
+        """
+      )
+    }
+  }
+
 //  func testForcedUnwrapExpression() {
 //    captureConsoleOutput {
 //      let x: Int? = 0
@@ -1990,188 +1960,232 @@ final class PowerAssertTests: XCTestCase {
 //      )
 //    }
 //  }
-//
-//  func testNonAsciiCharacters1() {
-//    captureConsoleOutput {
-//      let dc = DateComponents(
-//        calendar: Calendar(identifier: .gregorian),
-//        timeZone: TimeZone(abbreviation: "JST")!,
-//        year: 1980,
-//        month: 10,
-//        day: 28
-//      )
-//      let date = dc.date!
-//
-//      let kanjiName = "岸川克己"
-//      let emojiName = "😇岸川克己🇯🇵"
-//
-//      let tuple = (name: kanjiName, age: 37, birthday: date)
-//
-//      #powerAssert(tuple == (name: kanjiName, age: 37, birthday: date), verbose: true)
-//      #powerAssert(tuple == (kanjiName, 37, date), verbose: true)
-//      #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(tuple == (name: kanjiName, age: 37, birthday: date))
-//                     |     |  |      |               |             |
-//                     |     |  |      |               37            1980-10-27 15:00:00 +0000
-//                     |     |  |      "岸川克己"
-//                     |     |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     true
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple == (kanjiName, 37, date))
-//                     |     |  ||          |   |
-//                     |     |  ||          37  1980-10-27 15:00:00 +0000
-//                     |     |  |"岸川克己"
-//                     |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     true
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
-//                     |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
-//                     |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
-//                     |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
-//                     |     |    |  ||              |     | |  |         |  |"岸川克己"
-//                     |     |    |  ||              |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||              |     | |  |         true
-//                     |     |    |  ||              |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||              |     | true
-//                     |     |    |  ||              |     "岸川克己"
-//                     |     |    |  ||              1980-10-27 15:00:00 +0000
-//                     |     |    |  |"岸川克己"
-//                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testNonAsciiCharacters2() {
-//    captureConsoleOutput {
-//      let dc = DateComponents(
-//        calendar: Calendar(identifier: .gregorian),
-//        timeZone: TimeZone(abbreviation: "JST")!,
-//        year: 1980,
-//        month: 10,
-//        day: 28
-//      )
-//      let date = dc.date!
-//
-//      let kanjiName = "岸川克己"
-//      let emojiName = "😇岸川克己🇯🇵"
-//
-//      let tuple = (name: kanjiName, age: 37, birthday: date)
-//
-//      #powerAssert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
-//      #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
-//                     |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
-//                     |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
-//                     |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
-//                     |     |    |  ||              |     | |  |         |  |"岸川克己"
-//                     |     |    |  ||              |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||              |     | |  |         true
-//                     |     |    |  ||              |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||              |     | true
-//                     |     |    |  ||              |     "😇岸川克己🇯🇵"
-//                     |     |    |  ||              1980-10-27 15:00:00 +0000
-//                     |     |    |  |"😇岸川克己🇯🇵"
-//                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
-//                     |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
-//                     |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
-//                     |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
-//                     |     |    |  ||              |     | |  |         |  |"😇岸川克己🇯🇵"
-//                     |     |    |  ||              |     | |  |         |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||              |     | |  |         true
-//                     |     |    |  ||              |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||              |     | true
-//                     |     |    |  ||              |     "岸川克己"
-//                     |     |    |  ||              1980-10-27 15:00:00 +0000
-//                     |     |    |  |"岸川克己"
-//                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//
-//        """
-//      )
-//    }
-//  }
-//
-//  func testNonAsciiCharacters3() {
-//    captureConsoleOutput {
-//      let dc = DateComponents(
-//        calendar: Calendar(identifier: .gregorian),
-//        timeZone: TimeZone(abbreviation: "JST")!,
-//        year: 1980,
-//        month: 10,
-//        day: 28
-//      )
-//      let date = dc.date!
-//
-//      let kanjiName = "岸川克己"
-//      let emojiName = "😇岸川克己🇯🇵"
-//
-//      let tuple = (name: kanjiName, age: 37, birthday: date)
-//
-//      #powerAssert(tuple == (name: "岸川克己", age: 37, birthday: date), verbose: true)
-//      #powerAssert(tuple == ("岸川克己", 37, date), verbose: true)
-//      #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(tuple == (name: "岸川克己", age: 37, birthday: date))
-//                     |     |  |      |                |             |
-//                     |     |  |      |                37            1980-10-27 15:00:00 +0000
-//                     |     |  |      "岸川克己"
-//                     |     |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     true
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple == ("岸川克己", 37, date))
-//                     |     |  ||           |   |
-//                     |     |  ||           37  1980-10-27 15:00:00 +0000
-//                     |     |  |"岸川克己"
-//                     |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     true
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//        #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
-//                     |     |    |  ||           |   |     | |  |     |   |  ||           |   |     |
-//                     |     |    |  ||           37  |     | |  |     37  |  ||           37  |     37
-//                     |     |    |  ||               |     | |  |         |  ||               1980-10-27 15:00:00 +0000
-//                     |     |    |  ||               |     | |  |         |  |"岸川克己"
-//                     |     |    |  ||               |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||               |     | |  |         true
-//                     |     |    |  ||               |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||               |     | true
-//                     |     |    |  ||               |     "岸川克己"
-//                     |     |    |  ||               1980-10-27 15:00:00 +0000
-//                     |     |    |  |"岸川克己"
-//                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    true
-//                     |     "岸川克己"
-//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//
-//        """
-//      )
-//    }
-//  }
-//
+
+  func testNonAsciiCharacters1() {
+    captureConsoleOutput {
+      let dc = DateComponents(
+        calendar: Calendar(identifier: .gregorian),
+        timeZone: TimeZone(abbreviation: "JST")!,
+        year: 1980,
+        month: 10,
+        day: 28
+      )
+      let date = dc.date!
+
+      let kanjiName = "岸川克己"
+      let emojiName = "😇岸川克己🇯🇵"
+
+      let tuple = (name: kanjiName, age: 37, birthday: date)
+
+      #powerAssert(tuple == (name: kanjiName, age: 37, birthday: date), verbose: true)
+      #powerAssert(tuple == (kanjiName, 37, date), verbose: true)
+      #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #powerAssert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(tuple == (name: kanjiName, age: 37, birthday: date))
+                     |     |  |      |               |             |
+                     |     |  |      |               37            1980-10-27 15:00:00 +0000
+                     |     |  |      "岸川克己"
+                     |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     true
+                     ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple == (kanjiName, 37, date))
+                     |     |  ||          |   |
+                     |     |  ||          37  1980-10-27 15:00:00 +0000
+                     |     |  |"岸川克己"
+                     |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     true
+                     ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
+                     |     |    |  ||          |   |     | |
+                     |     |    |  ||          37  |     | true
+                     |     |    |  ||              |     "岸川克己"
+                     |     |    |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  |"岸川克己"
+                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
+                     |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
+                     |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
+                     |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  ||              |     | |  |         |  |"岸川克己"
+                     |     |    |  ||              |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||              |     | |  |         true
+                     |     |    |  ||              |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||              |     | true
+                     |     |    |  ||              |     "岸川克己"
+                     |     |    |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  |"岸川克己"
+                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        """
+      )
+    }
+  }
+
+  func testNonAsciiCharacters2() {
+    captureConsoleOutput {
+      let dc = DateComponents(
+        calendar: Calendar(identifier: .gregorian),
+        timeZone: TimeZone(abbreviation: "JST")!,
+        year: 1980,
+        month: 10,
+        day: 28
+      )
+      let date = dc.date!
+
+      let kanjiName = "岸川克己"
+      let emojiName = "😇岸川克己🇯🇵"
+
+      let tuple = (name: kanjiName, age: 37, birthday: date)
+
+      #powerAssert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1, verbose: true)
+      #powerAssert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #powerAssert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
+                     |     |    |  ||          |   |     | |
+                     |     |    |  ||          37  |     | true
+                     |     |    |  ||              |     "😇岸川克己🇯🇵"
+                     |     |    |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  |"😇岸川克己🇯🇵"
+                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
+                     |     |    |  ||          |   |     | |
+                     |     |    |  ||          37  |     | true
+                     |     |    |  ||              |     "岸川克己"
+                     |     |    |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  |"岸川克己"
+                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
+                     |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
+                     |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
+                     |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  ||              |     | |  |         |  |"岸川克己"
+                     |     |    |  ||              |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||              |     | |  |         true
+                     |     |    |  ||              |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||              |     | true
+                     |     |    |  ||              |     "😇岸川克己🇯🇵"
+                     |     |    |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  |"😇岸川克己🇯🇵"
+                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1)
+                     |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
+                     |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
+                     |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  ||              |     | |  |         |  |"😇岸川克己🇯🇵"
+                     |     |    |  ||              |     | |  |         |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||              |     | |  |         true
+                     |     |    |  ||              |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||              |     | true
+                     |     |    |  ||              |     "岸川克己"
+                     |     |    |  ||              1980-10-27 15:00:00 +0000
+                     |     |    |  |"岸川克己"
+                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        """
+      )
+    }
+  }
+
+  func testNonAsciiCharacters3() {
+    captureConsoleOutput {
+      let dc = DateComponents(
+        calendar: Calendar(identifier: .gregorian),
+        timeZone: TimeZone(abbreviation: "JST")!,
+        year: 1980,
+        month: 10,
+        day: 28
+      )
+      let date = dc.date!
+
+      let kanjiName = "岸川克己"
+      let emojiName = "😇岸川克己🇯🇵"
+
+      let tuple = (name: kanjiName, age: 37, birthday: date)
+
+      #powerAssert(tuple == (name: "岸川克己", age: 37, birthday: date), verbose: true)
+      #powerAssert(tuple == ("岸川克己", 37, date), verbose: true)
+      #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #powerAssert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(tuple == (name: "岸川克己", age: 37, birthday: date))
+                     |     |  |      |                    |             |
+                     |     |  |      |                    37            1980-10-27 15:00:00 +0000
+                     |     |  |      "岸川克己"
+                     |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     true
+                     ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple == ("岸川克己", 37, date))
+                     |     |  ||               |   |
+                     |     |  ||               37  1980-10-27 15:00:00 +0000
+                     |     |  |"岸川克己"
+                     |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     true
+                     ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
+                     |     |    |  ||               |   |     | |
+                     |     |    |  ||               37  |     | true
+                     |     |    |  ||                   |     "岸川克己"
+                     |     |    |  ||                   1980-10-27 15:00:00 +0000
+                     |     |    |  |"岸川克己"
+                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+        #powerAssert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+                     |     |    |  ||               |   |     | |  |     |   |  ||               |   |     |
+                     |     |    |  ||               37  |     | |  |     37  |  ||               37  |     37
+                     |     |    |  ||                   |     | |  |         |  ||                   1980-10-27 15:00:00 +0000
+                     |     |    |  ||                   |     | |  |         |  |"岸川克己"
+                     |     |    |  ||                   |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||                   |     | |  |         true
+                     |     |    |  ||                   |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                     |     |    |  ||                   |     | true
+                     |     |    |  ||                   |     "岸川克己"
+                     |     |    |  ||                   1980-10-27 15:00:00 +0000
+                     |     |    |  |"岸川克己"
+                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                     |     |    true
+                     |     "岸川克己"
+                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        """
+      )
+    }
+  }
+
 //  func testNonAsciiCharacters4() {
 //    captureConsoleOutput {
 //      let dc = DateComponents(
@@ -2189,168 +2203,103 @@ final class PowerAssertTests: XCTestCase {
 //
 //      #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
 //      #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
+//      #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
+//      #powerAssert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
 //    } completion: { (output) in
 //      print(output)
 //      XCTAssertEqual(
 //        output,
 //        """
 //        #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
-//                     |     |    |  ||              |   |     | |  |     |   |  ||           |   |     |
-//                     |     |    |  ||              37  |     | |  |     37  |  ||           37  |     37
-//                     |     |    |  ||                  |     | |  |         |  ||               1980-10-27 15:00:00 +0000
-//                     |     |    |  ||                  |     | |  |         |  |"岸川克己"
-//                     |     |    |  ||                  |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||                  |     | |  |         true
-//                     |     |    |  ||                  |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||                  |     | true
-//                     |     |    |  ||                  |     "😇岸川克己🇯🇵"
-//                     |     |    |  ||                  1980-10-27 15:00:00 +0000
+//                     |     |    |  ||                           |   |     | |
+//                     |     |    |  ||                           37  |     | true
+//                     |     |    |  ||                               |     "😇岸川克己🇯🇵"
+//                     |     |    |  ||                               1980-10-27 15:00:00 +0000
 //                     |     |    |  |"😇岸川克己🇯🇵"
 //                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
 //                     |     |    true
 //                     |     "岸川克己"
 //                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 //        #powerAssert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
-//                     |     |    |  ||           |   |     | |  |     |   |  ||              |   |     |
-//                     |     |    |  ||           37  |     | |  |     37  |  ||              37  |     37
-//                     |     |    |  ||               |     | |  |         |  ||                  1980-10-27 15:00:00 +0000
-//                     |     |    |  ||               |     | |  |         |  |"😇岸川克己🇯🇵"
-//                     |     |    |  ||               |     | |  |         |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||               |     | |  |         true
-//                     |     |    |  ||               |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-//                     |     |    |  ||               |     | true
-//                     |     |    |  ||               |     "岸川克己"
-//                     |     |    |  ||               1980-10-27 15:00:00 +0000
+//                     |     |    |  ||               |   |     | |
+//                     |     |    |  ||               37  |     | true
+//                     |     |    |  ||                   |     "岸川克己"
+//                     |     |    |  ||                   1980-10-27 15:00:00 +0000
 //                     |     |    |  |"岸川克己"
 //                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 //                     |     |    true
 //                     |     "岸川克己"
+//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+//        #powerAssert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+//                     |     |    |  ||                           |   |     | |  |     |   |  ||               |   |     |
+//                     |     |    |  ||                           37  |     | |  |     37  |  ||               37  |     37
+//                     |     |    |  ||                               |     | |  |         |  ||                   1980-10-27 15:00:00 +0000
+//                     |     |    |  ||                               |     | |  |         |  |"岸川克己"
+//                     |     |    |  ||                               |     | |  |         |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+//                     |     |    |  ||                               |     | |  |         true
+//                     |     |    |  ||                               |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+//                     |     |    |  ||                               |     | true
+//                     |     |    |  ||                               |     "😇岸川克己🇯🇵"
+//                     |     |    |  ||                               1980-10-27 15:00:00 +0000
+//                     |     |    |  |"😇岸川克己🇯🇵"
+//                     |     |    |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+//                     |     |    true
+//                     |     "岸川克己"
+//                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+//        #powerAssert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
+//                     |     |    |  ||               |   |     | |  |     |   |  ||                           |   |     |
+//                     |     |    |  ||               37  |     | |  |     37  |  ||                           37  |     37
+//                     |     |    |  ||                   |     | |  |         |  ||                               1980-10-27 15:00:00 +0000
+//                     |     |    |  ||                   |     | |  |         |  |"😇岸川克己🇯🇵"
+//                     |     |    |  ||                   |     | |  |         |  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+//                     |     |    |  ||                   |     | |  |         true
+//                     |     |    |  ||                   |     | |  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+//                     |     |    |  ||                   |     | true
+//                     |     |    |  ||                   |     "岸川克己"
+//                     |     |    |  ||                   1980-10-27 15:00:00 +0000
+//                     |     |    |  |"岸川克己"
+//                     |     |    |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+//                     |     |    true
+//                |     "岸川克己"
 //                     (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 //
 //        """
 //      )
 //    }
 //  }
-//
-//  func testConditionalCompilationBlock() {
+
+  func testConditionalCompilationBlock() {
+    captureConsoleOutput {
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+#if swift(>=3.2)
+      #powerAssert(bar.val != bar.foo.val, verbose: true)
+#endif
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(bar.val != bar.foo.val)
+                     |   |   |  |   |   |
+                     |   3   |  |   |   2
+                     |       |  |   Foo(val: 2)
+                     |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                     |       true
+                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        """
+      )
+    }
+  }
+
+//  func testSelectorExpression() {
 //    captureConsoleOutput {
-//      let bar = Bar(foo: Foo(val: 2), val: 3)
-//#if swift(>=3.2)
-//      #powerAssert(bar.val != bar.foo.val, verbose: true)
-//#endif
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(bar.val != bar.foo.val)
-//                     |   |   |  |   |   |
-//                     |   3   |  |   |   2
-//                     |       |  |   Foo(val: 2)
-//                     |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//                     |       true
-//                     Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-//
-//        """
-//      )
-//    }
-//  }
-//
-////  func testSelectorExpression() {
-////    captureConsoleOutput {
-////      #powerAssert(
-////        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
-////        verbose: true
-////      )
-////      #powerAssert(
-////        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
-////        verbose: true
-////      )
-////    } completion: { (output) in
-////      print(output)
-////      XCTAssertEqual(
-////        output,
-////        """
-////        #powerAssert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
-////                     |         |                              |  |                 |
-////                     |         SomeObjCClass                  |  "description"     NSObject
-////                     "doSomethingWithInt:"                    true
-////        #powerAssert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
-////                     |                 |                       |  |                 |
-////                     "property"        SomeObjCClass           |  "description"     NSObject
-////                                                               true
-////
-////        """
-////      )
-////    }
-////  }
-////
-////  func testClosureExpression() {
-////    captureConsoleOutput {
-////      let arr = [1000, 1500, 2000]
-////      #powerAssert(
-////        [10, 3, 20, 15, 4]
-////          .sorted()
-////          .filter { $0 > 5 }
-////          .map { $0 * 100 } == arr,
-////        verbose: true
-////      )
-////    } completion: { (output) in
-////      print(output)
-////      XCTAssertEqual(
-////        output,
-////        """
-////        #powerAssert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
-////                     ||   |  |   |   |   |         |                  |                |  |
-////                     |10  3  20  15  4   |         [10, 15, 20]       |                |  [1000, 1500, 2000]
-////                     [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           |                true
-////                                                                      [1000, 1500, 2000]
-////
-////        """
-////      )
-////    }
-////  }
-//
-////  // FIXME: If closures that span multiple lines are formatted on a single line,
-////  // such as consecutive variable definitions, the statements must be separated by a semicolon.
-//////  func testMultipleStatementInClosure() {
-//////    captureConsoleOutput {
-//////      let a = 5
-//////      let b = 10
-//////
-//////      #powerAssert(
-//////        { (a: Int, b: Int) -> Bool in
-//////          let c = a + b // error: consecutive statements on a line must be separated by ';'
-//////          let d = a - b
-//////          if c != d {
-//////            _ = c.distance(to: d)
-//////            _ = d.distance(to: c)
-//////          }
-//////          return c == d
-//////        }(a, b),
-//////        verbose: true
-//////      )
-//////    } completion: { (output) in
-//////      print(output)
-//////      XCTAssertEqual(
-//////        output,
-//////        """
-//////
-//////        """
-//////      )
-//////    }
-//////  }
-//
-//  func testMessageParameters() {
-//    captureConsoleOutput {
-//      let one = 1
-//      let two = 2
-//      let three = 3
-//
-//      let array = [one, two, three]
 //      #powerAssert(
-//        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
-//        "message",
+//        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
+//        verbose: true
+//      )
+//      #powerAssert(
+//        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
 //        verbose: true
 //      )
 //    } completion: { (output) in
@@ -2358,10 +2307,13 @@ final class PowerAssertTests: XCTestCase {
 //      XCTAssertEqual(
 //        output,
 //        """
-//        #powerAssert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-//                     |     |           |         |    |  |     |  |     |           |         |        |  |
-//                     |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
-//                     [1, 2, 3]                        true     |  [1, 2, 3]                            true
+//        #powerAssert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
+//                     |         |                              |  |                 |
+//                     |         SomeObjCClass                  |  "description"     NSObject
+//                     "doSomethingWithInt:"                    true
+//        #powerAssert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
+//                     |                 |                       |  |                 |
+//                     "property"        SomeObjCClass           |  "description"     NSObject
 //                                                               true
 //
 //        """
@@ -2369,412 +2321,523 @@ final class PowerAssertTests: XCTestCase {
 //    }
 //  }
 //
-//  func testStringContainsNewlines() {
+//  func testClosureExpression() {
 //    captureConsoleOutput {
-//      let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+//      let arr = [1000, 1500, 2000]
 //      #powerAssert(
-//        loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,",
+//        [10, 3, 20, 15, 4]
+//          .sorted()
+//          .filter { $0 > 5 }
+//          .map { $0 * 100 } == arr,
 //        verbose: true
 //      )
 //    } completion: { (output) in
 //      print(output)
 //      XCTAssertEqual(
 //        output,
-//        #"""
-//        #powerAssert(loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,")
-//                     |          |  |
-//                     |          |  "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
-//                     |          true
-//                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-//
-//        """#
-//      )
-//    }
-//  }
-//
-//  func testStringContainsEscapeSequences1() {
-//    captureConsoleOutput {
-//      let lyric1 = "Feet, don't fail me now."
-//      #powerAssert(lyric1 == "Feet, don't fail me now.", verbose: true)
-//      #powerAssert(lyric1 == "Feet, don\'t fail me now.", verbose: true)
-//
-//      let lyric2 = "Feet, don\'t fail me now."
-//      #powerAssert(lyric2 == "Feet, don't fail me now.", verbose: true)
-//      #powerAssert(lyric2 == "Feet, don\'t fail me now.", verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        #"""
-//        #powerAssert(lyric1 == "Feet, don't fail me now.")
-//                     |      |  |
-//                     |      |  "Feet, don't fail me now."
-//                     |      true
-//                     "Feet, don't fail me now."
-//        #powerAssert(lyric1 == "Feet, don\'t fail me now.")
-//                     |      |  |
-//                     |      |  "Feet, don't fail me now."
-//                     |      true
-//                     "Feet, don't fail me now."
-//        #powerAssert(lyric2 == "Feet, don't fail me now.")
-//                     |      |  |
-//                     |      |  "Feet, don't fail me now."
-//                     |      true
-//                     "Feet, don't fail me now."
-//        #powerAssert(lyric2 == "Feet, don\'t fail me now.")
-//                     |      |  |
-//                     |      |  "Feet, don't fail me now."
-//                     |      true
-//                     "Feet, don't fail me now."
-//
-//        """#
-//      )
-//    }
-//  }
-//
-//  func testStringContainsEscapeSequences2() {
-//    captureConsoleOutput {
-//      let nestedQuote1 = "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//      #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
-//      #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
-//
-//      let nestedQuote2 = "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-//      #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
-//      #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        #"""
-//        #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
-//                     |            |  |
-//                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//                     |            true
-//                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//        #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
-//                     |            |  |
-//                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//                     |            true
-//                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//        #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
-//                     |            |  |
-//                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//                     |            true
-//                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//        #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
-//                     |            |  |
-//                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//                     |            true
-//                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-//
-//        """#
-//      )
-//    }
-//  }
-//
-//  func testStringContainsEscapeSequences3() {
-//    captureConsoleOutput {
-//      let helpText = "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
-//      #powerAssert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]", verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        #"""
-//        #powerAssert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
-//                     |        |  |
-//                     |        |  "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
-//                     |        true
-//                     "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
-//
-//        """#
-//      )
-//    }
-//  }
-//
-//  func testStringContainsEscapeSequences4() {
-//    captureConsoleOutput {
-//      let nullCharacter = "Null character\0Null character"
-//      #powerAssert(nullCharacter == "Null character\0Null character", verbose: true)
-//
-//      let lineFeed = "Line feed\nLine feed"
-//      #powerAssert(lineFeed == "Line feed\nLine feed", verbose: true)
-//
-//      let carriageReturn = "Carriage Return\rCarriage Return"
-//      #powerAssert(carriageReturn == "Carriage Return\rCarriage Return", verbose: true)
-//
-//      let backslash = "Backslash\\Backslash"
-//      #powerAssert(backslash == "Backslash\\Backslash", verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        #"""
-//        #powerAssert(nullCharacter == "Null character\0Null character")
-//                     |             |  |
-//                     |             |  "Null character\0Null character"
-//                     |             true
-//                     "Null character\0Null character"
-//        #powerAssert(lineFeed == "Line feed\nLine feed")
-//                     |        |  |
-//                     |        |  "Line feed\nLine feed"
-//                     |        true
-//                     "Line feed\nLine feed"
-//        #powerAssert(carriageReturn == "Carriage Return\rCarriage Return")
-//                     |              |  |
-//                     |              |  "Carriage Return\rCarriage Return"
-//                     |              true
-//                     "Carriage Return\rCarriage Return"
-//        #powerAssert(backslash == "Backslash\\Backslash")
-//                     |         |  |
-//                     |         |  "Backslash\Backslash"
-//                     |         true
-//                     "Backslash\Backslash"
-//
-//        """#
-//      )
-//    }
-//  }
-//
-//  func testStringContainsEscapeSequences5() {
-//    captureConsoleOutput {
-//      let wiseWords = "\"Imagination is more important than knowledge\" - Einstein"
-//      let dollarSign = "\u{24}"        // $,  Unicode scalar U+0024
-//      let blackHeart = "\u{2665}"      // ♥,  Unicode scalar U+2665
-//      let sparklingHeart = "\u{1F496}" // 💖, Unicode scalar U+1F496
-//      #powerAssert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein", verbose: true)
-//      #powerAssert(dollarSign == "\u{24}", verbose: true)
-//      #powerAssert(blackHeart == "\u{2665}", verbose: true)
-//      #powerAssert(sparklingHeart == "\u{1F496}", verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        #"""
-//        #powerAssert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein")
-//                     |         |  |
-//                     |         |  "\"Imagination is more important than knowledge\" - Einstein"
-//                     |         true
-//                     "\"Imagination is more important than knowledge\" - Einstein"
-//        #powerAssert(dollarSign == "\u{24}")
-//                     |          |  |
-//                     "$"        |  "$"
-//                                true
-//        #powerAssert(blackHeart == "\u{2665}")
-//                     |          |  |
-//                     |          |  "♥"
-//                     |          true
-//                     "♥"
-//        #powerAssert(sparklingHeart == "\u{1F496}")
-//                     |              |  |
-//                     |              |  "💖"
-//                     |              true
-//                     "💖"
-//
-//        """#
-//      )
-//    }
-//  }
-//
-////    // FIXME: multi-line string literal content must begin on a new line
-//////  func testMultilineStringLiterals() {
-//////    captureConsoleOutput {
-//////      let multilineLiteral = """
-//////        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-//////        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-//////        """
-//////      #powerAssert(
-//////        multilineLiteral != """
-//////          Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-//////          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-//////          """,
-//////        verbose: true
-//////      )
-//////      #powerAssert(multilineLiteral != multilineLiteral, verbose: true)
-//////
-//////      let threeDoubleQuotationMarks = """
-//////        Escaping the first quotation mark \"""
-//////        Escaping all three quotation marks \"\"\"
-//////        """
-//////      #powerAssert(
-//////        threeDoubleQuotationMarks != """
-//////          Escaping the first quotation mark \"""
-//////          Escaping all three quotation marks \"\"\"
-//////          """,
-//////        verbose: true
-//////      )
-//////    } completion: { (output) in
-//////      print(output)
-//////      XCTAssertEqual(
-//////        output,
-//////        """
-//////
-//////        """
-//////      )
-//////    }
-//////  }
-////
-//  func testCustomOperator() {
-//    captureConsoleOutput {
-//      let number1 = 100.0
-//      let number2 = 200.0
-//      #powerAssert(number1 × number2 == 20000.0, verbose: true) // FIXME: Print the value of the expression
-//      #powerAssert(√number2 == 14.142135623730951, verbose: true)
-//      #powerAssert(√√number2 != 200.0, verbose: true)
-//      #powerAssert(3.760603093086394 == √√number2, verbose: true)
-//      #powerAssert(√number2 != √√number2, verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
 //        """
-//        #powerAssert(number1 × number2 == 20000.0)
-//                     |          |       |  |
-//                     100.0      200.0   |  20000.0
-//                                        true
-//        #powerAssert(√number2 == 14.142135623730951)
-//                     | |       |  |
-//                     | 200.0   |  14.142135623730951
-//                     |         true
-//                     14.142135623730951
-//        #powerAssert(√√number2 != 200.0)
-//                     |   |       |  |
-//                     |   200.0   |  200.0
-//                     |           true
-//                     3.760603093086394
-//        #powerAssert(3.760603093086394 == √√number2)
-//                     |                 |  |   |
-//                     3.760603093086394 |  |   200.0
-//                                       |  3.760603093086394
-//                                       true
-//        #powerAssert(√number2 != √√number2)
-//                     | |       |   |  |
-//                     | 200.0   |   |  200.0
-//                     |         |   3.760603093086394
-//                     |         true
-//                     14.142135623730951
+//        #powerAssert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
+//                     ||   |  |   |   |   |         |                  |                |  |
+//                     |10  3  20  15  4   |         [10, 15, 20]       |                |  [1000, 1500, 2000]
+//                     [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           |                true
+//                                                                      [1000, 1500, 2000]
 //
 //        """
 //      )
 //    }
 //  }
-//
-//  func testNoWhitespaces() {
+
+  // FIXME: If closures that span multiple lines are formatted on a single line,
+  // such as consecutive variable definitions, the statements must be separated by a semicolon.
+//  func testMultipleStatementInClosure() {
 //    captureConsoleOutput {
-//      let b1=false
-//      let i1=0
-//      let i2=1
-//      let d1=4.0
-//      let d2=6.0
-//      #powerAssert(i2==1,verbose:true)
-//      #powerAssert(b1==false&&i1<i2||false==b1&&i2==1,verbose:true)
-//      #powerAssert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0,verbose:true)
+//      let a = 5
+//      let b = 10
+//
+//      #powerAssert(
+//        { (a: Int, b: Int) -> Bool in
+//          let c = a + b // error: consecutive statements on a line must be separated by ';'
+//          let d = a - b
+//          if c != d {
+//            _ = c.distance(to: d)
+//            _ = d.distance(to: c)
+//          }
+//          return c == d
+//        }(a, b),
+//        verbose: true
+//      )
 //    } completion: { (output) in
 //      print(output)
 //      XCTAssertEqual(
 //        output,
 //        """
-//        #powerAssert(i2==1)
-//                     | | |
-//                     1 | 1
-//                       true
-//        #powerAssert(b1==false&&i1<i2||false==b1&&i2==1)
-//                     | | |    | | || | |    | | | | | |
-//                     | | |    | 0 |1 | |    | | | 1 | 1
-//                     | | |    |   |  | |    | | |   true
-//                     | | |    |   |  | |    | | true
-//                     | | |    |   |  | |    | false
-//                     | | |    |   |  | |    true
-//                     | | |    |   |  | false
-//                     | | |    |   |  true
-//                     | | |    |   true
-//                     | | |    true
-//                     | | false
-//                     | true
-//                     false
-//        #powerAssert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
-//                     | | |    | | || | |    | | | | | || |   | | |
-//                     | | |    | 0 |1 | |    | | | 1 | || 4.0 | | 24.0
-//                     | | |    |   |  | |    | | |   | |true  | true
-//                     | | |    |   |  | |    | | |   | 1      6.0
-//                     | | |    |   |  | |    | | |   true
-//                     | | |    |   |  | |    | | true
-//                     | | |    |   |  | |    | false
-//                     | | |    |   |  | |    true
-//                     | | |    |   |  | false
-//                     | | |    |   |  true
-//                     | | |    |   true
-//                     | | |    true
-//                     | | false
-//                     | true
-//                     false
 //
 //        """
 //      )
 //    }
 //  }
+
+  func testMessageParameters() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+      #powerAssert(
+        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        "message",
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+                     |     |           |         |    |  |     |  |     |           |         |        |  |
+                     |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
+                     [1, 2, 3]                        true     |  [1, 2, 3]                            true
+                                                               true
+
+        """
+      )
+    }
+  }
+
+  func testStringContainsNewlines() {
+    captureConsoleOutput {
+      let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      #powerAssert(
+        loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,",
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,")
+                     |          |  |
+                     |          |  "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
+                     |          true
+                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        """#
+      )
+    }
+  }
+
+  func testStringContainsEscapeSequences1() {
+    captureConsoleOutput {
+      let lyric1 = "Feet, don't fail me now."
+      #powerAssert(lyric1 == "Feet, don't fail me now.", verbose: true)
+      #powerAssert(lyric1 == "Feet, don\'t fail me now.", verbose: true)
+
+      let lyric2 = "Feet, don\'t fail me now."
+      #powerAssert(lyric2 == "Feet, don't fail me now.", verbose: true)
+      #powerAssert(lyric2 == "Feet, don\'t fail me now.", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(lyric1 == "Feet, don't fail me now.")
+                     |      |  |
+                     |      |  "Feet, don't fail me now."
+                     |      true
+                     "Feet, don't fail me now."
+        #powerAssert(lyric1 == "Feet, don\'t fail me now.")
+                     |      |  |
+                     |      |  "Feet, don't fail me now."
+                     |      true
+                     "Feet, don't fail me now."
+        #powerAssert(lyric2 == "Feet, don't fail me now.")
+                     |      |  |
+                     |      |  "Feet, don't fail me now."
+                     |      true
+                     "Feet, don't fail me now."
+        #powerAssert(lyric2 == "Feet, don\'t fail me now.")
+                     |      |  |
+                     |      |  "Feet, don't fail me now."
+                     |      true
+                     "Feet, don't fail me now."
+
+        """#
+      )
+    }
+  }
+
+  func testStringContainsEscapeSequences2() {
+    captureConsoleOutput {
+      let nestedQuote1 = "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+      #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
+      #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
+
+      let nestedQuote2 = "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
+      #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
+      #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+                     |            |  |
+                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                     |            true
+                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        #powerAssert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
+                     |            |  |
+                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                     |            true
+                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+                     |            |  |
+                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                     |            true
+                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        #powerAssert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
+                     |            |  |
+                     |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                     |            true
+                     "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
+        """#
+      )
+    }
+  }
+
+  func testStringContainsEscapeSequences3() {
+    captureConsoleOutput {
+      let helpText = "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+      #powerAssert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
+                     |        |  |
+                     |        |  "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+                     |        true
+                     "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+
+        """#
+      )
+    }
+  }
+
+  func testStringContainsEscapeSequences4() {
+    captureConsoleOutput {
+      let nullCharacter = "Null character\0Null character"
+      #powerAssert(nullCharacter == "Null character\0Null character", verbose: true)
+
+      let lineFeed = "Line feed\nLine feed"
+      #powerAssert(lineFeed == "Line feed\nLine feed", verbose: true)
+
+      let carriageReturn = "Carriage Return\rCarriage Return"
+      #powerAssert(carriageReturn == "Carriage Return\rCarriage Return", verbose: true)
+
+      let backslash = "Backslash\\Backslash"
+      #powerAssert(backslash == "Backslash\\Backslash", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(nullCharacter == "Null character\0Null character")
+                     |             |  |
+                     |             |  "Null character\0Null character"
+                     |             true
+                     "Null character\0Null character"
+        #powerAssert(lineFeed == "Line feed\nLine feed")
+                     |        |  |
+                     |        |  "Line feed\nLine feed"
+                     |        true
+                     "Line feed\nLine feed"
+        #powerAssert(carriageReturn == "Carriage Return\rCarriage Return")
+                     |              |  |
+                     |              |  "Carriage Return\rCarriage Return"
+                     |              true
+                     "Carriage Return\rCarriage Return"
+        #powerAssert(backslash == "Backslash\\Backslash")
+                     |         |  |
+                     |         |  "Backslash\Backslash"
+                     |         true
+                     "Backslash\Backslash"
+
+        """#
+      )
+    }
+  }
+
+  func testStringContainsEscapeSequences5() {
+    captureConsoleOutput {
+      let wiseWords = "\"Imagination is more important than knowledge\" - Einstein"
+      let dollarSign = "\u{24}"        // $,  Unicode scalar U+0024
+      let blackHeart = "\u{2665}"      // ♥,  Unicode scalar U+2665
+      let sparklingHeart = "\u{1F496}" // 💖, Unicode scalar U+1F496
+      #powerAssert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein", verbose: true)
+      #powerAssert(dollarSign == "\u{24}", verbose: true)
+      #powerAssert(blackHeart == "\u{2665}", verbose: true)
+      #powerAssert(sparklingHeart == "\u{1F496}", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #powerAssert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein")
+                     |         |  |
+                     |         |  "\"Imagination is more important than knowledge\" - Einstein"
+                     |         true
+                     "\"Imagination is more important than knowledge\" - Einstein"
+        #powerAssert(dollarSign == "\u{24}")
+                     |          |  |
+                     "$"        |  "$"
+                                true
+        #powerAssert(blackHeart == "\u{2665}")
+                     |          |  |
+                     |          |  "♥"
+                     |          true
+                     "♥"
+        #powerAssert(sparklingHeart == "\u{1F496}")
+                     |              |  |
+                     |              |  "💖"
+                     |              true
+                     "💖"
+
+        """#
+      )
+    }
+  }
+
+    // FIXME: multi-line string literal content must begin on a new line
+//  func testMultilineStringLiterals() {
+//    captureConsoleOutput {
+//      let multilineLiteral = """
+//        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+//        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+//        """
+//      #powerAssert(
+//        multilineLiteral != """
+//          Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+//          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+//          """,
+//        verbose: true
+//      )
+//      #powerAssert(multilineLiteral != multilineLiteral, verbose: true)
 //
-////  func testHigherOrderFunction() {
-////    captureConsoleOutput {
-////      func testA(_ i: Int) -> Int {
-////        return i + 1
-////      }
-////
-////      func testB(_ i: Int) -> Int {
-////        return i + 1
-////      }
-////
-////      let array = [0, 1, 2]
-////      #powerAssert(array.map { testA($0) } == [1, 2, 3], verbose: true)
-////      #powerAssert(array.map(testB) == [1, 2, 3], verbose: true)
-////    } completion: { (output) in
-////      print(output)
-////      XCTAssertEqual(
-////        output,
-////        """
-////        #powerAssert(array.map { testA($0) } == [1, 2, 3])
-////                     |     |                 |  ||  |  |
-////                     |     [1, 2, 3]         |  |1  2  3
-////                     [0, 1, 2]               |  [1, 2, 3]
-////                                             true
-////        #powerAssert(array.map(testB) == [1, 2, 3])
-////                     |     |   |      |  ||  |  |
-////                     |     |   |      |  |1  2  3
-////                     |     |   |      |  [1, 2, 3]
-////                     |     |   |      true
-////                     |     |   (Function)
-////                     |     [1, 2, 3]
-////                     [0, 1, 2]
-////
-////        """
-////      )
-////    }
-////  }
+//      let threeDoubleQuotationMarks = """
+//        Escaping the first quotation mark \"""
+//        Escaping all three quotation marks \"\"\"
+//        """
+//      #powerAssert(
+//        threeDoubleQuotationMarks != """
+//          Escaping the first quotation mark \"""
+//          Escaping all three quotation marks \"\"\"
+//          """,
+//        verbose: true
+//      )
+//    } completion: { (output) in
+//      print(output)
+//      XCTAssertEqual(
+//        output,
+//        """
+//
+//        """
+//      )
+//    }
+//  }
+
+  func testCustomOperator() {
+    captureConsoleOutput {
+      let number1 = 100.0
+      let number2 = 200.0
+      #powerAssert(number1 × number2 == 20000.0, verbose: true) // FIXME: Print the value of the expression
+      #powerAssert(√number2 == 14.142135623730951, verbose: true)
+      #powerAssert(√√number2 != 200.0, verbose: true)
+      #powerAssert(3.760603093086394 == √√number2, verbose: true)
+      #powerAssert(√number2 != √√number2, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(number1 × number2 == 20000.0)
+                     |       |  |          |
+                     100.0   |  200.0      20000.0
+                             true
+        #powerAssert(√number2 == 14.142135623730951)
+                     |  |       |  |
+                     |  200.0   |  14.142135623730951
+                     |          true
+                     14.142135623730951
+        #powerAssert(√√number2 != 200.0)
+                     |     |       |  |
+                     |     200.0   |  200.0
+                     |             true
+                     3.760603093086394
+        #powerAssert(3.760603093086394 == √√number2)
+                     |                 |  |     |
+                     3.760603093086394 |  |     200.0
+                                       |  3.760603093086394
+                                       true
+        #powerAssert(√number2 != √√number2)
+                     |  |       |  |     |
+                     |  200.0   |  |     200.0
+                     |          |  3.760603093086394
+                     |          true
+                     14.142135623730951
+
+        """
+      )
+    }
+  }
+
+  func testNoWhitespaces1() {
+    captureConsoleOutput {
+      let b1=false
+      let i1=0
+      let i2=1
+      let d1=4.0
+      let d2=6.0
+      #powerAssert(i2==1,verbose:true)
+      #powerAssert(b1==false&&i1<i2||false==b1&&i2==1,verbose:true)
+      #powerAssert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0,verbose:true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(i2==1)
+                     | | |
+                     1 | 1
+                       true
+        #powerAssert(b1==false&&i1<i2||false==b1&&i2==1)
+                     | | |    | | || |
+                     | | |    | 0 |1 true
+                     | | |    |   true
+                     | | |    true
+                     | | false
+                     | true
+                     false
+        #powerAssert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
+                     | | |      |  |
+                     | | false  0  1
+                     | true
+                     false
+
+        """
+      )
+    }
+  }
+
+  func testNoWhitespaces2() {
+    captureConsoleOutput {
+      let b1=false
+      let i1=0
+      let i2=1
+      let d1=4.0
+      let d2=6.0
+      #powerAssert(i2==1,verbose:true)
+      #powerAssert(b1==false&&i1<i2&&false==b1&&i2==1,verbose:true)
+      #powerAssert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0,verbose:true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #powerAssert(i2==1)
+                     | | |
+                     1 | 1
+                       true
+        #powerAssert(b1==false&&i1<i2&&false==b1&&i2==1)
+                     | | |    | | || | |    | | | | | |
+                     | | |    | 0 |1 | |    | | | 1 | 1
+                     | | |    |   |  | |    | | |   true
+                     | | |    |   |  | |    | | true
+                     | | |    |   |  | |    | false
+                     | | |    |   |  | |    true
+                     | | |    |   |  | false
+                     | | |    |   |  true
+                     | | |    |   true
+                     | | |    true
+                     | | false
+                     | true
+                     false
+        #powerAssert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0)
+                     | | |      |  |   |      |   |   |
+                     | | false  0  1   false  |   1   1
+                     | true                   false
+                     false
+
+        """
+      )
+    }
+  }
+
+//  func testHigherOrderFunction() {
+//    captureConsoleOutput {
+//      func testA(_ i: Int) -> Int {
+//        return i + 1
+//      }
+//
+//      func testB(_ i: Int) -> Int {
+//        return i + 1
+//      }
+//
+//      let array = [0, 1, 2]
+//      #powerAssert(array.map { testA($0) } == [1, 2, 3], verbose: true)
+//      #powerAssert(array.map(testB) == [1, 2, 3], verbose: true)
+//    } completion: { (output) in
+//      print(output)
+//      XCTAssertEqual(
+//        output,
+//        """
+//        #powerAssert(array.map { testA($0) } == [1, 2, 3])
+//                     |     |                 |  ||  |  |
+//                     |     [1, 2, 3]         |  |1  2  3
+//                     [0, 1, 2]               |  [1, 2, 3]
+//                                             true
+//        #powerAssert(array.map(testB) == [1, 2, 3])
+//                     |     |   |      |  ||  |  |
+//                     |     |   |      |  |1  2  3
+//                     |     |   |      |  [1, 2, 3]
+//                     |     |   |      true
+//                     |     |   (Function)
+//                     |     [1, 2, 3]
+//                     [0, 1, 2]
+//
+//        """
+//      )
+//    }
+//  }
 
 //  func testStringWidth() async throws {
-////    #powerAssert("12345678901234567890".count == -1)
-////    #powerAssert("foo".count == -1)
-////    #powerAssert("⌚⭐⺎⽋豈Ａ🚀".count == -1)
-////    #powerAssert("\u{0008}\u{007F}".count == -1)
-////    #powerAssert("\u{001B}[31mfoo\u{001B}[39m".count == -1)
-////    #powerAssert("\u{001B}]8;;https://foo.com\u{0007}bar\u{001B}]8;;\u{0007}".count == -1)
-////    #powerAssert("".count == -1)
-////    #powerAssert("☠️".count == -1)
-////    #powerAssert("👩".count == -1)
-////    #powerAssert("👩🏿".count == -1)
-////    #powerAssert("x\u{1F3FF}".count == -1)
-////    #powerAssert("🇺🇸".count == -1)
-////    #powerAssert("🏴󠁧󠁢󠁥󠁮󠁧󠁿".count == -1)
-////    #powerAssert(#"#️⃣"#.count == -1)
-////    #powerAssert("👨‍❤️‍💋‍👨🏳️‍🌈".count == -1)
-////    #powerAssert("🦹🏻‍♀️".count == -1)
-////    #powerAssert("🦹🏻‍♀".count == -1)
-////    #powerAssert("👨️‍⚕️".count == -1)
-////    #powerAssert("⛹️‍😕️".count == -1)
-////    #powerAssert("😕🏻‍🦰".count == -1)
-////    #powerAssert("👨‍😕🏼".count == -1)
-////    #powerAssert("🙆🏾🏾‍♂️".count == -1)
-////    #powerAssert("🧑🏽‍🤝🏿🏿‍🧑🏿".count == -1)
+//    #powerAssert("12345678901234567890".count == -1)
+//    #powerAssert("foo".count == -1)
+//    #powerAssert("⌚⭐⺎⽋豈Ａ🚀".count == -1)
+//    #powerAssert("\u{0008}\u{007F}".count == -1)
+//    #powerAssert("\u{001B}[31mfoo\u{001B}[39m".count == -1)
+//    #powerAssert("\u{001B}]8;;https://foo.com\u{0007}bar\u{001B}]8;;\u{0007}".count == -1)
+//    #powerAssert("".count == -1)
+//    #powerAssert("☠️".count == -1)
+//    #powerAssert("👩".count == -1)
+//    #powerAssert("👩🏿".count == -1)
+//    #powerAssert("x\u{1F3FF}".count == -1)
+//    #powerAssert("🇺🇸".count == -1)
+//    #powerAssert("🏴󠁧󠁢󠁥󠁮󠁧󠁿".count == -1)
+//    #powerAssert(#"#️⃣"#.count == -1)
+//    #powerAssert("👨‍❤️‍💋‍👨🏳️‍🌈".count == -1)
+//    #powerAssert("🦹🏻‍♀️".count == -1)
+//    #powerAssert("🦹🏻‍♀".count == -1)
+//    #powerAssert("👨️‍⚕️".count == -1)
+//    #powerAssert("⛹️‍😕️".count == -1)
+//    #powerAssert("😕🏻‍🦰".count == -1)
+//    #powerAssert("👨‍😕🏼".count == -1)
+//    #powerAssert("🙆🏾🏾‍♂️".count == -1)
+//    #powerAssert("🧑🏽‍🤝🏿🏿‍🧑🏿".count == -1)
 //  }
 
   private let stringValue = "string"
