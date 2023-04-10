@@ -647,55 +647,57 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testMagicLiteralExpression() {
-//    captureConsoleOutput {
-//      #powerAssert(
-//        #file != "*.swift" && #line != 1 && #column != 2 && #function != "function",
-//        verbose: true
-//      )
-//      #powerAssert(
-//        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
-//          .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-//                     |     |  |         |  |     |  | |  |       |  | |  |         |  |
-//                     |     |  "*.swift" |  2     |  1 |  467     |  2 |  |         |  "function"
-//                     |     true         true     true true       true |  |         true
-//                     |                                                |  "testMagicLiteralExpression()"
-//                     |                                                true
-//                     "@__swiftmacro_16PowerAssertTestsAAC26testMagicLiteralExpressionyyFyyXEfU_05powerB0fMf_.swift"
-//        #powerAssert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
-//                     |                                                                                 |  |   |    |   |    |  |                                                                                 |
-//                     Optional(sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1)               |  |   |    |   |    |  Optional(sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1)               1.0
-//                                                                                                       |  |   |    |   |    true
-//                                                                                                       |  |   |    |   Optional(sRGB IEC61966-2.1 colorspace 0 0 1 1)
-//                                                                                                       |  |   |    true
-//                                                                                                       |  |   Optional(sRGB IEC61966-2.1 colorspace 0 0 1 1)
-//                                                                                                       |  true
-//                                                                                                       1.0
-//        #powerAssert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-//                     |     |  |         |  |     |  | |  |       |  | |  |         |  |
-//                     |     |  "*.swift" |  2     |  1 |  912     |  2 |  |         |  "function"
-//                     |     true         true     true true       true |  |         true
-//                     |                                                |  "testMagicLiteralExpression()"
-//                     |                                                true
-//                     "@__swiftmacro_16PowerAssertTestsAAC26testMagicLiteralExpressionyyFyyXEfU_05powerB0fMf_.swift"
-//        #powerAssert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
-//                     |                  |                    |                    |                    |  |        |        |  |                  |                    |                    |                    |
-//                     |                  0.8078431487         0.02745098062        0.3333333433         1  true     true     |  |                  0.8078431487         0.02745098062        0.3333333433         1
-//                     sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                                              |  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
-//                                                                                                                            true
-//
-//        """
-//      )
-//    }
-//  }
+  func testMagicLiteralExpression1() {
+    captureConsoleOutput {
+      #expect(
+        #file != "*.swift" && #line != 1 && #column != 2 && #function != "function",
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
+                |     |  |         |  |     |  | |  |       |  | |  |         |  |
+                |     |  "*.swift" |  3     |  1 |  250     |  2 |  |         |  "function"
+                |     true         true     true true       true |  |         true
+                |                                                |  "testMagicLiteralExpression1()"
+                |                                                true
+                "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6expectfMf_.swift"
+
+        """
+      )
+    }
+  }
+
+  func testMagicLiteralExpression2() {
+    captureConsoleOutput {
+      #expect(
+        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
+          .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
+                |                  |                    |                    |                    |  |   |    |   |    |  |                  |                    |                    |                    |
+                |                  0.80784315           0.02745098           0.33333334           |  |   |    |   |    |  |                  0.80784315           0.02745098           0.33333334           1.0
+                sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                         |  |   |    |   |    |  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+                                                                                                  |  |   |    |   |    true
+                                                                                                  |  |   |    |   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                                                  |  |   |    true
+                                                                                                  |  |   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                                                  |  true
+                                                                                                  1.0
+
+        """
+      )
+    }
+  }
 
   func testSelfExpression() {
     captureConsoleOutput {
