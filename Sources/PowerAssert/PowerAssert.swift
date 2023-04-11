@@ -1,4 +1,3 @@
-import Foundation
 import StringWidth
 #if canImport(XCTest)
 import XCTest
