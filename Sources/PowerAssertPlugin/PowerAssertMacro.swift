@@ -21,7 +21,7 @@ private struct CodeGenerator {
     }
 
     let expanded = expand(
-      expression: format(assertion),
+      expression: SingleLineFormatter(expression: assertion).format(),
       parameters: Parameters(macro: macro, context: context)
     )
 
@@ -29,43 +29,7 @@ private struct CodeGenerator {
     return syntax.with(\.leadingTrivia, macro.leadingTrivia)
   }
 
-  private func format(_ expression: some SyntaxProtocol) -> SyntaxProtocol {
-    let formatted = expression.tokens(viewMode: .fixedUp)
-      .map {
-        "\($0.leadingTrivia)"
-          .split(separator: "\n")
-          .joined(separator: " ")
-          .removingExtraWhitespaces()
-        + "\($0.text)"
-        + "\($0.trailingTrivia)"
-          .split(separator: "\n")
-          .joined(separator: " ")
-          .removingExtraWhitespaces()
-      }
-      .joined()
-      .trimmingCharacters(in: .whitespacesAndNewlines)
-    return SourceFileSyntax(stringLiteral: "\(formatted)")
-  }
-
-  private func parseExpression(_ expression: SyntaxProtocol, storage: inout [Syntax]) {
-    let children = expression.children(viewMode: .fixedUp)
-    for child in children {
-      if child.syntaxNodeType == TokenSyntax.self {
-        continue
-      }
-      if child.syntaxNodeType == ClosureExprSyntax.self {
-        continue
-      }
-      storage.append(child)
-      parseExpression(child, storage: &storage)
-    }
-  }
-
   private func expand(expression: SyntaxProtocol, parameters: Parameters) -> String {
-    var expressions = [Syntax]()
-    parseExpression(expression, storage: &expressions)
-    expressions = Array(expressions.dropFirst(2))
-
     let assertion = StringLiteralExprSyntax(
       content: "\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"
     )
@@ -115,26 +79,5 @@ private struct Parameters {
         self.verbose = "\(argument.expression)"
       }
     }
-  }
-}
-
-private extension String {
-  func removingExtraWhitespaces() -> String {
-    var result = ""
-    var previousCharIsSpace = false
-
-    for char in self {
-      if char == " " {
-        if !previousCharIsSpace {
-          result.append(char)
-        }
-        previousCharIsSpace = true
-      } else {
-        result.append(char)
-        previousCharIsSpace = false
-      }
-    }
-
-    return result
   }
 }
