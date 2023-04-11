@@ -6,7 +6,7 @@
       "location" : "https://github.com/kishikawakatsumi/swift-power-assert.git",
       "state" : {
         "branch" : "main",
-        "revision" : "fee9e5687cfd7adf2f488c8f16920efb1076b8fe"
+        "revision" : "51ace4c188fb43128cb7c92fe7c499b2d6a33758"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
         "branch" : "main",
-        "revision" : "ac4f8f3ee2d3866152bcd555a62cb8317ea3cb11"
+        "revision" : "1ca3d9ef6bd214536d1806aadf6d63bd4b685546"
       }
     }
   ],
