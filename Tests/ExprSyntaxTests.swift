@@ -55,10 +55,9 @@ final class ExprSyntaxTests: XCTestCase {
         output,
         """
         #expect(things[0] as? Int == 0)
-                ||     ||         |  |
-                ||     |0         |  Optional(0)
-                ||     0          true
-                |Optional(0)
+                |      ||         |  |
+                |      |0         |  Optional(0)
+                |      0          true
                 [0, 0.0, 42, 3.14159, "hello", (3.0, 5.0), PowerAssertTests.Movie, (Function)]
 
         """

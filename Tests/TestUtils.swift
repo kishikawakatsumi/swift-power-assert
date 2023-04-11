@@ -1,174 +1,173 @@
 import Foundation
 
 func captureConsoleOutput(execute: () -> Void, completion: @escaping (String) -> Void) {
-    let pipe = Pipe()
-    var output = ""
-    let semaphore = DispatchSemaphore(value: 0)
-    pipe.fileHandleForReading.readabilityHandler = { fileHandle in
-        let data = fileHandle.availableData
-        if data.isEmpty  { // end-of-file condition
-            fileHandle.readabilityHandler = nil
-            completion(output)
-            semaphore.signal()
-        } else {
-            if let string = String(data: data,  encoding: .utf8) {
-                output += string
-            }
-        }
+  let pipe = Pipe()
+  var output = ""
+  let semaphore = DispatchSemaphore(value: 0)
+  pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+    let data = fileHandle.availableData
+    if data.isEmpty  { // end-of-file condition
+      fileHandle.readabilityHandler = nil
+      completion(output)
+      semaphore.signal()
+    } else {
+      if let string = String(data: data,  encoding: .utf8) {
+        output += string
+      }
     }
+  }
 
-    setvbuf(stdout, nil, _IONBF, 0)
-    let stdout = dup(STDOUT_FILENO)
-    dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
+  setvbuf(stdout, nil, _IONBF, 0)
+  let stdout = dup(STDOUT_FILENO)
+  dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
 
-    execute()
+  execute()
 
-    dup2(stdout, STDOUT_FILENO)
-    try? pipe.fileHandleForWriting.close()
-    close(stdout)
-    semaphore.wait()
+  dup2(stdout, STDOUT_FILENO)
+  try? pipe.fileHandleForWriting.close()
+  close(stdout)
+  semaphore.wait()
 }
 
 struct Bar {
-    let foo: Foo
-    var val: Int
+  let foo: Foo
+  var val: Int
 }
 
 struct Foo {
-    var val: Int
+  var val: Int
 }
 
 struct Object {
-    let types: [Any?]
+  let types: [Any?]
 }
 
 struct Person {
-    let name: String
-    let age: Int
+  let name: String
+  let age: Int
 }
 
 struct Coordinate: Codable {
-    var latitude: Double
-    var longitude: Double
+  var latitude: Double
+  var longitude: Double
 }
 
 struct Landmark: Codable {
-    var name: String
-    var foundingYear: Int
-    var location: Coordinate
+  var name: String
+  var foundingYear: Int
+  var location: Coordinate
 }
 
 struct SomeStructure {
-    var someValue: Int
+  var someValue: Int
 
-    func getValue(keyPath: KeyPath<SomeStructure, Int>) -> Int {
-        return self[keyPath: keyPath]
-    }
+  func getValue(keyPath: KeyPath<SomeStructure, Int>) -> Int {
+    return self[keyPath: keyPath]
+  }
 }
 
 struct OuterStructure {
-    var outer: SomeStructure
+  var outer: SomeStructure
 
-    init(someValue: Int) {
-        self.outer = SomeStructure(someValue: someValue)
-    }
+  init(someValue: Int) {
+    self.outer = SomeStructure(someValue: someValue)
+  }
 
-    func getValue(keyPath: KeyPath<OuterStructure, Int>) -> Int {
-        return self[keyPath: keyPath]
-    }
+  func getValue(keyPath: KeyPath<OuterStructure, Int>) -> Int {
+    return self[keyPath: keyPath]
+  }
 }
 
 class SomeClass {
-    var property = OtherClass()
-    var optionalProperty: OtherClass?
+  var property = OtherClass()
+  var optionalProperty: OtherClass?
 
-    init() {}
+  init() {}
 
-    func performAction() -> Bool {
-        return true
-    }
+  func performAction() -> Bool {
+    return true
+  }
 }
 
 class OtherClass {
-    var property = AnotherClass()
-    var optionalProperty: AnotherClass?
+  var property = AnotherClass()
+  var optionalProperty: AnotherClass?
 
-    init() {}
+  init() {}
 
-    func performAction() -> Bool {
-        return true
-    }
+  func performAction() -> Bool {
+    return true
+  }
 }
 
 class AnotherClass {
-    var property = TheClass()
-    var optionalProperty: TheClass?
+  var property = TheClass()
+  var optionalProperty: TheClass?
 
-    init() {}
+  init() {}
 
-    func performAction() -> Bool {
-        return true
-    }
+  func performAction() -> Bool {
+    return true
+  }
 }
 
 class TheClass {
-    var optionalProperty: SomeClass?
+  var optionalProperty: SomeClass?
 
-    init() {}
+  init() {}
 
-    func performAction() -> Bool {
-        return true
-    }
+  func performAction() -> Bool {
+    return true
+  }
 }
 
 class MediaItem {
-    var name: String
+  var name: String
 
-    init(name: String) {
-        self.name = name
-    }
+  init(name: String) {
+    self.name = name
+  }
 }
 
 class Movie: MediaItem {
-    var director: String
+  var director: String
 
-    init(name: String, director: String) {
-        self.director = director
-        super.init(name: name)
-    }
+  init(name: String, director: String) {
+    self.director = director
+    super.init(name: name)
+  }
 }
 
 class Song: MediaItem {
-    var artist: String
+  var artist: String
 
-    init(name: String, artist: String) {
-        self.artist = artist
-        super.init(name: name)
-    }
+  init(name: String, artist: String) {
+    self.artist = artist
+    super.init(name: name)
+  }
 }
 
 class SomeObjCClass: NSObject {
-    @objc let property: String
-    @objc(doSomethingWithInt:)
-    func doSomething(_ x: Int) {}
+  @objc let property: String
+  @objc(doSomethingWithInt:)
+  func doSomething(_ x: Int) {}
 
-    init(property: String) {
-        self.property = property
-    }
+  init(property: String) {
+    self.property = property
+  }
 }
 
 infix operator ×: MultiplicationPrecedence
 func ×(left: Double, right: Double) -> Double {
-    return left * right
+  return left * right
 }
 
 prefix operator √
 prefix func √(number: Double) -> Double {
-    return sqrt(number)
+  return sqrt(number)
 }
 
 prefix operator √√
 prefix func √√(number: Double) -> Double {
-    return sqrt(sqrt(number))
+  return sqrt(sqrt(number))
 }
-
