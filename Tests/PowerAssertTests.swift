@@ -188,11 +188,12 @@ final class PowerAssertTests: XCTestCase {
         output,
         """
         #expect((object.types[index] as! Person).name != bob.name)
-                ||      |     |    |             |    |  |   |
-                ||      |     7    |             |    |  |   "bob"
-                ||      |          |             |    |  Person(name: "bob", age: 5)
-                ||      |          |             |    true
-                ||      |          |             "alice"
+                ||      |     |    | |           |    |  |   |
+                ||      |     7    | |           |    |  |   "bob"
+                ||      |          | |           |    |  Person(name: "bob", age: 5)
+                ||      |          | |           |    true
+                ||      |          | |           "alice"
+                ||      |          | Person(name: "alice", age: 3)
                 ||      |          Optional(PowerAssertTests.Person(name: "alice", age: 3))
                 ||      [Optional("string"), Optional(98.6), Optional(true), Optional(false), nil, Optional(nan), Optional(inf), Optional(PowerAssertTests.Person(name: "alice", age: 3))]
                 |Object(types: [Optional("string"), Optional(98.6), Optional(true), Optional(false), nil, Optional(nan), Optional(inf), Optional(PowerAssertTests.Person(name: "alice", age: 3))])
