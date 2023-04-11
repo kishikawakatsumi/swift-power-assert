@@ -31,4 +31,4 @@ workflows:
       - name: Test
         script: |
           export TOOLCHAINS=org.swift.59202304061a
-          swift test
+          swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
