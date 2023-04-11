@@ -2735,43 +2735,69 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-    // FIXME: multi-line string literal content must begin on a new line
-//  func testMultilineStringLiterals() {
-//    captureConsoleOutput {
-//      let multilineLiteral = """
-//        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-//        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-//        """
-//      #powerAssert(
-//        multilineLiteral != """
-//          Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-//          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-//          """,
-//        verbose: true
-//      )
-//      #powerAssert(multilineLiteral != multilineLiteral, verbose: true)
-//
-//      let threeDoubleQuotationMarks = """
-//        Escaping the first quotation mark \"""
-//        Escaping all three quotation marks \"\"\"
-//        """
-//      #powerAssert(
-//        threeDoubleQuotationMarks != """
-//          Escaping the first quotation mark \"""
-//          Escaping all three quotation marks \"\"\"
-//          """,
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//
-//        """
-//      )
-//    }
-//  }
+  func testMultilineStringLiterals1() {
+    captureConsoleOutput {
+      let multilineLiteral = """
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        """
+      #expect(
+        multilineLiteral == """
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          """,
+        verbose: true
+      )
+      #expect(multilineLiteral == multilineLiteral, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #expect(multilineLiteral == "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                |                |  |
+                |                |  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                |                true
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        #expect(multilineLiteral == multilineLiteral)
+                |                |  |
+                |                |  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                |                true
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        """#
+      )
+    }
+  }
+
+  func testMultilineStringLiterals2() {
+    captureConsoleOutput {
+      let multilineLiteral = """
+        Escaping the first quotation mark \"""
+        Escaping all three quotation marks \"\"\"
+        """
+      #expect(
+        multilineLiteral != """
+          Escaping the first quotation mark \"""
+          Escaping all three quotation marks \"\"\"
+          """,
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        ##"""
+        #expect(multilineLiteral != #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#)
+                |                |  |
+                |                |  "Escaping the first quotation mark \\"\"\"\nEscaping all three quotation marks \\"\\"\\""
+                |                true
+                "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
+
+        """##
+      )
+    }
+  }
 
   func testCustomOperator() {
     captureConsoleOutput {
