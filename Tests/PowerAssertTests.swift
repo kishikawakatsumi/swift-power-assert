@@ -2900,42 +2900,42 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testHigherOrderFunction() {
-//    captureConsoleOutput {
-//      func testA(_ i: Int) -> Int {
-//        return i + 1
-//      }
-//
-//      func testB(_ i: Int) -> Int {
-//        return i + 1
-//      }
-//
-//      let array = [0, 1, 2]
-//      #expect(array.map { testA($0) } == [1, 2, 3], verbose: true)
-//      #expect(array.map(testB) == [1, 2, 3], verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #expect(array.map { testA($0) } == [1, 2, 3])
-//                |     |                 |  ||  |  |
-//                |     [1, 2, 3]         |  |1  2  3
-//                [0, 1, 2]               |  [1, 2, 3]
-//                                        true
-//        #expect(array.map(testB) == [1, 2, 3])
-//                |     |   |      |  ||  |  |
-//                |     |   |      |  |1  2  3
-//                |     |   |      |  [1, 2, 3]
-//                |     |   |      true
-//                |     |   (Function)
-//                |     [1, 2, 3]
-//                [0, 1, 2]
-//
-//        """
-//      )
-//    }
-//  }
+  func testHigherOrderFunction() {
+    captureConsoleOutput {
+      func testA(_ i: Int) -> Int {
+        return i + 1
+      }
+
+      func testB(_ i: Int) -> Int {
+        return i + 1
+      }
+
+      let array = [0, 1, 2]
+      #expect(array.map { testA($0) } == [1, 2, 3], verbose: true)
+      #expect(array.map(testB) == [1, 2, 3], verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect(array.map { testA($0) } == [1, 2, 3])
+                |     |                 |  ||  |  |
+                |     [1, 2, 3]         |  |1  2  3
+                [0, 1, 2]               |  [1, 2, 3]
+                                        true
+        #expect(array.map(testB) == [1, 2, 3])
+                |     |   |      |  ||  |  |
+                |     |   |      |  |1  2  3
+                |     |   |      |  [1, 2, 3]
+                |     |   |      true
+                |     |   (Function)
+                |     [1, 2, 3]
+                [0, 1, 2]
+
+        """
+      )
+    }
+  }
 
 //  func testStringWidth() async throws {
 //    #powerAssert("12345678901234567890".count == -1)
