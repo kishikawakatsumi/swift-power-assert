@@ -706,7 +706,6 @@ final class PowerAssertTests: XCTestCase {
         self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9,
         verbose: true
       )
-      #expect(super.continueAfterFailure == true, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
@@ -721,10 +720,25 @@ final class PowerAssertTests: XCTestCase {
                 |                            |  -[PowerAssertTests testSelfExpression]
                 |                            true
                 -[PowerAssertTests testSelfExpression]
+
+        """
+      )
+    }
+  }
+
+  func testSuperExpression() {
+    captureConsoleOutput {
+      #expect(super.continueAfterFailure == true, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
         #expect(super.continueAfterFailure == true)
-                      |                    |  |
-                      true                 |  true
-                                           true
+                |     |                    |  |
+                |     true                 |  true
+                |                          true
+                -[PowerAssertTests testSuperExpression]
 
         """
       )

@@ -114,11 +114,9 @@ class PowerAssertRewriter: SyntaxRewriter {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
     return apply(
-      ExprSyntax(
-        "\(visitedNode).self"
-      )
-      .with(\.leadingTrivia, visitedNode.leadingTrivia)
-      .with(\.trailingTrivia, visitedNode.trailingTrivia),
+      ExprSyntax("\(visitedNode).self")
+        .with(\.leadingTrivia, visitedNode.leadingTrivia)
+        .with(\.trailingTrivia, visitedNode.trailingTrivia),
       column: column
     )
   }
@@ -240,7 +238,14 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: SuperRefExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    let column = graphemeColumn(node)
+    let visitedNode = super.visit(node)
+    return apply(
+      ExprSyntax("\(visitedNode).self")
+        .with(\.leadingTrivia, visitedNode.leadingTrivia)
+        .with(\.trailingTrivia, visitedNode.trailingTrivia),
+      column: column
+    )
   }
 
   override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
