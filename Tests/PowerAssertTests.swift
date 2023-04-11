@@ -2964,6 +2964,36 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testStringInterpolation() {
+    captureConsoleOutput {
+      func testA(_ i: Int) -> Int {
+        return i + 1
+      }
+
+      let string = "World!"
+      #expect("Hello \(string)" == "Hello World!", verbose: true)
+
+      let i = 99
+      #expect("value == \(testA(i))" == "value == 100", verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #expect("Hello \(string)" == "Hello World!")
+                |        |        |  |
+                |        "World!" |  "Hello World!"
+                "Hello World!"    true
+        #expect("value == \(testA(i))" == "value == 100")
+                |           |     |    |  |
+                |           100   99   |  "value == 100"
+                "value == 100"         true
+
+        """#
+      )
+    }
+  }
+
 //  func testStringWidth() async throws {
 //    #powerAssert("12345678901234567890".count == -1)
 //    #powerAssert("foo".count == -1)
