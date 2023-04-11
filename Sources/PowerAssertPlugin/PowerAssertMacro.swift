@@ -74,7 +74,7 @@ private struct CodeGenerator {
     let line = parameters.line
     let verbose = parameters.verbose
 
-    let rewriter = PowerAssertRewriter(macro: macro, expression: expression)
+    let rewriter = PowerAssertRewriter(expression: expression, macro: macro)
 
     return """
       PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose)) {

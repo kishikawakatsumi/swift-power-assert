@@ -7,7 +7,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
 
-  init(macro: FreestandingMacroExpansionSyntax, expression: SyntaxProtocol) {
+  init(expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
     startColumn = endLocation.column! - startLocation.column!
@@ -80,7 +80,11 @@ class PowerAssertRewriter: SyntaxRewriter {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
     return apply(
-      ExprSyntax("\(visitedNode).self").with(\.leadingTrivia, visitedNode.leadingTrivia).with(\.trailingTrivia, visitedNode.trailingTrivia),
+      ExprSyntax(
+        "\(visitedNode).self"
+      )
+      .with(\.leadingTrivia, visitedNode.leadingTrivia)
+      .with(\.trailingTrivia, visitedNode.trailingTrivia),
       column: column
     )
   }
@@ -116,7 +120,9 @@ class PowerAssertRewriter: SyntaxRewriter {
     let column = graphemeColumn(node.name)
     let visitedNode = super.visit(node)
     if let optionalChainingExpr = findDescendants(syntaxType: OptionalChainingExprSyntax.self, node: node) {
-      return ExprSyntax("\(apply(ExprSyntax(visitedNode), column: column))\(optionalChainingExpr.questionMark)")
+      return ExprSyntax(
+        "\(apply(ExprSyntax(visitedNode), column: column))\(optionalChainingExpr.questionMark)"
+      )
     } else {
       return apply(ExprSyntax(visitedNode), column: column)
     }
@@ -173,26 +179,31 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
-    return FunctionCallExprSyntax(
-      leadingTrivia: node.leadingTrivia,
-      calledExpression: IdentifierExprSyntax(identifier: TokenSyntax(.identifier("$0.capture"), presence: .present)),
-      leftParen: TokenSyntax.leftParenToken(),
-      argumentList: TupleExprElementListSyntax([
-        TupleExprElementSyntax(
-          expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
-          trailingComma: TokenSyntax.commaToken(),
-          trailingTrivia: Trivia.space
+    return ExprSyntax(
+      FunctionCallExprSyntax(
+        leadingTrivia: node.leadingTrivia,
+        calledExpression: IdentifierExprSyntax(
+          identifier: TokenSyntax(.identifier("$0.capture"), presence: .present)
         ),
-        TupleExprElementSyntax(
-          label: TokenSyntax.identifier("column"),
-          colon: TokenSyntax.colonToken().with(\.trailingTrivia, .space),
-          expression: IntegerLiteralExprSyntax(digits: TokenSyntax.integerLiteral("\(column + startColumn)"))
-        ),
-      ]),
-      rightParen: TokenSyntax.rightParenToken(),
-      trailingTrivia: node.trailingTrivia
+        leftParen: TokenSyntax.leftParenToken(),
+        argumentList: TupleExprElementListSyntax([
+          TupleExprElementSyntax(
+            expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
+            trailingComma: .commaToken(),
+            trailingTrivia: .space
+          ),
+          TupleExprElementSyntax(
+            label: TokenSyntax.identifier("column"),
+            colon: TokenSyntax.colonToken().with(\.trailingTrivia, .space),
+            expression: IntegerLiteralExprSyntax(
+              digits: TokenSyntax.integerLiteral("\(column + startColumn)")
+            )
+          ),
+        ]),
+        rightParen: TokenSyntax.rightParenToken(),
+        trailingTrivia: node.trailingTrivia
+      )
     )
-    .cast(ExprSyntax.self)
   }
 
   private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
