@@ -3008,6 +3008,59 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testRegexLiteral() {
+    captureConsoleOutput {
+      do {
+        let regex = #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#
+        let result = try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")
+
+        #expect(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil, verbose: true)
+        #expect(
+          try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0,
+          verbose: true
+        )
+        #expect(
+          try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT",
+          verbose: true
+        )
+      } catch {
+        XCTFail()
+      }
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #expect(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil)
+                    |     |              |                                                             |  |
+                    |     |              "CREDIT    03/01/2022    Payroll from employer      $200.23"  |  _OptionalNilComparisonType()
+                    |     |                                                                            true
+                    |     Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
+                    Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
+        #expect(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0)
+                    |                                            |              |                                                              |      | |  |       |      |
+                    |                                            |              "CREDIT    03/01/2022    Payroll from employer      $200.23"   |      | |  |       |      Optional("CREDIT    03/01/2022")
+                    |                                            |                                                                             |      | |  |       Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
+                    |                                            |                                                                             |      | |  Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
+                    |                                            |                                                                             |      | true
+                    |                                            |                                                                             |      Optional("CREDIT    03/01/2022")
+                    |                                            |                                                                             Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
+                    |                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
+                    Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
+        #expect(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT")
+                    |                                            |              |                                                              |      | |  |
+                    |                                            |              "CREDIT    03/01/2022    Payroll from employer      $200.23"   |      | |  Optional("CREDIT")
+                    |                                            |                                                                             |      | true
+                    |                                            |                                                                             |      Optional("CREDIT")
+                    |                                            |                                                                             Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
+                    |                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
+                    Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
+
+        """#
+      )
+    }
+  }
+
 //  func testStringWidth() async throws {
 //    #powerAssert("12345678901234567890".count == -1)
 //    #powerAssert("foo".count == -1)

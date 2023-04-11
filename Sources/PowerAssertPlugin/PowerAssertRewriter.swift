@@ -164,9 +164,13 @@ class PowerAssertRewriter: SyntaxRewriter {
     let column = graphemeColumn(node.name)
     let visitedNode = super.visit(node)
     if let optionalChainingExpr = findDescendants(syntaxType: OptionalChainingExprSyntax.self, node: node) {
-      return ExprSyntax(
-        "\(apply(ExprSyntax(visitedNode), column: column))\(optionalChainingExpr.questionMark)"
-      )
+      if let _ = findAncestors(syntaxType: MemberAccessExprSyntax.self, node: node) {
+        return ExprSyntax(
+          "\(apply(ExprSyntax(visitedNode), column: column))\(optionalChainingExpr.questionMark)"
+        )
+      } else {
+        return apply(ExprSyntax(visitedNode), column: column)
+      }
     } else {
       return apply(ExprSyntax(visitedNode), column: column)
     }
@@ -209,7 +213,9 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: RegexLiteralExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    let column = graphemeColumn(node)
+    let visitedNode = super.visit(node)
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {

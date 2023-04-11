@@ -14,13 +14,17 @@ public enum PowerAssert {
     var values = [Value]()
     var errors = [Swift.Error]()
 
-    public init(_ assertion: String, message: String = "", file: StaticString, line: UInt, verbose: Bool = false, evaluate: (Assertion) -> Bool = { _ in true }) {
+    public init(_ assertion: String, message: String = "", file: StaticString, line: UInt, verbose: Bool = false, evaluate: (Assertion) throws -> Bool = { _ in true }) {
       self.assertion = assertion
       self.originalMessage = message
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
-      self.result = evaluate(self)
+      do {
+        self.result = try evaluate(self)
+      } catch {
+        errors.append(error)
+      }
     }
 
     public func capture<T>(_ expr: @autoclosure () throws -> T, column: Int) rethrows -> T {
