@@ -7,11 +7,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
 
-  init(expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
-    let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
-    let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
-    startColumn = endLocation.column! - startLocation.column!
-
+  init(_ expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
       self.expression = folded
     } else {
@@ -19,6 +15,10 @@ class PowerAssertRewriter: SyntaxRewriter {
     }
 
     self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
+
+    let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
+    let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
+    startColumn = endLocation.column! - startLocation.column!
   }
 
   func rewrite() -> SyntaxProtocol {

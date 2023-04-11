@@ -3,7 +3,7 @@ import SwiftSyntax
 class SingleLineFormatter: SyntaxRewriter {
   private let expression: SyntaxProtocol
 
-  init(expression: SyntaxProtocol) {
+  init(_ expression: SyntaxProtocol) {
     self.expression = expression
   }
 
@@ -29,20 +29,15 @@ class SingleLineFormatter: SyntaxRewriter {
 
   override func visit(_ token: TokenSyntax) -> TokenSyntax {
     let visitedToken = super.visit(token)
-    let filtered = visitedToken.trailingTrivia.pieces
-      .filter {
-        if case .spaces = $0, case .tabs = $0, case .newlines = $0 {
-          return true
-        }
-        return false
-      }
+    let leadingTrivia = visitedToken.leadingTrivia
+    let trailingTrivia = visitedToken.trailingTrivia
     return visitedToken
-      .with(\.leadingTrivia, visitedToken.leadingTrivia.isEmpty ? [] : .space)
-      .with(\.trailingTrivia, visitedToken.trailingTrivia.isEmpty ? [] : .space)
+      .with(\.leadingTrivia, leadingTrivia.isEmpty ? [] : .space)
+      .with(\.trailingTrivia, trailingTrivia.isEmpty ? [] : .space)
   }
 }
 
-extension Trivia {
+private extension Trivia {
   var isEmpty: Bool {
     return pieces
     .filter {

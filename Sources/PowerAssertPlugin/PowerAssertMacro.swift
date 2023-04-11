@@ -21,7 +21,7 @@ private struct CodeGenerator {
     }
 
     let expanded = expand(
-      expression: SingleLineFormatter(expression: assertion).format(),
+      expression: SingleLineFormatter(assertion).format(),
       parameters: Parameters(macro: macro, context: context)
     )
 
@@ -38,7 +38,7 @@ private struct CodeGenerator {
     let line = parameters.line
     let verbose = parameters.verbose
 
-    let rewriter = PowerAssertRewriter(expression: expression, macro: macro)
+    let rewriter = PowerAssertRewriter(expression, macro: macro)
 
     return """
       PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose)) {
