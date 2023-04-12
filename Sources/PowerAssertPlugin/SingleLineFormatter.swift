@@ -32,22 +32,7 @@ class SingleLineFormatter: SyntaxRewriter {
     let leadingTrivia = visitedToken.leadingTrivia
     let trailingTrivia = visitedToken.trailingTrivia
     return visitedToken
-      .with(\.leadingTrivia, leadingTrivia.isEmpty ? [] : .space)
-      .with(\.trailingTrivia, trailingTrivia.isEmpty ? [] : .space)
-  }
-}
-
-private extension Trivia {
-  var isEmpty: Bool {
-    return pieces
-    .filter {
-      switch $0 {
-      case .spaces, .tabs, .newlines:
-        return true
-      default:
-        return false
-      }
-    }
-    .isEmpty
+      .with(\.leadingTrivia, leadingTrivia.pieces.isEmpty ? [] : .space)
+      .with(\.trailingTrivia, trailingTrivia.pieces.isEmpty ? [] : .space)
   }
 }

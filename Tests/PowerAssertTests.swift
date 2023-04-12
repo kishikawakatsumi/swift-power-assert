@@ -463,6 +463,58 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testMultilineExpression7() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      #expect([one,
+               two
+               , three]  /* comment in expression*/
+        .count
+              != 10
+              , verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect([one, two , three]  .count != 10)
+                ||    |     |        |     |  |
+                |1    2     3        3     |  10
+                [1, 2, 3]                  true
+
+        """
+      )
+    }
+  }
+
+  func testCommentsInExpression() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      #expect(
+        [one, two, three]/* comment in assertion*/./* comment in assertion*/count/* comment in assertion*/!=/* comment in assertion*/10,
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #expect([one, two, three] . count != 10)
+                ||    |    |        |     |  |
+                |1    2    3        3     |  10
+                [1, 2, 3]                 true
+
+        """
+      )
+    }
+  }
+
   func testTryExpression() {
     captureConsoleOutput {
       let landmark = Landmark(
