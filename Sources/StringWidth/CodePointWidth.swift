@@ -1070,25 +1070,25 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (161...161).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (162...163).contains(scalar.value) {
     return 1
   }
   if (164...164).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (165...166).contains(scalar.value) {
     return 1
   }
   if (167...168).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (169...169).contains(scalar.value) {
     return 1
   }
   if (170...170).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (171...171).contains(scalar.value) {
     return 1
@@ -1097,301 +1097,301 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (173...174).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (175...175).contains(scalar.value) {
     return 1
   }
   if (176...180).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (181...181).contains(scalar.value) {
     return 1
   }
   if (182...186).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (187...187).contains(scalar.value) {
     return 1
   }
   if (188...191).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (192...197).contains(scalar.value) {
     return 1
   }
   if (198...198).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (199...207).contains(scalar.value) {
     return 1
   }
   if (208...208).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (209...214).contains(scalar.value) {
     return 1
   }
   if (215...216).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (217...221).contains(scalar.value) {
     return 1
   }
   if (222...225).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (226...229).contains(scalar.value) {
     return 1
   }
   if (230...230).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (231...231).contains(scalar.value) {
     return 1
   }
   if (232...234).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (235...235).contains(scalar.value) {
     return 1
   }
   if (236...237).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (238...239).contains(scalar.value) {
     return 1
   }
   if (240...240).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (241...241).contains(scalar.value) {
     return 1
   }
   if (242...243).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (244...246).contains(scalar.value) {
     return 1
   }
   if (247...250).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (251...251).contains(scalar.value) {
     return 1
   }
   if (252...252).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (253...253).contains(scalar.value) {
     return 1
   }
   if (254...254).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (255...256).contains(scalar.value) {
     return 1
   }
   if (257...257).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (258...272).contains(scalar.value) {
     return 1
   }
   if (273...273).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (274...274).contains(scalar.value) {
     return 1
   }
   if (275...275).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (276...282).contains(scalar.value) {
     return 1
   }
   if (283...283).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (284...293).contains(scalar.value) {
     return 1
   }
   if (294...295).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (296...298).contains(scalar.value) {
     return 1
   }
   if (299...299).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (300...304).contains(scalar.value) {
     return 1
   }
   if (305...307).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (308...311).contains(scalar.value) {
     return 1
   }
   if (312...312).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (313...318).contains(scalar.value) {
     return 1
   }
   if (319...322).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (323...323).contains(scalar.value) {
     return 1
   }
   if (324...324).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (325...327).contains(scalar.value) {
     return 1
   }
   if (328...331).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (332...332).contains(scalar.value) {
     return 1
   }
   if (333...333).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (334...337).contains(scalar.value) {
     return 1
   }
   if (338...339).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (340...357).contains(scalar.value) {
     return 1
   }
   if (358...359).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (360...362).contains(scalar.value) {
     return 1
   }
   if (363...363).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (364...461).contains(scalar.value) {
     return 1
   }
   if (462...462).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (463...463).contains(scalar.value) {
     return 1
   }
   if (464...464).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (465...465).contains(scalar.value) {
     return 1
   }
   if (466...466).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (467...467).contains(scalar.value) {
     return 1
   }
   if (468...468).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (469...469).contains(scalar.value) {
     return 1
   }
   if (470...470).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (471...471).contains(scalar.value) {
     return 1
   }
   if (472...472).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (473...473).contains(scalar.value) {
     return 1
   }
   if (474...474).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (475...475).contains(scalar.value) {
     return 1
   }
   if (476...476).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (477...592).contains(scalar.value) {
     return 1
   }
   if (593...593).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (594...608).contains(scalar.value) {
     return 1
   }
   if (609...609).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (610...707).contains(scalar.value) {
     return 1
   }
   if (708...708).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (709...710).contains(scalar.value) {
     return 1
   }
   if (711...711).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (712...712).contains(scalar.value) {
     return 1
   }
   if (713...715).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (716...716).contains(scalar.value) {
     return 1
   }
   if (717...717).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (718...719).contains(scalar.value) {
     return 1
   }
   if (720...720).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (721...727).contains(scalar.value) {
     return 1
   }
   if (728...731).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (732...732).contains(scalar.value) {
     return 1
   }
   if (733...733).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (734...734).contains(scalar.value) {
     return 1
   }
   if (735...735).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (736...767).contains(scalar.value) {
     return 1
   }
   if (768...879).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (880...887).contains(scalar.value) {
     return 1
@@ -1409,40 +1409,40 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (913...929).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (931...937).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (938...944).contains(scalar.value) {
     return 1
   }
   if (945...961).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (962...962).contains(scalar.value) {
     return 1
   }
   if (963...969).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (970...1024).contains(scalar.value) {
     return 1
   }
   if (1025...1025).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (1026...1039).contains(scalar.value) {
     return 1
   }
   if (1040...1103).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (1104...1104).contains(scalar.value) {
     return 1
   }
   if (1105...1105).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (1106...1327).contains(scalar.value) {
     return 1
@@ -2156,67 +2156,67 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (8208...8208).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8209...8210).contains(scalar.value) {
     return 1
   }
   if (8211...8214).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8215...8215).contains(scalar.value) {
     return 1
   }
   if (8216...8217).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8218...8219).contains(scalar.value) {
     return 1
   }
   if (8220...8221).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8222...8223).contains(scalar.value) {
     return 1
   }
   if (8224...8226).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8227...8227).contains(scalar.value) {
     return 1
   }
   if (8228...8231).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8232...8239).contains(scalar.value) {
     return 1
   }
   if (8240...8240).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8241...8241).contains(scalar.value) {
     return 1
   }
   if (8242...8243).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8244...8244).contains(scalar.value) {
     return 1
   }
   if (8245...8245).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8246...8250).contains(scalar.value) {
     return 1
   }
   if (8251...8251).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8252...8253).contains(scalar.value) {
     return 1
   }
   if (8254...8254).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8255...8292).contains(scalar.value) {
     return 1
@@ -2225,19 +2225,19 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (8308...8308).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8309...8318).contains(scalar.value) {
     return 1
   }
   if (8319...8319).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8320...8320).contains(scalar.value) {
     return 1
   }
   if (8321...8324).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8325...8334).contains(scalar.value) {
     return 1
@@ -2255,7 +2255,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (8364...8364).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8365...8384).contains(scalar.value) {
     return 1
@@ -2267,283 +2267,283 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (8451...8451).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8452...8452).contains(scalar.value) {
     return 1
   }
   if (8453...8453).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8454...8456).contains(scalar.value) {
     return 1
   }
   if (8457...8457).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8458...8466).contains(scalar.value) {
     return 1
   }
   if (8467...8467).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8468...8469).contains(scalar.value) {
     return 1
   }
   if (8470...8470).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8471...8480).contains(scalar.value) {
     return 1
   }
   if (8481...8482).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8483...8485).contains(scalar.value) {
     return 1
   }
   if (8486...8486).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8487...8490).contains(scalar.value) {
     return 1
   }
   if (8491...8491).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8492...8530).contains(scalar.value) {
     return 1
   }
   if (8531...8532).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8533...8538).contains(scalar.value) {
     return 1
   }
   if (8539...8542).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8543...8543).contains(scalar.value) {
     return 1
   }
   if (8544...8555).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8556...8559).contains(scalar.value) {
     return 1
   }
   if (8560...8569).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8570...8584).contains(scalar.value) {
     return 1
   }
   if (8585...8585).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8586...8587).contains(scalar.value) {
     return 1
   }
   if (8592...8601).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8602...8631).contains(scalar.value) {
     return 1
   }
   if (8632...8633).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8634...8657).contains(scalar.value) {
     return 1
   }
   if (8658...8658).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8659...8659).contains(scalar.value) {
     return 1
   }
   if (8660...8660).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8661...8678).contains(scalar.value) {
     return 1
   }
   if (8679...8679).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8680...8703).contains(scalar.value) {
     return 1
   }
   if (8704...8704).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8705...8705).contains(scalar.value) {
     return 1
   }
   if (8706...8707).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8708...8710).contains(scalar.value) {
     return 1
   }
   if (8711...8712).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8713...8714).contains(scalar.value) {
     return 1
   }
   if (8715...8715).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8716...8718).contains(scalar.value) {
     return 1
   }
   if (8719...8719).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8720...8720).contains(scalar.value) {
     return 1
   }
   if (8721...8721).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8722...8724).contains(scalar.value) {
     return 1
   }
   if (8725...8725).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8726...8729).contains(scalar.value) {
     return 1
   }
   if (8730...8730).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8731...8732).contains(scalar.value) {
     return 1
   }
   if (8733...8736).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8737...8738).contains(scalar.value) {
     return 1
   }
   if (8739...8739).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8740...8740).contains(scalar.value) {
     return 1
   }
   if (8741...8741).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8742...8742).contains(scalar.value) {
     return 1
   }
   if (8743...8748).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8749...8749).contains(scalar.value) {
     return 1
   }
   if (8750...8750).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8751...8755).contains(scalar.value) {
     return 1
   }
   if (8756...8759).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8760...8763).contains(scalar.value) {
     return 1
   }
   if (8764...8765).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8766...8775).contains(scalar.value) {
     return 1
   }
   if (8776...8776).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8777...8779).contains(scalar.value) {
     return 1
   }
   if (8780...8780).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8781...8785).contains(scalar.value) {
     return 1
   }
   if (8786...8786).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8787...8799).contains(scalar.value) {
     return 1
   }
   if (8800...8801).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8802...8803).contains(scalar.value) {
     return 1
   }
   if (8804...8807).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8808...8809).contains(scalar.value) {
     return 1
   }
   if (8810...8811).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8812...8813).contains(scalar.value) {
     return 1
   }
   if (8814...8815).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8816...8833).contains(scalar.value) {
     return 1
   }
   if (8834...8835).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8836...8837).contains(scalar.value) {
     return 1
   }
   if (8838...8839).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8840...8852).contains(scalar.value) {
     return 1
   }
   if (8853...8853).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8854...8856).contains(scalar.value) {
     return 1
   }
   if (8857...8857).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8858...8868).contains(scalar.value) {
     return 1
   }
   if (8869...8869).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8870...8894).contains(scalar.value) {
     return 1
   }
   if (8895...8895).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8896...8977).contains(scalar.value) {
     return 1
   }
   if (8978...8978).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (8979...8985).contains(scalar.value) {
     return 1
@@ -2582,97 +2582,97 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (9312...9449).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9450...9450).contains(scalar.value) {
     return 1
   }
   if (9451...9547).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9548...9551).contains(scalar.value) {
     return 1
   }
   if (9552...9587).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9588...9599).contains(scalar.value) {
     return 1
   }
   if (9600...9615).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9616...9617).contains(scalar.value) {
     return 1
   }
   if (9618...9621).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9622...9631).contains(scalar.value) {
     return 1
   }
   if (9632...9633).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9634...9634).contains(scalar.value) {
     return 1
   }
   if (9635...9641).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9642...9649).contains(scalar.value) {
     return 1
   }
   if (9650...9651).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9652...9653).contains(scalar.value) {
     return 1
   }
   if (9654...9655).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9656...9659).contains(scalar.value) {
     return 1
   }
   if (9660...9661).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9662...9663).contains(scalar.value) {
     return 1
   }
   if (9664...9665).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9666...9669).contains(scalar.value) {
     return 1
   }
   if (9670...9672).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9673...9674).contains(scalar.value) {
     return 1
   }
   if (9675...9675).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9676...9677).contains(scalar.value) {
     return 1
   }
   if (9678...9681).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9682...9697).contains(scalar.value) {
     return 1
   }
   if (9698...9701).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9702...9710).contains(scalar.value) {
     return 1
   }
   if (9711...9711).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9712...9724).contains(scalar.value) {
     return 1
@@ -2684,19 +2684,19 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (9733...9734).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9735...9736).contains(scalar.value) {
     return 1
   }
   if (9737...9737).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9738...9741).contains(scalar.value) {
     return 1
   }
   if (9742...9743).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9744...9747).contains(scalar.value) {
     return 1
@@ -2708,25 +2708,25 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (9756...9756).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9757...9757).contains(scalar.value) {
     return 1
   }
   if (9758...9758).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9759...9791).contains(scalar.value) {
     return 1
   }
   if (9792...9792).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9793...9793).contains(scalar.value) {
     return 1
   }
   if (9794...9794).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9795...9799).contains(scalar.value) {
     return 1
@@ -2738,31 +2738,31 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (9824...9825).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9826...9826).contains(scalar.value) {
     return 1
   }
   if (9827...9829).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9830...9830).contains(scalar.value) {
     return 1
   }
   if (9831...9834).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9835...9835).contains(scalar.value) {
     return 1
   }
   if (9836...9837).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9838...9838).contains(scalar.value) {
     return 1
   }
   if (9839...9839).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9840...9854).contains(scalar.value) {
     return 1
@@ -2780,7 +2780,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (9886...9887).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9888...9888).contains(scalar.value) {
     return 1
@@ -2801,7 +2801,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 2
   }
   if (9919...9919).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9920...9923).contains(scalar.value) {
     return 1
@@ -2810,61 +2810,61 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 2
   }
   if (9926...9933).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9934...9934).contains(scalar.value) {
     return 2
   }
   if (9935...9939).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9940...9940).contains(scalar.value) {
     return 2
   }
   if (9941...9953).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9954...9954).contains(scalar.value) {
     return 1
   }
   if (9955...9955).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9956...9959).contains(scalar.value) {
     return 1
   }
   if (9960...9961).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9962...9962).contains(scalar.value) {
     return 2
   }
   if (9963...9969).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9970...9971).contains(scalar.value) {
     return 2
   }
   if (9972...9972).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9973...9973).contains(scalar.value) {
     return 2
   }
   if (9974...9977).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9978...9978).contains(scalar.value) {
     return 2
   }
   if (9979...9980).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9981...9981).contains(scalar.value) {
     return 2
   }
   if (9982...9983).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (9984...9988).contains(scalar.value) {
     return 1
@@ -2888,7 +2888,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (10045...10045).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (10046...10059).contains(scalar.value) {
     return 1
@@ -2918,7 +2918,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (10102...10111).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (10112...10132).contains(scalar.value) {
     return 1
@@ -2969,7 +2969,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 2
   }
   if (11094...11097).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (11098...11123).contains(scalar.value) {
     return 1
@@ -3068,7 +3068,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 2
   }
   if (12872...12879).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (12880...19903).contains(scalar.value) {
     return 2
@@ -3185,7 +3185,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (57344...63743).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (63744...64255).contains(scalar.value) {
     return 2
@@ -3227,7 +3227,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (65024...65039).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (65040...65049).contains(scalar.value) {
     return 2
@@ -3281,7 +3281,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (65533...65533).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (65536...65547).contains(scalar.value) {
     return 1
@@ -4265,37 +4265,37 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (127232...127242).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (127243...127247).contains(scalar.value) {
     return 1
   }
   if (127248...127277).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (127278...127279).contains(scalar.value) {
     return 1
   }
   if (127280...127337).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (127338...127343).contains(scalar.value) {
     return 1
   }
   if (127344...127373).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (127374...127374).contains(scalar.value) {
     return 2
   }
   if (127375...127376).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (127377...127386).contains(scalar.value) {
     return 2
   }
   if (127387...127404).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (127405...127405).contains(scalar.value) {
     return 1
@@ -4559,13 +4559,13 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
     return 1
   }
   if (917760...917999).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (983040...1048573).contains(scalar.value) {
-    return 2
+    return 1
   }
   if (1048576...1114109).contains(scalar.value) {
-    return 2
+    return 1
   }
   return 1
 }

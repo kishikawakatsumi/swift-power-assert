@@ -43,7 +43,7 @@ struct EastAsianWidth {
       return 2
     }
     if ["A"].contains(property) {
-      return 2
+      return 1
     }
     return 1
   }
