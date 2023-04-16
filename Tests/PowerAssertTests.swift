@@ -2802,6 +2802,34 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testStringContainsPoundSign() {
+    captureConsoleOutput {
+      let pound = "#"
+      #expect(pound == "#", verbose: true)
+      #expect("#" == pound, verbose: true)
+      #expect(String("#") == pound, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #expect(pound == "#")
+                |     |  |
+                "#"   |  "#"
+                      true
+        #expect("#" == pound)
+                |   |  |
+                "#" |  "#"
+                    true
+        #expect(String("#") == pound)
+                |      |    |  |
+                "#"    "#"  |  "#"
+                            true
+        """#
+      )
+    }
+  }
+
   func testMultilineStringLiterals1() {
     captureConsoleOutput {
       let multilineLiteral = """
@@ -2881,29 +2909,28 @@ final class PowerAssertTests: XCTestCase {
         output,
         """
         #expect(number1 × number2 == 20000.0)
-                |       |  |          |
-                100.0   |  200.0      20000.0
+                |       | |          |
+                100.0   | 200.0      20000.0
                         true
         #expect(√number2 == 14.142135623730951)
-                | |       |  |
-                | 200.0   |  14.142135623730951
-                |         true
+                ||       |  |
+                |200.0   |  14.142135623730951
+                |        true
                 14.142135623730951
         #expect(√√number2 != 200.0)
-                |   |       |  |
-                |   200.0   |  200.0
-                |           true
+                | |       |  |
+                | 200.0   |  200.0
+                |         true
                 3.760603093086394
         #expect(3.760603093086394 == √√number2)
-                |                 |  |   |
-                3.760603093086394 |  |   200.0
+                |                 |  | |
+                3.760603093086394 |  | 200.0
                                   |  3.760603093086394
                                   true
         #expect(√number2 != √√number2)
-                | |       |   |  |
-                | 200.0   |   |  200.0
-                |         |   3.760603093086394
-                |         true
+                ||       |    ||
+                |200.0   true |3.760603093086394
+                |             200.0
                 14.142135623730951
 
         """
