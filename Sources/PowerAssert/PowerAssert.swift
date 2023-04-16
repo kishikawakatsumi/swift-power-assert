@@ -58,7 +58,7 @@ public enum PowerAssert {
     }
 
     public func store<T>(value: T, column: Int) {
-      values.append(Value(value: valueToString(value), column: column))
+      values.append(Value(valueToString(value), column: column))
     }
 
     public func render() {
@@ -101,6 +101,11 @@ public enum PowerAssert {
   struct Value: Comparable {
     let value: String
     let column: Int
+
+    init(_ value: String, column: Int) {
+      self.value = value
+      self.column = column
+    }
 
     static func <(lhs: Value, rhs: Value) -> Bool {
       return lhs.column < rhs.column
