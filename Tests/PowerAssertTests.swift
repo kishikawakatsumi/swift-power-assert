@@ -2825,6 +2825,7 @@ final class PowerAssertTests: XCTestCase {
                 |      |    |  |
                 "#"    "#"  |  "#"
                             true
+
         """#
       )
     }
