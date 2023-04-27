@@ -8,16 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - name: Install Swift
         uses: slashmo/install-swift@v0.4.0
         with:
-          version: swift-DEVELOPMENT-SNAPSHOT-2023-04-06-a
+          version: swift-DEVELOPMENT-SNAPSHOT-2023-04-25-a
       - uses: actions/checkout@v3
       - name: Build
         run: |
-          export TOOLCHAINS=org.swift.59202304061a
+          export TOOLCHAINS=org.swift.59202304251a
           swift build -v
       - name: Run tests
         run: swift test -v
