@@ -5,13 +5,13 @@ final class PowerAssertTests: XCTestCase {
   func testBinaryExpression1() {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
-      #expect(bar.val != bar.foo.val, verbose: true)
+      #assert(bar.val != bar.foo.val, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(bar.val != bar.foo.val)
+        #assert(bar.val != bar.foo.val)
                 |   |   |  |   |   |
                 |   3   |  |   |   2
                 |       |  |   Foo(val: 2)
@@ -27,13 +27,13 @@ final class PowerAssertTests: XCTestCase {
   func testBinaryExpression2() {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
-      #expect(bar.val > bar.foo.val, verbose: true)
+      #assert(bar.val > bar.foo.val, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(bar.val > bar.foo.val)
+        #assert(bar.val > bar.foo.val)
                 |   |   | |   |   |
                 |   3   | |   |   2
                 |       | |   Foo(val: 2)
@@ -54,13 +54,13 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(array.firstIndex(of: zero) != two, verbose: true)
+      #assert(array.firstIndex(of: zero) != two, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(array.firstIndex(of: zero) != two)
+        #assert(array.firstIndex(of: zero) != two)
                 |     |              |     |  |
                 |     nil            0     |  Optional(2)
                 [1, 2, 3]                  true
@@ -77,13 +77,13 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(array.description.hasPrefix("[") == true && array.description.hasPrefix("Hello") == false, verbose: true)
+      #assert(array.description.hasPrefix("[") == true && array.description.hasPrefix("Hello") == false, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(array.description.hasPrefix("[") == true && array.description.hasPrefix("Hello") == false)
+        #assert(array.description.hasPrefix("[") == true && array.description.hasPrefix("Hello") == false)
                 |     |           |         |    |  |    |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  true |  |     "[1, 2, 3]" false     "Hello"  |  false
                 [1, 2, 3]                        true    |  [1, 2, 3]                            true
@@ -104,13 +104,13 @@ final class PowerAssertTests: XCTestCase {
       let array = [one, two, three]
 
       let bar = Bar(foo: Foo(val: 2), val: 3)
-      #expect(array.firstIndex(of: zero) != two && bar.val != bar.foo.val, verbose: true)
+      #assert(array.firstIndex(of: zero) != two && bar.val != bar.foo.val, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(array.firstIndex(of: zero) != two && bar.val != bar.foo.val)
+        #assert(array.firstIndex(of: zero) != two && bar.val != bar.foo.val)
                 |     |              |     |  |   |  |   |   |  |   |   |
                 |     nil            0     |  |   |  |   3   |  |   |   2
                 [1, 2, 3]                  |  |   |  |       |  |   Foo(val: 2)
@@ -133,13 +133,13 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(array.distance(from: 2, to: 3) == 1, verbose: true)
+      #assert(array.distance(from: 2, to: 3) == 1, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(array.distance(from: 2, to: 3) == 1)
+        #assert(array.distance(from: 2, to: 3) == 1)
                 |     |              |      |  |  |
                 |     1              2      3  |  1
                 [1, 2, 3]                      true
@@ -155,13 +155,13 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #expect([one, two, three].count == 3, verbose: true)
+      #assert([one, two, three].count == 3, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect([one, two, three].count == 3)
+        #assert([one, two, three].count == 3)
                 ||    |    |      |     |  |
                 |1    2    3      3     |  3
                 [1, 2, 3]               true
@@ -181,13 +181,13 @@ final class PowerAssertTests: XCTestCase {
 
       let object = Object(types: types)
 
-      #expect((object.types[index] as! Person).name != bob.name, verbose: true)
+      #assert((object.types[index] as! Person).name != bob.name, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect((object.types[index] as! Person).name != bob.name)
+        #assert((object.types[index] as! Person).name != bob.name)
                 ||      |     |    | |           |    |  |   |
                 ||      |     7    | |           |    |  |   "bob"
                 ||      |          | |           |    |  Person(name: "bob", age: 5)
@@ -211,13 +211,13 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(array.description.hasPrefix("]") == true || array.description.hasPrefix("Hello") == false, verbose: true)
+      #assert(array.description.hasPrefix("]") == true || array.description.hasPrefix("Hello") == false, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(array.description.hasPrefix("]") == true || array.description.hasPrefix("Hello") == false)
+        #assert(array.description.hasPrefix("]") == true || array.description.hasPrefix("Hello") == false)
                 |     |           |         |    |  |    |  |     |           |         |        |  |
                 |     "[1, 2, 3]" false     "]"  |  true |  |     "[1, 2, 3]" false     "Hello"  |  false
                 [1, 2, 3]                        false   |  [1, 2, 3]                            true
@@ -232,11 +232,11 @@ final class PowerAssertTests: XCTestCase {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
 
-      #expect(bar.val != bar.foo.val, verbose: true)
-      #expect(bar
+      #assert(bar.val != bar.foo.val, verbose: true)
+      #assert(bar
         .val !=
              bar.foo.val, verbose: true)
-      #expect(bar
+      #assert(bar
         .val !=
              bar
         .foo        .val, verbose: true)
@@ -245,21 +245,21 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(bar.val != bar.foo.val)
+        #assert(bar.val != bar.foo.val)
                 |   |   |  |   |   |
                 |   3   |  |   |   2
                 |       |  |   Foo(val: 2)
                 |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |       true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-        #expect(bar .val != bar.foo.val)
+        #assert(bar .val != bar.foo.val)
                 |    |   |  |   |   |
                 |    3   |  |   |   2
                 |        |  |   Foo(val: 2)
                 |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |        true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-        #expect(bar .val != bar .foo .val)
+        #assert(bar .val != bar .foo .val)
                 |    |   |  |    |    |
                 |    3   |  |    |    2
                 |        |  |    Foo(val: 2)
@@ -280,13 +280,13 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
       let array = [one, two, three]
 
-      #expect(array    .        firstIndex(
+      #assert(array    .        firstIndex(
         of:    zero)
              != two,
                    verbose: true
       )
 
-      #expect(array
+      #assert(array
         .
                    firstIndex(
 
@@ -297,7 +297,7 @@ final class PowerAssertTests: XCTestCase {
                    ,     verbose: true
       )
 
-      #expect(array
+      #assert(array
         .firstIndex(
           of:
             zero)
@@ -310,15 +310,15 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array . firstIndex( of: zero) != two)
+        #assert(array . firstIndex( of: zero) != two)
                 |       |               |     |  |
                 |       nil             0     |  Optional(2)
                 [1, 2, 3]                     true
-        #expect(array . firstIndex( of: zero) != two)
+        #assert(array . firstIndex( of: zero) != two)
                 |       |               |     |  |
                 |       nil             0     |  Optional(2)
                 [1, 2, 3]                     true
-        #expect(array .firstIndex( of: zero) != two)
+        #assert(array .firstIndex( of: zero) != two)
                 |      |               |     |  |
                 |      nil             0     |  Optional(2)
                 [1, 2, 3]                    true
@@ -335,7 +335,7 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(array
+      #assert(array
         .description
         .hasPrefix(    "["
                   )
@@ -349,7 +349,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array .description .hasPrefix( "[" ) == true && array .description .hasPrefix ("Hello" ) == false)
+        #assert(array .description .hasPrefix( "[" ) == true && array .description .hasPrefix ("Hello" ) == false)
                 |      |            |          |     |  |    |  |      |            |          |         |  |
                 |      "[1, 2, 3]"  true       "["   |  true |  |      "[1, 2, 3]"  false      "Hello"   |  false
                 [1, 2, 3]                            true    |  [1, 2, 3]                                true
@@ -371,7 +371,7 @@ final class PowerAssertTests: XCTestCase {
 
       let bar = Bar(foo: Foo(val: 2), val: 3)
 
-      #expect(
+      #assert(
 
         array.firstIndex(
           of: zero
@@ -390,7 +390,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array.firstIndex( of: zero ) != two && bar .val != bar .foo .val)
+        #assert(array.firstIndex( of: zero ) != two && bar .val != bar .foo .val)
                 |     |               |      |  |   |  |    |   |  |    |    |
                 |     nil             0      |  |   |  |    3   |  |    |    2
                 [1, 2, 3]                    |  |   |  |        |  |    Foo(val: 2)
@@ -413,7 +413,7 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(
+      #assert(
 
         array
           .distance(
@@ -426,7 +426,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array .distance( from: 2, to: 3) != 4)
+        #assert(array .distance( from: 2, to: 3) != 4)
                 |      |               |      |  |  |
                 |      1               2      3  |  4
                 [1, 2, 3]                        true
@@ -442,7 +442,7 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #expect([one,
+      #assert([one,
               two
               , three]
         .count
@@ -453,7 +453,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect([one, two , three] .count != 10)
+        #assert([one, two , three] .count != 10)
                 ||    |     |       |     |  |
                 |1    2     3       3     |  10
                 [1, 2, 3]                 true
@@ -469,7 +469,7 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #expect([one,
+      #assert([one,
                two
                , three]  /* comment in expression*/
         .count
@@ -480,7 +480,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect([one, two , three]  .count != 10)
+        #assert([one, two , three]  .count != 10)
                 ||    |     |        |     |  |
                 |1    2     3        3     |  10
                 [1, 2, 3]                  true
@@ -496,7 +496,7 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #expect(
+      #assert(
         [one, two, three]/* comment in assertion*/./* comment in assertion*/count/* comment in assertion*/!=/* comment in assertion*/10,
         verbose: true
       )
@@ -505,7 +505,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect([one, two, three] . count != 10)
+        #assert([one, two, three] . count != 10)
                 ||    |    |        |     |  |
                 |1    2    3        3     |  10
                 [1, 2, 3]                 true
@@ -523,15 +523,15 @@ final class PowerAssertTests: XCTestCase {
         location: Coordinate(latitude: 35.658581, longitude: 139.745438)
       )
 
-      #expect(
+      #assert(
         try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8),
         verbose: true
       )
-      #expect(
+      #assert(
         try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8),
         verbose: true
       )
-      #expect(
+      #assert(
         try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark),
         verbose: true
       )
@@ -540,7 +540,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         #"""
-        #expect(try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8))
+        #assert(try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8))
                      |             |      |         |  |                          |           |      |        |
                      |             |      |         |  |                          |           String Encoding Unicode (UTF-8)
                      |             |      |         |  |                          Optional(22 bytes)
@@ -549,7 +549,7 @@ final class PowerAssertTests: XCTestCase {
                      |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      |             Optional(116 bytes)
                      Foundation.JSONEncoder
-        #expect(try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8))
+        #assert(try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8))
                      |             |      |         |  |                                                                                                                        |            |
                      |             |      |         |  |                                                                                                                        |            Unicode (UTF-8)
                      |             |      |         |  |                                                                                                                        Optional(116 bytes)
@@ -558,7 +558,7 @@ final class PowerAssertTests: XCTestCase {
                      |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      |             Optional(116 bytes)
                      Foundation.JSONEncoder
-        #expect(try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark))
+        #assert(try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark))
                      |                          |           |      |        |     |  |             |      |
                      |                          |           String Encoding |     |  |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      |                          Optional(22 bytes)          |     |  |             Optional(116 bytes)
@@ -576,13 +576,13 @@ final class PowerAssertTests: XCTestCase {
       let string = "1234"
       let number = Int(string)
 
-      #expect(number != nil && number == 1234, verbose: true)
+      #assert(number != nil && number == 1234, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(number != nil && number == 1234)
+        #assert(number != nil && number == 1234)
                 |      |  |   |  |      |  |
                 |      |  nil |  |      |  Optional(1234)
                 |      true   |  |      true
@@ -601,13 +601,13 @@ final class PowerAssertTests: XCTestCase {
       let number = Int(string)
       let hello = "hello"
 
-      #expect((number != nil ? string : hello) == string, verbose: true)
+      #assert((number != nil ? string : hello) == string, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect((number != nil ? string : hello) == string)
+        #assert((number != nil ? string : hello) == string)
                 |||     |  |     |               |  |
                 ||"1234"|  nil   "1234"          |  "1234"
                 ||      true                     true
@@ -625,13 +625,13 @@ final class PowerAssertTests: XCTestCase {
       let number = Int(string)
       let hello = "hello"
 
-      #expect((number == nil ? string : hello) != string, verbose: true)
+      #assert((number == nil ? string : hello) != string, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect((number == nil ? string : hello) != string)
+        #assert((number == nil ? string : hello) != string)
                 |||     |  |              |      |  |
                 |||     |  nil            |      |  "1234"
                 |||     false             |      true
@@ -651,13 +651,13 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #expect([one, two, three].firstIndex(of: zero) != two, verbose: true)
+      #assert([one, two, three].firstIndex(of: zero) != two, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect([one, two, three].firstIndex(of: zero) != two)
+        #assert([one, two, three].firstIndex(of: zero) != two)
                 ||    |    |      |              |     |  |
                 |1    2    3      nil            0     |  Optional(2)
                 [1, 2, 3]                              true
@@ -674,14 +674,14 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #expect([zero: one, two: three].count != three, verbose: true)
+      #assert([zero: one, two: three].count != three, verbose: true)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertTrue(
         output ==
         """
-        #expect([zero: one, two: three].count != three)
+        #assert([zero: one, two: three].count != three)
                 ||     |    |    |      |     |  |
                 |0     1    2    3      2     |  3
                 [0: 1, 2: 3]                  true
@@ -690,7 +690,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
         """
-        #expect([zero: one, two: three].count != three)
+        #assert([zero: one, two: three].count != three)
                 ||     |    |    |      |     |  |
                 |0     1    2    3      2     |  3
                 [2: 3, 0: 1]                  true
@@ -702,7 +702,7 @@ final class PowerAssertTests: XCTestCase {
 
   func testMagicLiteralExpression1() {
     captureConsoleOutput {
-      #expect(
+      #assert(
         #file != "*.swift" && #line != 1 && #column != 2 && #function != "function",
         verbose: true
       )
@@ -711,13 +711,13 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
+        #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 |     |  |         |  |     |  | |  |       |  | |  |         |  |
                 |     |  "*.swift" |  3     |  1 |  250     |  2 |  |         |  "function"
                 |     true         true     true true       true |  |         true
                 |                                                |  "testMagicLiteralExpression1()"
                 |                                                true
-                "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6expectfMf_.swift"
+                "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
 
         """
       )
@@ -726,7 +726,7 @@ final class PowerAssertTests: XCTestCase {
 
   func testMagicLiteralExpression2() {
     captureConsoleOutput {
-      #expect(
+      #assert(
         #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
           .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
         verbose: true
@@ -736,7 +736,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
+        #assert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
                 |                  |                    |                    |                    |  |   |    |   |    |  |                  |                    |                    |                    |
                 |                  0.80784315           0.02745098           0.33333334           |  |   |    |   |    |  |                  0.80784315           0.02745098           0.33333334           1.0
                 sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                         |  |   |    |   |    |  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
@@ -754,7 +754,7 @@ final class PowerAssertTests: XCTestCase {
 
   func testSelfExpression() {
     captureConsoleOutput {
-      #expect(
+      #assert(
         self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9,
         verbose: true
       )
@@ -763,7 +763,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9)
+        #assert(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9)
                 |    |           |  |        |  |    |        |  |   |  |    |           |  |
                 |    "string"    |  "string" |  |    100      |  100 |  |    999.9       |  999.9
                 |                true        |  |             true   |  |                true
@@ -780,13 +780,13 @@ final class PowerAssertTests: XCTestCase {
 
   func testSuperExpression() {
     captureConsoleOutput {
-      #expect(super.continueAfterFailure == true, verbose: true)
+      #assert(super.continueAfterFailure == true, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(super.continueAfterFailure == true)
+        #assert(super.continueAfterFailure == true)
                 |     |                    |  |
                 |     true                 |  true
                 |                          true
@@ -800,49 +800,49 @@ final class PowerAssertTests: XCTestCase {
   func testImplicitMemberExpression() {
     captureConsoleOutput {
       let i = 64
-      #expect(i == .bitWidth && i == Double.Exponent.bitWidth, verbose: true)
+      #assert(i == .bitWidth && i == Double.Exponent.bitWidth, verbose: true)
 
       let mask: CAAutoresizingMask = [.layerMaxXMargin, .layerMaxYMargin]
-      #expect(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
+      #assert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
 
-      #expect(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin], verbose: true)
+      #assert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin], verbose: true)
 
-      #expect(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
+      #assert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
 
-      #expect(mask == [.layerMaxXMargin, .layerMaxYMargin], verbose: true)
+      #assert(mask == [.layerMaxXMargin, .layerMaxYMargin], verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(i == .bitWidth && i == Double.Exponent.bitWidth)
+        #assert(i == .bitWidth && i == Double.Exponent.bitWidth)
                 | |   |        |  | |  |      |        |
                 | |   64       |  | |  Double Int      64
                 | true         |  | true
                 64             |  64
                                true
-        #expect(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+        #assert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
                 |    |  ||                  |                |                  |
                 |    |  |CAAutoresizingMask |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
                 |    |  |                   CAAutoresizingMask(rawValue: 4)
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
-        #expect(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
+        #assert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
                 |    |  ||                  |                 |
                 |    |  |CAAutoresizingMask |                 CAAutoresizingMask(rawValue: 32)
                 |    |  |                   CAAutoresizingMask(rawValue: 4)
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
-        #expect(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+        #assert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
                 |    |  | |                |                  |
                 |    |  | |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
                 |    |  | CAAutoresizingMask(rawValue: 4)
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
-        #expect(mask == [.layerMaxXMargin, .layerMaxYMargin])
+        #assert(mask == [.layerMaxXMargin, .layerMaxYMargin])
                 |    |  | |                 |
                 |    |  | |                 CAAutoresizingMask(rawValue: 32)
                 |    |  | CAAutoresizingMask(rawValue: 4)
@@ -868,27 +868,27 @@ final class PowerAssertTests: XCTestCase {
 
       let tuple = (name: "Katsumi", age: 37, birthday: date1)
 
-      #expect(tuple != (name: "Katsumi", age: 37, birthday: date2), verbose: true)
-      #expect(tuple != ("Katsumi", 37, date2), verbose: true)
-      #expect(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1, verbose: true)
+      #assert(tuple != (name: "Katsumi", age: 37, birthday: date2), verbose: true)
+      #assert(tuple != ("Katsumi", 37, date2), verbose: true)
+      #assert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(tuple != (name: "Katsumi", age: 37, birthday: date2))
+        #assert(tuple != (name: "Katsumi", age: 37, birthday: date2))
                 |     |  |      |               |             |
                 |     |  |      "Katsumi"       37            2000-12-30 15:00:00 +0000
                 |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
                 |     true
                 ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
-        #expect(tuple != ("Katsumi", 37, date2))
+        #assert(tuple != ("Katsumi", 37, date2))
                 |     |  ||          |   |
                 |     |  |"Katsumi"  37  2000-12-30 15:00:00 +0000
                 |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
                 |     true
                 ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
+        #assert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
                 |     |    |  ||          |   |      | |
                 |     |    |  |"Katsumi"  37  |      | true
                 |     |    |  |               |      "Katsumi"
@@ -908,57 +908,57 @@ final class PowerAssertTests: XCTestCase {
       let s = SomeStructure(someValue: 12)
       let pathToProperty = \SomeStructure.someValue
 
-      #expect(s[keyPath: pathToProperty] == 12, verbose: true)
-      #expect(s[keyPath: \SomeStructure.someValue] == 12, verbose: true)
-      #expect(s.getValue(keyPath: \.someValue) == 12, verbose: true)
+      #assert(s[keyPath: pathToProperty] == 12, verbose: true)
+      #assert(s[keyPath: \SomeStructure.someValue] == 12, verbose: true)
+      #assert(s.getValue(keyPath: \.someValue) == 12, verbose: true)
 
       let nested = OuterStructure(someValue: 24)
       let nestedKeyPath = \OuterStructure.outer.someValue
 
-      #expect(nested[keyPath: nestedKeyPath] == 24, verbose: true)
-      #expect(nested[keyPath: \OuterStructure.outer.someValue] == 24, verbose: true)
-      #expect(nested.getValue(keyPath: \.outer.someValue) == 24, verbose: true)
+      #assert(nested[keyPath: nestedKeyPath] == 24, verbose: true)
+      #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24, verbose: true)
+      #assert(nested.getValue(keyPath: \.outer.someValue) == 24, verbose: true)
     } completion: { (output) in
       print(output)
 
       XCTAssertTrue(
         output ==
           #"""
-          #expect(s[keyPath: pathToProperty] == 12)
+          #assert(s[keyPath: pathToProperty] == 12)
                   |          |             | |  |
                   |          |             | |  12
                   |          |             | true
                   |          |             12
                   |          \SomeStructure.someValue
                   SomeStructure(someValue: 12)
-          #expect(s[keyPath: \SomeStructure.someValue] == 12)
+          #assert(s[keyPath: \SomeStructure.someValue] == 12)
                   |          |                       | |  |
                   |          |                       | |  12
                   |          |                       | true
                   |          |                       12
                   |          \SomeStructure.someValue
                   SomeStructure(someValue: 12)
-          #expect(s.getValue(keyPath: \.someValue) == 12)
+          #assert(s.getValue(keyPath: \.someValue) == 12)
                   | |                 |            |  |
                   | 12                |            |  12
                   |                   |            true
                   |                   \SomeStructure.someValue
                   SomeStructure(someValue: 12)
-          #expect(nested[keyPath: nestedKeyPath] == 24)
+          #assert(nested[keyPath: nestedKeyPath] == 24)
                   |               |            | |  |
                   |               |            | |  24
                   |               |            | true
                   |               |            24
                   |               \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+          #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
                   |               |                              | |  |
                   |               |                              | |  24
                   |               |                              | true
                   |               |                              24
                   |               \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested.getValue(keyPath: \.outer.someValue) == 24)
+          #assert(nested.getValue(keyPath: \.outer.someValue) == 24)
                   |      |                 |                  |  |
                   |      24                |                  |  24
                   |                        |                  true
@@ -969,41 +969,41 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(s[keyPath: pathToProperty] == 12)
+          #assert(s[keyPath: pathToProperty] == 12)
                   |          |             | |  |
                   |          |             | |  12
                   |          |             | true
                   |          |             12
                   |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
-          #expect(s[keyPath: \SomeStructure.someValue] == 12)
+          #assert(s[keyPath: \SomeStructure.someValue] == 12)
                   |          |                       | |  |
                   |          |                       | |  12
                   |          |                       | true
                   |          |                       12
                   |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
-          #expect(s.getValue(keyPath: \.someValue) == 12)
+          #assert(s.getValue(keyPath: \.someValue) == 12)
                   | |                 |            |  |
                   | 12                |            |  12
                   |                   |            true
                   |                   Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
-          #expect(nested[keyPath: nestedKeyPath] == 24)
+          #assert(nested[keyPath: nestedKeyPath] == 24)
                   |               |            | |  |
                   |               |            | |  24
                   |               |            | true
                   |               |            24
                   |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+          #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
                   |               |                              | |  |
                   |               |                              | |  24
                   |               |                              | true
                   |               |                              24
                   |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested.getValue(keyPath: \.outer.someValue) == 24)
+          #assert(nested.getValue(keyPath: \.outer.someValue) == 24)
                   |      |                 |                  |  |
                   |      24                |                  |  24
                   |                        |                  true
@@ -1019,21 +1019,21 @@ final class PowerAssertTests: XCTestCase {
     captureConsoleOutput {
       let greetings = ["hello", "hola", "bonjour", "안녕"]
 
-      #expect(greetings[keyPath: \[String].[1]] == "hola", verbose: true)
-      #expect(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
+      #assert(greetings[keyPath: \[String].[1]] == "hola", verbose: true)
+      #assert(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertTrue(
         output ==
         #"""
-        #expect(greetings[keyPath: \[String].[1]] == "hola")
+        #assert(greetings[keyPath: \[String].[1]] == "hola")
                 |                  |          | | |  |
                 |                  |          1 | |  "hola"
                 |                  |            | true
                 |                  |            "hola"
                 |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
                 ["hello", "hola", "bonjour", "안녕"]
-        #expect(greetings[keyPath: \[String].first?.count] == 5)
+        #assert(greetings[keyPath: \[String].first?.count] == 5)
                 |                  |                     | |  |
                 |                  |                     | |  Optional(5)
                 |                  |                     | true
@@ -1045,14 +1045,14 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
         #"""
-        #expect(greetings[keyPath: \[String].[1]] == "hola")
+        #assert(greetings[keyPath: \[String].[1]] == "hola")
                 |                  |          | | |  |
                 |                  |          1 | |  "hola"
                 |                  |            | true
                 |                  |            "hola"
                 |                  \Array<String>.<computed 0x0000000000000000 (String)>
                 ["hello", "hola", "bonjour", "안녕"]
-        #expect(greetings[keyPath: \[String].first?.count] == 5)
+        #assert(greetings[keyPath: \[String].first?.count] == 5)
                 |                  |                     | |  |
                 |                  |                     | |  Optional(5)
                 |                  |                     | true
@@ -1299,7 +1299,7 @@ final class PowerAssertTests: XCTestCase {
         "triangular": [1, 3, 6, 10, 15, 21, 28],
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
-      #expect(
+      #assert(
         interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2,
         verbose: true
       )
@@ -1309,7 +1309,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertTrue(
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1320,7 +1320,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1331,7 +1331,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1342,7 +1342,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1353,7 +1353,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1364,7 +1364,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1375,7 +1375,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1386,7 +1386,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1397,7 +1397,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1408,7 +1408,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1419,7 +1419,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1430,7 +1430,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
@@ -1449,7 +1449,7 @@ final class PowerAssertTests: XCTestCase {
         "triangular": [1, 3, 6, 10, 15, 21, 28],
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
-      #expect(
+      #assert(
         interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7,
         verbose: true
       )
@@ -1459,7 +1459,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertTrue(
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1470,7 +1470,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1481,7 +1481,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1492,7 +1492,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1503,7 +1503,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1514,7 +1514,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1525,7 +1525,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1536,7 +1536,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1547,7 +1547,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1558,7 +1558,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1569,7 +1569,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1580,7 +1580,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
@@ -1599,7 +1599,7 @@ final class PowerAssertTests: XCTestCase {
         "triangular": [1, 3, 6, 10, 15, 21, 28],
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
-      #expect(
+      #assert(
         interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64,
         verbose: true
       )
@@ -1609,7 +1609,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertTrue(
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1621,7 +1621,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1633,7 +1633,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1645,7 +1645,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1657,7 +1657,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1669,7 +1669,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1681,7 +1681,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1693,7 +1693,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1705,7 +1705,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1717,7 +1717,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1729,7 +1729,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1741,7 +1741,7 @@ final class PowerAssertTests: XCTestCase {
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
-          #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
@@ -1773,13 +1773,13 @@ final class PowerAssertTests: XCTestCase {
 
   func testPostfixSelfExpression() {
     captureConsoleOutput {
-      #expect(String.self != Int.self && "string".self == "string", verbose: true)
+      #assert(String.self != Int.self && "string".self == "string", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(String.self != Int.self && "string".self == "string")
+        #assert(String.self != Int.self && "string".self == "string")
                 |      |    |  |   |    |  |        |    |  |
                 |      |    |  |   |    |  "string" |    |  "string"
                 |      |    |  |   |    true        |    true
@@ -1800,20 +1800,20 @@ final class PowerAssertTests: XCTestCase {
       let x: Int? = 0
       let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
 
-      #expect(x! == 0, verbose: true)
-      #expect(someDictionary["a"]![0] == 1, verbose: true)
+      #assert(x! == 0, verbose: true)
+      #assert(someDictionary["a"]![0] == 1, verbose: true)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertTrue(
         output ==
         """
-        #expect(x! == 0)
+        #assert(x! == 0)
                 || |  |
                 |0 |  0
                 |  true
                 Optional(0)
-        #expect(someDictionary["a"]![0] == 1)
+        #assert(someDictionary["a"]![0] == 1)
                 ||             |  |  || |  |
                 |[1, 2, 3]     |  |  |1 |  1
                 |              |  |  0  true
@@ -1825,12 +1825,12 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
         """
-        #expect(x! == 0)
+        #assert(x! == 0)
                 || |  |
                 |0 |  0
                 |  true
                 Optional(0)
-        #expect(someDictionary["a"]![0] == 1)
+        #assert(someDictionary["a"]![0] == 1)
                 ||             |  |  || |  |
                 |[1, 2, 3]     |  |  |1 |  1
                 |              |  |  0  true
@@ -1846,45 +1846,45 @@ final class PowerAssertTests: XCTestCase {
   func testOptionalChainingExpression1() {
     captureConsoleOutput {
       var c: SomeClass?
-      #expect(c?.property.performAction() == nil, verbose: true)
+      #assert(c?.property.performAction() == nil, verbose: true)
 
       c = SomeClass()
-      #expect((c?.property.performAction())!, verbose: true)
-      #expect(c?.property.performAction() != nil, verbose: true)
+      #assert((c?.property.performAction())!, verbose: true)
+      #assert(c?.property.performAction() != nil, verbose: true)
 
       let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
-      #expect(someDictionary["not here"]?[0] != 99, verbose: true)
-      #expect(someDictionary["a"]?[0] != 99, verbose: true)
+      #assert(someDictionary["not here"]?[0] != 99, verbose: true)
+      #assert(someDictionary["a"]?[0] != 99, verbose: true)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertTrue(
         output ==
           """
-          #expect(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() == nil)
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
-          #expect((c?.property.performAction())!)
+          #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
                   ||| Optional(PowerAssertTests.OtherClass)
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
-          #expect(c?.property.performAction() != nil)
+          #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
-          #expect(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
-          #expect(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
                   |              |  |  || true
@@ -1898,30 +1898,30 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           """
-          #expect(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() == nil)
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
-          #expect((c?.property.performAction())!)
+          #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
                   ||| Optional(PowerAssertTests.OtherClass)
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
-          #expect(c?.property.performAction() != nil)
+          #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
-          #expect(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["b": [10, 20], "a": [1, 2, 3]]
-          #expect(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
                   |              |  |  || true
@@ -1935,30 +1935,30 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           """
-          #expect(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() == nil)
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
-          #expect((c?.property.performAction())!)
+          #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
                   ||| Optional(PowerAssertTests.OtherClass)
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
-          #expect(c?.property.performAction() != nil)
+          #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
-          #expect(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
-          #expect(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
                   |              |  |  || true
@@ -1972,30 +1972,30 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
           """
-          #expect(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() == nil)
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
-          #expect((c?.property.performAction())!)
+          #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
                   ||| Optional(PowerAssertTests.OtherClass)
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
-          #expect(c?.property.performAction() != nil)
+          #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
-          #expect(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["b": [10, 20], "a": [1, 2, 3]]
-          #expect(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
                   |              |  |  || true
@@ -2013,16 +2013,16 @@ final class PowerAssertTests: XCTestCase {
   func testOptionalChainingExpression2() {
     captureConsoleOutput {
       var c: SomeClass?
-      #expect(c?.optionalProperty?.property.optionalProperty?.performAction() == nil, verbose: true)
+      #assert(c?.optionalProperty?.property.optionalProperty?.performAction() == nil, verbose: true)
       c = SomeClass()
-//      #expect(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil, verbose: true)
+//      #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil, verbose: true)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertEqual(
         output,
         """
-        #expect(c?.optionalProperty?.property.optionalProperty?.performAction() == nil)
+        #assert(c?.optionalProperty?.property.optionalProperty?.performAction() == nil)
                 |  |                 |        |                 |               |  |
                 |  nil               nil      nil               nil             |  nil
                 nil                                                             true
@@ -2047,30 +2047,30 @@ final class PowerAssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #expect(tuple == (name: kanjiName, age: 37, birthday: date), verbose: true)
-      #expect(tuple == (kanjiName, 37, date), verbose: true)
-      #expect(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
-      #expect(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #assert(tuple == (name: kanjiName, age: 37, birthday: date), verbose: true)
+      #assert(tuple == (kanjiName, 37, date), verbose: true)
+      #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(tuple == (name: kanjiName, age: 37, birthday: date))
+        #assert(tuple == (name: kanjiName, age: 37, birthday: date))
                 |     |  |      |               |             |
                 |     |  |      |               37            1980-10-27 15:00:00 +0000
                 |     |  |      "岸川克己"
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-        #expect(tuple == (kanjiName, 37, date))
+        #assert(tuple == (kanjiName, 37, date))
                 |     |  ||          |   |
                 |     |  ||          37  1980-10-27 15:00:00 +0000
                 |     |  |"岸川克己"
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
+        #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |
                 |     |    |  ||          37  |     | true
                 |     |    |  ||              |     "岸川克己"
@@ -2080,7 +2080,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
+        #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
                 |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
                 |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
@@ -2118,16 +2118,16 @@ final class PowerAssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #expect(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
-      #expect(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1, verbose: true)
-      #expect(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
-      #expect(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1, verbose: true)
+      #assert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1, verbose: true)
+      #assert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
+        #assert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |
                 |     |    |  ||          37  |     | true
                 |     |    |  ||              |     "😇岸川克己🇯🇵"
@@ -2137,7 +2137,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
+        #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
                 |     |    |  ||          |   |     | |
                 |     |    |  ||          37  |     | true
                 |     |    |  ||              |     "岸川克己"
@@ -2147,7 +2147,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
+        #assert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
                 |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
                 |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
@@ -2163,7 +2163,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1)
+        #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1)
                 |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
                 |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
                 |     |    |  ||              |     | |  |         |  ||              1980-10-27 15:00:00 +0000
@@ -2200,30 +2200,30 @@ final class PowerAssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #expect(tuple == (name: "岸川克己", age: 37, birthday: date), verbose: true)
-      #expect(tuple == ("岸川克己", 37, date), verbose: true)
-      #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
-      #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #assert(tuple == (name: "岸川克己", age: 37, birthday: date), verbose: true)
+      #assert(tuple == ("岸川克己", 37, date), verbose: true)
+      #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(tuple == (name: "岸川克己", age: 37, birthday: date))
+        #assert(tuple == (name: "岸川克己", age: 37, birthday: date))
                 |     |  |      |                |             |
                 |     |  |      |                37            1980-10-27 15:00:00 +0000
                 |     |  |      "岸川克己"
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-        #expect(tuple == ("岸川克己", 37, date))
+        #assert(tuple == ("岸川克己", 37, date))
                 |     |  ||           |   |
                 |     |  ||           37  1980-10-27 15:00:00 +0000
                 |     |  |"岸川克己"
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
+        #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||           |   |     | |
                 |     |    |  ||           37  |     | true
                 |     |    |  ||               |     "岸川克己"
@@ -2233,7 +2233,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+        #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||           |   |     | |  |     |   |  ||           |   |     |
                 |     |    |  ||           37  |     | |  |     37  |  ||           37  |     37
                 |     |    |  ||               |     | |  |         |  ||               1980-10-27 15:00:00 +0000
@@ -2270,16 +2270,16 @@ final class PowerAssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
-      #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
-      #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
-      #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
+      #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
+      #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
+        #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||              |   |     | |
                 |     |    |  ||              37  |     | true
                 |     |    |  ||                  |     "😇岸川克己🇯🇵"
@@ -2289,7 +2289,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
+        #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
                 |     |    |  ||           |   |     | |
                 |     |    |  ||           37  |     | true
                 |     |    |  ||               |     "岸川克己"
@@ -2299,7 +2299,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+        #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||              |   |     | |  |     |   |  ||           |   |     |
                 |     |    |  ||              37  |     | |  |     37  |  ||           37  |     37
                 |     |    |  ||                  |     | |  |         |  ||               1980-10-27 15:00:00 +0000
@@ -2315,7 +2315,7 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-        #expect(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
+        #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
                 |     |    |  ||           |   |     | |  |     |   |  ||              |   |     |
                 |     |    |  ||           37  |     | |  |     37  |  ||              37  |     37
                 |     |    |  ||               |     | |  |         |  ||                  1980-10-27 15:00:00 +0000
@@ -2341,14 +2341,14 @@ final class PowerAssertTests: XCTestCase {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
 #if swift(>=3.2)
-      #expect(bar.val != bar.foo.val, verbose: true)
+      #assert(bar.val != bar.foo.val, verbose: true)
 #endif
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(bar.val != bar.foo.val)
+        #assert(bar.val != bar.foo.val)
                 |   |   |  |   |   |
                 |   3   |  |   |   2
                 |       |  |   Foo(val: 2)
@@ -2453,7 +2453,7 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         "message",
         verbose: true
@@ -2463,7 +2463,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
@@ -2481,12 +2481,12 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         file: "path/to/Tests.swift",
         verbose: true
       )
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         "message",
         file: "path/to/Tests.swift",
@@ -2497,12 +2497,12 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
@@ -2520,24 +2520,24 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       let array = [one, two, three]
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         line: 999,
         verbose: true
       )
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         "message",
         line: 999,
         verbose: true
       )
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         file: "path/to/Tests.swift",
         line: 999,
         verbose: true
       )
-      #expect(
+      #assert(
         array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
         "message",
         file: "path/to/Tests.swift",
@@ -2549,22 +2549,22 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
-        #expect(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
+        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
@@ -2578,7 +2578,7 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsNewlines() {
     captureConsoleOutput {
       let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-      #expect(
+      #assert(
         loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,",
         verbose: true
       )
@@ -2587,7 +2587,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         #"""
-        #expect(loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,")
+        #assert(loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,")
                 |          |  |
                 |          |  "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
                 |          true
@@ -2601,33 +2601,33 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsEscapeSequences1() {
     captureConsoleOutput {
       let lyric1 = "Feet, don't fail me now."
-      #expect(lyric1 == "Feet, don't fail me now.", verbose: true)
-      #expect(lyric1 == "Feet, don\'t fail me now.", verbose: true)
+      #assert(lyric1 == "Feet, don't fail me now.", verbose: true)
+      #assert(lyric1 == "Feet, don\'t fail me now.", verbose: true)
 
       let lyric2 = "Feet, don\'t fail me now."
-      #expect(lyric2 == "Feet, don't fail me now.", verbose: true)
-      #expect(lyric2 == "Feet, don\'t fail me now.", verbose: true)
+      #assert(lyric2 == "Feet, don't fail me now.", verbose: true)
+      #assert(lyric2 == "Feet, don\'t fail me now.", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(lyric1 == "Feet, don't fail me now.")
+        #assert(lyric1 == "Feet, don't fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
-        #expect(lyric1 == "Feet, don\'t fail me now.")
+        #assert(lyric1 == "Feet, don\'t fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
-        #expect(lyric2 == "Feet, don't fail me now.")
+        #assert(lyric2 == "Feet, don't fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
-        #expect(lyric2 == "Feet, don\'t fail me now.")
+        #assert(lyric2 == "Feet, don\'t fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
@@ -2641,33 +2641,33 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsEscapeSequences2() {
     captureConsoleOutput {
       let nestedQuote1 = "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-      #expect(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
-      #expect(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
+      #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
+      #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
 
       let nestedQuote2 = "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-      #expect(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
-      #expect(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
+      #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
+      #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+        #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-        #expect(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
+        #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-        #expect(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+        #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-        #expect(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
+        #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
@@ -2681,13 +2681,13 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsEscapeSequences3() {
     captureConsoleOutput {
       let helpText = "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
-      #expect(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]", verbose: true)
+      #assert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
+        #assert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
                 |        |  |
                 |        |  "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
                 |        true
@@ -2701,37 +2701,37 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsEscapeSequences4() {
     captureConsoleOutput {
       let nullCharacter = "Null character\0Null character"
-      #expect(nullCharacter == "Null character\0Null character", verbose: true)
+      #assert(nullCharacter == "Null character\0Null character", verbose: true)
 
       let lineFeed = "Line feed\nLine feed"
-      #expect(lineFeed == "Line feed\nLine feed", verbose: true)
+      #assert(lineFeed == "Line feed\nLine feed", verbose: true)
 
       let carriageReturn = "Carriage Return\rCarriage Return"
-      #expect(carriageReturn == "Carriage Return\rCarriage Return", verbose: true)
+      #assert(carriageReturn == "Carriage Return\rCarriage Return", verbose: true)
 
       let backslash = "Backslash\\Backslash"
-      #expect(backslash == "Backslash\\Backslash", verbose: true)
+      #assert(backslash == "Backslash\\Backslash", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(nullCharacter == "Null character\0Null character")
+        #assert(nullCharacter == "Null character\0Null character")
                 |             |  |
                 |             |  "Null character\0Null character"
                 |             true
                 "Null character\0Null character"
-        #expect(lineFeed == "Line feed\nLine feed")
+        #assert(lineFeed == "Line feed\nLine feed")
                 |        |  |
                 |        |  "Line feed\nLine feed"
                 |        true
                 "Line feed\nLine feed"
-        #expect(carriageReturn == "Carriage Return\rCarriage Return")
+        #assert(carriageReturn == "Carriage Return\rCarriage Return")
                 |              |  |
                 |              |  "Carriage Return\rCarriage Return"
                 |              true
                 "Carriage Return\rCarriage Return"
-        #expect(backslash == "Backslash\\Backslash")
+        #assert(backslash == "Backslash\\Backslash")
                 |         |  |
                 |         |  "Backslash\Backslash"
                 |         true
@@ -2748,30 +2748,30 @@ final class PowerAssertTests: XCTestCase {
       let dollarSign = "\u{24}"        // $,  Unicode scalar U+0024
       let blackHeart = "\u{2665}"      // ♥,  Unicode scalar U+2665
       let sparklingHeart = "\u{1F496}" // 💖, Unicode scalar U+1F496
-      #expect(wiseWords == "\"Imagination is more important than knowledge\" - Einstein", verbose: true)
-      #expect(dollarSign == "\u{24}", verbose: true)
-      #expect(blackHeart == "\u{2665}", verbose: true)
-      #expect(sparklingHeart == "\u{1F496}", verbose: true)
+      #assert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein", verbose: true)
+      #assert(dollarSign == "\u{24}", verbose: true)
+      #assert(blackHeart == "\u{2665}", verbose: true)
+      #assert(sparklingHeart == "\u{1F496}", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(wiseWords == "\"Imagination is more important than knowledge\" - Einstein")
+        #assert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein")
                 |         |  |
                 |         |  "\"Imagination is more important than knowledge\" - Einstein"
                 |         true
                 "\"Imagination is more important than knowledge\" - Einstein"
-        #expect(dollarSign == "\u{24}")
+        #assert(dollarSign == "\u{24}")
                 |          |  |
                 "$"        |  "$"
                            true
-        #expect(blackHeart == "\u{2665}")
+        #assert(blackHeart == "\u{2665}")
                 |          |  |
                 |          |  "♥"
                 |          true
                 "♥"
-        #expect(sparklingHeart == "\u{1F496}")
+        #assert(sparklingHeart == "\u{1F496}")
                 |              |  |
                 |              |  "💖"
                 |              true
@@ -2785,23 +2785,23 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsPoundSign() {
     captureConsoleOutput {
       let pound = "#"
-      #expect(pound == "#", verbose: true)
-      #expect("#" == pound, verbose: true)
-      #expect(String("#") == pound, verbose: true)
+      #assert(pound == "#", verbose: true)
+      #assert("#" == pound, verbose: true)
+      #assert(String("#") == pound, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(pound == "#")
+        #assert(pound == "#")
                 |     |  |
                 "#"   |  "#"
                       true
-        #expect("#" == pound)
+        #assert("#" == pound)
                 |   |  |
                 "#" |  "#"
                     true
-        #expect(String("#") == pound)
+        #assert(String("#") == pound)
                 |      |    |  |
                 "#"    "#"  |  "#"
                             true
@@ -2817,25 +2817,25 @@ final class PowerAssertTests: XCTestCase {
         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         """
-      #expect(
+      #assert(
         multilineLiteral == """
           Lorem ipsum dolor sit amet, consectetur adipiscing elit,
           sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           """,
         verbose: true
       )
-      #expect(multilineLiteral == multilineLiteral, verbose: true)
+      #assert(multilineLiteral == multilineLiteral, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect(multilineLiteral == "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        #assert(multilineLiteral == "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
                 |                |  |
                 |                |  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 |                true
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        #expect(multilineLiteral == multilineLiteral)
+        #assert(multilineLiteral == multilineLiteral)
                 |                |  |
                 |                |  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 |                true
@@ -2852,7 +2852,7 @@ final class PowerAssertTests: XCTestCase {
         Escaping the first quotation mark \"""
         Escaping all three quotation marks \"\"\"
         """
-      #expect(
+      #assert(
         multilineLiteral != """
           Escaping the first quotation mark \"""
           Escaping all three quotation marks \"\"\"
@@ -2864,7 +2864,7 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         ##"""
-        #expect(multilineLiteral != #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#)
+        #assert(multilineLiteral != #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#)
                 |                |  |
                 |                |  "Escaping the first quotation mark \\"\"\"\nEscaping all three quotation marks \\"\\"\\""
                 |                true
@@ -2879,36 +2879,36 @@ final class PowerAssertTests: XCTestCase {
     captureConsoleOutput {
       let number1 = 100.0
       let number2 = 200.0
-      #expect(number1 × number2 == 20000.0, verbose: true) // FIXME: Print the value of the expression
-      #expect(√number2 == 14.142135623730951, verbose: true)
-      #expect(√√number2 != 200.0, verbose: true)
-      #expect(3.760603093086394 == √√number2, verbose: true)
-      #expect(√number2 != √√number2, verbose: true)
+      #assert(number1 × number2 == 20000.0, verbose: true) // FIXME: Print the value of the expression
+      #assert(√number2 == 14.142135623730951, verbose: true)
+      #assert(√√number2 != 200.0, verbose: true)
+      #assert(3.760603093086394 == √√number2, verbose: true)
+      #assert(√number2 != √√number2, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(number1 × number2 == 20000.0)
+        #assert(number1 × number2 == 20000.0)
                 |       | |          |
                 100.0   | 200.0      20000.0
                         true
-        #expect(√number2 == 14.142135623730951)
+        #assert(√number2 == 14.142135623730951)
                 ||       |  |
                 |200.0   |  14.142135623730951
                 |        true
                 14.142135623730951
-        #expect(√√number2 != 200.0)
+        #assert(√√number2 != 200.0)
                 | |       |  |
                 | 200.0   |  200.0
                 |         true
                 3.760603093086394
-        #expect(3.760603093086394 == √√number2)
+        #assert(3.760603093086394 == √√number2)
                 |                 |  | |
                 3.760603093086394 |  | 200.0
                                   |  3.760603093086394
                                   true
-        #expect(√number2 != √√number2)
+        #assert(√number2 != √√number2)
                 ||       |    ||
                 |200.0   true |3.760603093086394
                 |             200.0
@@ -2926,19 +2926,19 @@ final class PowerAssertTests: XCTestCase {
       let i2=1
       let d1=4.0
       let d2=6.0
-      #expect(i2==1,verbose:true)
-      #expect(b1==false&&i1<i2||false==b1&&i2==1,verbose:true)
-      #expect(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0,verbose:true)
+      #assert(i2==1,verbose:true)
+      #assert(b1==false&&i1<i2||false==b1&&i2==1,verbose:true)
+      #assert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0,verbose:true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(i2==1)
+        #assert(i2==1)
                 | | |
                 1 | 1
                   true
-        #expect(b1==false&&i1<i2||false==b1&&i2==1)
+        #assert(b1==false&&i1<i2||false==b1&&i2==1)
                 | | |    | | || |
                 | | |    | 0 |1 true
                 | | |    |   true
@@ -2946,7 +2946,7 @@ final class PowerAssertTests: XCTestCase {
                 | | false
                 | true
                 false
-        #expect(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
+        #assert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
                 | | |      |  |
                 | | false  0  1
                 | true
@@ -2964,19 +2964,19 @@ final class PowerAssertTests: XCTestCase {
       let i2=1
       let d1=4.0
       let d2=6.0
-      #expect(i2==1,verbose:true)
-      #expect(b1==false&&i1<i2&&false==b1&&i2==1,verbose:true)
-      #expect(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0,verbose:true)
+      #assert(i2==1,verbose:true)
+      #assert(b1==false&&i1<i2&&false==b1&&i2==1,verbose:true)
+      #assert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0,verbose:true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(i2==1)
+        #assert(i2==1)
                 | | |
                 1 | 1
                   true
-        #expect(b1==false&&i1<i2&&false==b1&&i2==1)
+        #assert(b1==false&&i1<i2&&false==b1&&i2==1)
                 | | |    | | || | |    | | | | | |
                 | | |    | 0 |1 | |    | | | 1 | 1
                 | | |    |   |  | |    | | |   true
@@ -2990,7 +2990,7 @@ final class PowerAssertTests: XCTestCase {
                 | | false
                 | true
                 false
-        #expect(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0)
+        #assert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0)
                 | | |      |  |   |      |   |   |
                 | | false  0  1   false  |   1   1
                 | true                   false
@@ -3014,19 +3014,19 @@ final class PowerAssertTests: XCTestCase {
 //      }
 //
 //      let array = [0, 1, 2]
-//      #expect(array.map { testA($0) } == [1, 2, 3], verbose: true)
-//      #expect(array.map(testB) == [1, 2, 3], verbose: true)
+//      #assert(array.map { testA($0) } == [1, 2, 3], verbose: true)
+//      #assert(array.map(testB) == [1, 2, 3], verbose: true)
 //    } completion: { (output) in
 //      print(output)
 //      XCTAssertEqual(
 //        output,
 //        """
-//        #expect(array.map { testA($0) } == [1, 2, 3])
+//        #assert(array.map { testA($0) } == [1, 2, 3])
 //                |     |                 |  ||  |  |
 //                |     [1, 2, 3]         |  |1  2  3
 //                [0, 1, 2]               |  [1, 2, 3]
 //                                        true
-//        #expect(array.map(testB) == [1, 2, 3])
+//        #assert(array.map(testB) == [1, 2, 3])
 //                |     |   |      |  ||  |  |
 //                |     |   |      |  |1  2  3
 //                |     |   |      |  [1, 2, 3]
@@ -3047,20 +3047,20 @@ final class PowerAssertTests: XCTestCase {
       }
 
       let string = "World!"
-      #expect("Hello \(string)" == "Hello World!", verbose: true)
+      #assert("Hello \(string)" == "Hello World!", verbose: true)
 
       let i = 99
-      #expect("value == \(testA(i))" == "value == 100", verbose: true)
+      #assert("value == \(testA(i))" == "value == 100", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #expect("Hello \(string)" == "Hello World!")
+        #assert("Hello \(string)" == "Hello World!")
                 |        |        |  |
                 |        "World!" |  "Hello World!"
                 "Hello World!"    true
-        #expect("value == \(testA(i))" == "value == 100")
+        #assert("value == \(testA(i))" == "value == 100")
                 |           |     |    |  |
                 |           100   99   |  "value == 100"
                 "value == 100"         true
@@ -3076,12 +3076,12 @@ final class PowerAssertTests: XCTestCase {
         let regex = #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#
         let result = try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")
 
-        #expect(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil, verbose: true)
-        #expect(
+        #assert(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil, verbose: true)
+        #assert(
           try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0,
           verbose: true
         )
-        #expect(
+        #assert(
           try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT",
           verbose: true
         )
@@ -3093,13 +3093,13 @@ final class PowerAssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         #"""
-        #expect(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil)
+        #assert(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil)
                     |     |              |                                                             |  |
                     |     |              "CREDIT    03/01/2022    Payroll from employer      $200.23"  |  _OptionalNilComparisonType()
                     |     |                                                                            true
                     |     Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
-        #expect(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0)
+        #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0)
                     |                                            |              |                                                              |      | |  |       |      |
                     |                                            |              "CREDIT    03/01/2022    Payroll from employer      $200.23"   |      | |  |       |      Optional("CREDIT    03/01/2022")
                     |                                            |                                                                             |      | |  |       Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
@@ -3109,7 +3109,7 @@ final class PowerAssertTests: XCTestCase {
                     |                                            |                                                                             Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
                     |                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
-        #expect(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT")
+        #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT")
                     |                                            |              |                                                              |      | |  |
                     |                                            |              "CREDIT    03/01/2022    Payroll from employer      $200.23"   |      | |  Optional("CREDIT")
                     |                                            |                                                                             |      | true
