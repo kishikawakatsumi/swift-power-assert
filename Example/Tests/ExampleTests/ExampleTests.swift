@@ -5,23 +5,23 @@ final class PowerAssertTests: XCTestCase {
   func testExample() {
     let a = 10
     let b = 9
-    #expect(a * b == 91)
+    #assert(a * b == 91)
 
     let xs = [1, 2, 3]
-    #expect(xs.contains(4))
+    #assert(xs.contains(4))
 
-    #expect("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
+    #assert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
 
     let d = 4
     let e = 7
     let f = 12
-    #expect(max(d, e) == f)
-    #expect(d + e > f)
+    #assert(max(d, e) == f)
+    #assert(d + e > f)
 
     let john = Person(name: "John", age: 42)
     let mike = Person(name: "Mike", age: 13)
-    #expect(john.isTeenager)
-    #expect(mike.isTeenager && john.age < mike.age)
+    #assert(john.isTeenager)
+    #assert(mike.isTeenager && john.age < mike.age)
   }
 }
 
