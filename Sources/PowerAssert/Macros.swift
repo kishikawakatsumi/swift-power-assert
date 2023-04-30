@@ -6,7 +6,7 @@
 ///   - line: The line number where the failure occurs. The default is the line number where you call this function.
 ///   - verbose: If `true`, the result is always printed instead of only when the assertion fails.
 @freestanding(expression)
-public macro expect(
+public macro assert(
     _ expression: @autoclosure () throws -> Bool,
     _ message: @autoclosure () -> String = "",
     file: StaticString = #filePath,
@@ -14,7 +14,17 @@ public macro expect(
     verbose: Bool = false
 ) = #externalMacro(module: "PowerAssertPlugin", type: "PowerAssertMacro")
 
-/// An alias for `expect`.
+/// An alias for `assert`.
+@freestanding(expression)
+public macro expect(
+  _ expression: @autoclosure () throws -> Bool,
+  _ message: @autoclosure () -> String = "",
+  file: StaticString = #filePath,
+  line: UInt = #line,
+  verbose: Bool = false
+) = #externalMacro(module: "PowerAssertPlugin", type: "PowerAssertMacro")
+
+/// An alias for `assert`.
 @freestanding(expression)
 public macro powerAssert(
   _ expression: @autoclosure () throws -> Bool,

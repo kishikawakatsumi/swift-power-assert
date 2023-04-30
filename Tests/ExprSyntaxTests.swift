@@ -48,13 +48,13 @@ final class ExprSyntaxTests: XCTestCase {
 //    }
 
     captureConsoleOutput {
-      #expect(things[0] as? Int == 0, verbose: true)
+      #assert(things[0] as? Int == 0, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #expect(things[0] as? Int == 0)
+        #assert(things[0] as? Int == 0)
                 |      || |       |  |
                 |      |0 |       |  Optional(0)
                 |      0  |       true

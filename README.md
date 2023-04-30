@@ -11,17 +11,17 @@ Power asserts (also known as diagrammed assertions) augment your assertion failu
 Power asserts provide descriptive assertion messages for your tests, like the following examples:
 
 ```swift
-#expect(max(a, b) == c)
+#assert(max(a, b) == c)
         |   |  |  |  |
         7   4  7  |  12
                   false
 
-#expect(xs.contains(4))
+#assert(xs.contains(4))
         |  |        |
         |  false    4
         [1, 2, 3]
 
-#expect("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
+#assert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
         |       |         |    |  |         |         |
         "hello" true      "h"  |  "goodbye" false     "y"
                               false
@@ -29,7 +29,7 @@ Power asserts provide descriptive assertion messages for your tests, like the fo
 
 ## Why Power Assert?
 
-When writing tests, we need to use different assertion functions. With Power Assert you only use the `#expect()` function. There are many
+When writing tests, we need to use different assertion functions. With Power Assert you only use the `#assert()` function. There are many
 Assertion APIs, no need to remember them. Just create an expression that returns a boolean value and Power Assert will automatically display rich error information.
 
 ## Getting Started
@@ -66,12 +66,12 @@ Test Suite 'swift-power-assert-examplePackageTests.xctest' started at 2023-04-05
 Test Suite 'PowerAssertTests' started at 2023-04-05 07:17:58.801
 Test Case '-[ExampleTests.PowerAssertTests testExample]' started.
 /swift-power-assert/Example/"ExampleTests/ExampleTests.swift":8: error: -[ExampleTests.PowerAssertTests testExample] : failed -
-#expect(a * b == 91)
+#assert(a * b == 91)
         |   | |  |
         10  9 |  91
               false
 /swift-power-assert/Example/"ExampleTests/ExampleTests.swift":11: error: -[ExampleTests.PowerAssertTests testExample] : failed -
-#expect(xs.contains(4))
+#assert(xs.contains(4))
         |  |        |
         |  false    4
         [1, 2, 3]
@@ -110,7 +110,7 @@ let package = Package(
 )
 ```
 
-Next, you can use Power Assert in your tests with the `#expect()` macro.
+Next, you can use Power Assert in your tests with the `#assert()` macro.
 
 ```swift
 // MyLibraryTests.swift
@@ -124,7 +124,7 @@ final class MyLibraryTests: XCTestCase {
     let b = 4
     let c = 12
 
-    #expect(max(a, b) == c)
+    #assert(max(a, b) == c)
   }
 }
 ```
@@ -135,14 +135,14 @@ Swift Power Assert is still in the early stages of development. If you could hel
 
 ## Frequently Asked Questions
 
-**Q: I want to display the result even if the test is successful (i.e. the expression in the `#expect()` function evaluates to `true`).**
+**Q: I want to display the result even if the test is successful (i.e. the expression in the `#assert()` function evaluates to `true`).**
 
-A: By default, the `#expect()` function does not display the result if the expression evaluates to `true`, because the test was successful. To always print the result, set the `verbose` argument to true.
+A: By default, the `#assert()` function does not display the result if the expression evaluates to `true`, because the test was successful. To always print the result, set the `verbose` argument to true.
 
 For example:
 
 ```swift
-#expect(x == y, verbose: true)
+#assert(x == y, verbose: true)
 ```
 
 **Q: I want to know how the compiler actually expanded the macro.**
@@ -160,10 +160,10 @@ If you run the above with the `-dump-macro-expansions` option, you will get the 
 
 ```shell
 ...
-@__swiftmacro_12ExampleTests011PowerAssertB0C04testA0yyF6expectfMf_.swift as ()
+@__swiftmacro_12ExampleTests011PowerAssertB0C04testA0yyF6assertfMf_.swift as ()
 ------------------------------
 
-        PowerAssert.Assertion("#expect(a * b == 91)", message: "", file: #""ExampleTests/ExampleTests.swift""#, line: 8, verbose: false) {
+        PowerAssert.Assertion("#assert(a * b == 91)", message: "", file: #""ExampleTests/ExampleTests.swift""#, line: 8, verbose: false) {
   $0.capture($0.capture($0.capture(a .self, column: 8) * $0.capture(b .self, column: 12), column: 10) == $0.capture(91, column: 17), column: 14)
 }
 .render()
