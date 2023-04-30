@@ -1,9 +1,10 @@
 <p align="center">
-  <img width="640px" src="https://user-images.githubusercontent.com/40610/230884012-e70403f9-a1d2-471e-9328-efb3f5908d9f.png" />
+  <img width="640px" src="https://user-images.githubusercontent.com/40610/235353186-552ae826-c981-422d-8e75-e6b487a00bbd.png" />
 </p>
 
 # Swift Power Assert
 
+![test workflow](https://github.com/kishikawakatsumi/swift-power-assert/actions/workflows/test.yml/badge.svg)
 [![Codemagic build status](https://api.codemagic.io/apps/642dc9195f1acbc4a9aa8023/default-workflow/status_badge.svg)](https://codemagic.io/apps/642dc9195f1acbc4a9aa8023/default-workflow/latest_build)
 
 Power asserts (also known as diagrammed assertions) augment your assertion failures with information about the values produced during evaluation of a condition, and present it in an easily digestible form. Power asserts are a popular feature of [Spock](https://github.com/spockframework/spock) (and later the entire [Groovy](https://github.com/apache/groovy) language independent of Spock), [ScalaTest](http://www.scalatest.org/) and [Expecty](https://github.com/pniederw/expecty).
