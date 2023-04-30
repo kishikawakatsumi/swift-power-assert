@@ -921,9 +921,8 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
 
-      if ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" {
-        XCTAssertEqual(
-          output,
+      XCTAssertTrue(
+        output ==
           #"""
           #expect(s[keyPath: pathToProperty] == 12)
                   |          |             | |  |
@@ -967,10 +966,8 @@ final class PowerAssertTests: XCTestCase {
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
           """#
-        )
-      } else if ProcessInfo.processInfo.environment["CI"] == "true" {
-        XCTAssertEqual(
-          output,
+        ||
+        output ==
           #"""
           #expect(s[keyPath: pathToProperty] == 12)
                   |          |             | |  |
@@ -1014,55 +1011,7 @@ final class PowerAssertTests: XCTestCase {
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
           """#
-        )
-      } else {
-        XCTAssertEqual(
-          output,
-          #"""
-          #expect(s[keyPath: pathToProperty] == 12)
-                  |          |             | |  |
-                  |          |             | |  12
-                  |          |             | true
-                  |          |             12
-                  |          \SomeStructure.someValue
-                  SomeStructure(someValue: 12)
-          #expect(s[keyPath: \SomeStructure.someValue] == 12)
-                  |          |                       | |  |
-                  |          |                       | |  12
-                  |          |                       | true
-                  |          |                       12
-                  |          \SomeStructure.someValue
-                  SomeStructure(someValue: 12)
-          #expect(s.getValue(keyPath: \.someValue) == 12)
-                  | |                 |            |  |
-                  | 12                |            |  12
-                  |                   |            true
-                  |                   \SomeStructure.someValue
-                  SomeStructure(someValue: 12)
-          #expect(nested[keyPath: nestedKeyPath] == 24)
-                  |               |            | |  |
-                  |               |            | |  24
-                  |               |            | true
-                  |               |            24
-                  |               \OuterStructure.outer.someValue
-                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested[keyPath: \OuterStructure.outer.someValue] == 24)
-                  |               |                              | |  |
-                  |               |                              | |  24
-                  |               |                              | true
-                  |               |                              24
-                  |               \OuterStructure.outer.someValue
-                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested.getValue(keyPath: \.outer.someValue) == 24)
-                  |      |                 |                  |  |
-                  |      24                |                  |  24
-                  |                        |                  true
-                  |                        \OuterStructure.outer.someValue
-                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-
-          """#
-        )
-      }
+      )
     }
   }
 
