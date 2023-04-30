@@ -301,7 +301,7 @@ class PowerAssertRewriter: SyntaxRewriter {
         calledExpression: IdentifierExprSyntax(
           identifier: TokenSyntax(.identifier("$0.capture"), presence: .present)
         ),
-        leftParen: TokenSyntax.leftParenToken(),
+        leftParen: .leftParenToken(),
         argumentList: TupleExprElementListSyntax([
           TupleExprElementSyntax(
             expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
@@ -309,14 +309,14 @@ class PowerAssertRewriter: SyntaxRewriter {
             trailingTrivia: .space
           ),
           TupleExprElementSyntax(
-            label: TokenSyntax.identifier("column"),
-            colon: TokenSyntax.colonToken().with(\.trailingTrivia, .space),
+            label: .identifier("column"),
+            colon: .colonToken().with(\.trailingTrivia, .space),
             expression: IntegerLiteralExprSyntax(
-              digits: TokenSyntax.integerLiteral("\(column + startColumn)")
+              digits: .integerLiteral("\(column + startColumn)")
             )
           ),
         ]),
-        rightParen: TokenSyntax.rightParenToken(),
+        rightParen: .rightParenToken(),
         trailingTrivia: node.trailingTrivia
       )
     )
