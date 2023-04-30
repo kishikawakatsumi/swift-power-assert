@@ -171,3 +171,7 @@ prefix operator √√
 prefix func √√(number: Double) -> Double {
   return sqrt(sqrt(number))
 }
+
+func upload(content: String) async -> String {
+  "OK"
+}

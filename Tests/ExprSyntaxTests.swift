@@ -65,4 +65,218 @@ final class ExprSyntaxTests: XCTestCase {
       )
     }
   }
+
+  func testAssignmentExprSyntax() {
+
+  }
+
+//  func testAwaitExprSyntax() async {
+//    captureConsoleOutput {
+//      #assert(await upload(content: "Swift") == "OK", verbose: true)
+//    } completion: { (output) in
+//      print(output)
+//      XCTAssertEqual(
+//        output,
+//        """
+//
+//        """
+//      )
+//    }
+//  }
+
+  func testBinaryOperatorExprSyntax() {
+
+  }
+
+  func testBooleanLiteralExprSyntax() {
+
+  }
+
+  func testBorrowExprSyntax() {
+
+  }
+
+  func testClosureExprSyntax() {
+
+  }
+
+  func testDictionaryExprSyntax() {
+
+  }
+
+  func testDiscardAssignmentExprSyntax() {
+
+  }
+
+  func testEditorPlaceholderExprSyntax() {
+
+  }
+
+  func testFloatLiteralExprSyntax() {
+
+  }
+
+  func testForcedValueExprSyntax() {
+
+  }
+
+  func testFunctionCallExprSyntax() {
+
+  }
+
+  func testIdentifierExprSyntax() {
+
+  }
+
+//  func testIfExprSyntax() {
+//    func c() -> Int {
+//      1
+//    }
+//    func d() -> Int {
+//      10
+//    }
+//    let isRoot = false
+//    let count = c()
+//    let willExpand = true
+//    let maxDepth = d()
+//
+//    captureConsoleOutput {
+//      #assert(
+//        if isRoot && (count == 0 || !willExpand) { "" }
+//        else if count == 0 { "- " }
+//        else if maxDepth <= 0 { "▹ " }
+//        else { "▿ " } != "- ",
+//        verbose: true
+//      )
+//    } completion: { (output) in
+//      print(output)
+//      XCTAssertEqual(
+//        output,
+//        """
+//        #assert(bullet != "- ")
+//                |      |  |
+//                |      |  "- "
+//                |      true
+//                "▿ "
+//
+//        """
+//      )
+//    }
+//  }
+
+  func testInOutExprSyntax() {
+
+  }
+
+  func testInfixOperatorExprSyntax() {
+
+  }
+
+  func testIntegerLiteralExprSyntax() {
+
+  }
+
+  func testIsExprSyntax() {
+
+  }
+
+  func testKeyPathExprSyntax() {
+
+  }
+
+  func testMacroExpansionExprSyntax() {
+
+  }
+
+  func testMemberAccessExprSyntax() {
+
+  }
+
+  func testMissingExprSyntax() {
+
+  }
+
+  func testMoveExprSyntax() {
+
+  }
+
+  func testNilLiteralExprSyntax() {
+
+  }
+
+  func testOptionalChainingExprSyntax() {
+
+  }
+
+  func testPackExpansionExprSyntax() {
+
+  }
+
+  func testPostfixIfConfigExprSyntax() {
+
+  }
+
+  func testPostfixUnaryExprSyntax() {
+
+  }
+
+  func testPrefixOperatorExprSyntax() {
+
+  }
+
+  func testRegexLiteralExprSyntax() {
+
+  }
+
+  func testSequenceExprSyntax() {
+
+  }
+
+  func testSpecializeExprSyntax() {
+
+  }
+
+  func testStringLiteralExprSyntax() {
+
+  }
+
+  func testSubscriptExprSyntax() {
+
+  }
+
+  func testSuperRefExprSyntax() {
+
+  }
+
+  func testSwitchExprSyntax() {
+
+  }
+
+  func testTernaryExprSyntax() {
+
+  }
+
+  func testTryExprSyntax() {
+
+  }
+
+  func testTupleExprSyntax() {
+
+  }
+
+  func testUnresolvedAsExprSyntax() {
+
+  }
+
+  func testUnresolvedIsExprSyntax() {
+
+  }
+
+  func testUnresolvedPatternExprSyntax() {
+
+  }
+
+  func testUnresolvedTernaryExprSyntax() {
+
+  }
 }
