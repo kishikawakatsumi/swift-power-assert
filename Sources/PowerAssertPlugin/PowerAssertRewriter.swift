@@ -18,7 +18,7 @@ class PowerAssertRewriter: SyntaxRewriter {
 
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
-    startColumn = endLocation.column! - startLocation.column!
+    startColumn = endLocation.column - startLocation.column
   }
 
   func rewrite() -> SyntaxProtocol {
@@ -353,10 +353,10 @@ class PowerAssertRewriter: SyntaxRewriter {
   private func graphemeColumn(_ node: SyntaxProtocol) -> Int {
     let startLocation = node.startLocation(converter: sourceLocationConverter)
     let column: Int
-    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column!)) {
+    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column)) {
       column = stringWidth(graphemeClusters)
     } else {
-      column = startLocation.column!
+      column = startLocation.column
     }
     return column
   }

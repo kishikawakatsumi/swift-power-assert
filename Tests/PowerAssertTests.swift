@@ -713,7 +713,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 |     |  |         |  |     |  | |  |       |  | |  |         |  |
-                |     |  "*.swift" |  3     |  1 |  250     |  2 |  |         |  "function"
+                |     |  "*.swift" |  2     |  1 |  252     |  2 |  |         |  "function"
                 |     true         true     true true       true |  |         true
                 |                                                |  "testMagicLiteralExpression1()"
                 |                                                true
