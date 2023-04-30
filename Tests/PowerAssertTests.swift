@@ -921,56 +921,8 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
 
-      if ProcessInfo.processInfo.environment["CI"] == "true" {
-        XCTAssertEqual(
-          output,
-          #"""
-          #expect(s[keyPath: pathToProperty] == 12)
-                  |          |             | |  |
-                  |          |             | |  12
-                  |          |             | true
-                  |          |             12
-                  |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
-                  SomeStructure(someValue: 12)
-          #expect(s[keyPath: \SomeStructure.someValue] == 12)
-                  |          |                       | |  |
-                  |          |                       | |  12
-                  |          |                       | true
-                  |          |                       12
-                  |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
-                  SomeStructure(someValue: 12)
-          #expect(s.getValue(keyPath: \.someValue) == 12)
-                  | |                 |            |  |
-                  | 12                |            |  12
-                  |                   |            true
-                  |                   Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
-                  SomeStructure(someValue: 12)
-          #expect(nested[keyPath: nestedKeyPath] == 24)
-                  |               |            | |  |
-                  |               |            | |  24
-                  |               |            | true
-                  |               |            24
-                  |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
-                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested[keyPath: \OuterStructure.outer.someValue] == 24)
-                  |               |                              | |  |
-                  |               |                              | |  24
-                  |               |                              | true
-                  |               |                              24
-                  |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
-                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-          #expect(nested.getValue(keyPath: \.outer.someValue) == 24)
-                  |      |                 |                  |  |
-                  |      24                |                  |  24
-                  |                        |                  true
-                  |                        Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
-                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
-
-          """#
-        )
-      } else {
-        XCTAssertEqual(
-          output,
+      XCTAssertTrue(
+        output ==
           #"""
           #expect(s[keyPath: pathToProperty] == 12)
                   |          |             | |  |
@@ -1014,8 +966,52 @@ final class PowerAssertTests: XCTestCase {
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
           """#
-        )
-      }
+        ||
+        output ==
+          #"""
+          #expect(s[keyPath: pathToProperty] == 12)
+                  |          |             | |  |
+                  |          |             | |  12
+                  |          |             | true
+                  |          |             12
+                  |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
+                  SomeStructure(someValue: 12)
+          #expect(s[keyPath: \SomeStructure.someValue] == 12)
+                  |          |                       | |  |
+                  |          |                       | |  12
+                  |          |                       | true
+                  |          |                       12
+                  |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
+                  SomeStructure(someValue: 12)
+          #expect(s.getValue(keyPath: \.someValue) == 12)
+                  | |                 |            |  |
+                  | 12                |            |  12
+                  |                   |            true
+                  |                   Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
+                  SomeStructure(someValue: 12)
+          #expect(nested[keyPath: nestedKeyPath] == 24)
+                  |               |            | |  |
+                  |               |            | |  24
+                  |               |            | true
+                  |               |            24
+                  |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
+                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+          #expect(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+                  |               |                              | |  |
+                  |               |                              | |  24
+                  |               |                              | true
+                  |               |                              24
+                  |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
+                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+          #expect(nested.getValue(keyPath: \.outer.someValue) == 24)
+                  |      |                 |                  |  |
+                  |      24                |                  |  24
+                  |                        |                  true
+                  |                        Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
+                  OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          """#
+      )
     }
   }
 
@@ -1027,49 +1023,45 @@ final class PowerAssertTests: XCTestCase {
       #expect(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
     } completion: { (output) in
       print(output)
-      if ProcessInfo.processInfo.environment["CI"] == "true" {
-        XCTAssertEqual(
-          output,
-          #"""
-          #expect(greetings[keyPath: \[String].[1]] == "hola")
-                  |                  |          | | |  |
-                  |                  |          1 | |  "hola"
-                  |                  |            | true
-                  |                  |            "hola"
-                  |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
-                  ["hello", "hola", "bonjour", "안녕"]
-          #expect(greetings[keyPath: \[String].first?.count] == 5)
-                  |                  |                     | |  |
-                  |                  |                     | |  Optional(5)
-                  |                  |                     | true
-                  |                  |                     Optional(5)
-                  |                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
-                  ["hello", "hola", "bonjour", "안녕"]
+      XCTAssertTrue(
+        output ==
+        #"""
+        #expect(greetings[keyPath: \[String].[1]] == "hola")
+                |                  |          | | |  |
+                |                  |          1 | |  "hola"
+                |                  |            | true
+                |                  |            "hola"
+                |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
+                ["hello", "hola", "bonjour", "안녕"]
+        #expect(greetings[keyPath: \[String].first?.count] == 5)
+                |                  |                     | |  |
+                |                  |                     | |  Optional(5)
+                |                  |                     | true
+                |                  |                     Optional(5)
+                |                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
+                ["hello", "hola", "bonjour", "안녕"]
 
-          """#
-        )
-      } else {
-        XCTAssertEqual(
-          output,
-          #"""
-          #expect(greetings[keyPath: \[String].[1]] == "hola")
-                  |                  |          | | |  |
-                  |                  |          1 | |  "hola"
-                  |                  |            | true
-                  |                  |            "hola"
-                  |                  \Array<String>.<computed 0x00000001a128ad3c (String)>
-                  ["hello", "hola", "bonjour", "안녕"]
-          #expect(greetings[keyPath: \[String].first?.count] == 5)
-                  |                  |                     | |  |
-                  |                  |                     | |  Optional(5)
-                  |                  |                     | true
-                  |                  |                     Optional(5)
-                  |                  \Array<String>.first?.count?
-                  ["hello", "hola", "bonjour", "안녕"]
+        """#
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        #"""
+        #expect(greetings[keyPath: \[String].[1]] == "hola")
+                |                  |          | | |  |
+                |                  |          1 | |  "hola"
+                |                  |            | true
+                |                  |            "hola"
+                |                  \Array<String>.<computed 0x0000000000000000 (String)>
+                ["hello", "hola", "bonjour", "안녕"]
+        #expect(greetings[keyPath: \[String].first?.count] == 5)
+                |                  |                     | |  |
+                |                  |                     | |  Optional(5)
+                |                  |                     | true
+                |                  |                     Optional(5)
+                |                  \Array<String>.first?.count?
+                ["hello", "hola", "bonjour", "안녕"]
 
-          """#
-        )
-      }
+        """#
+      )
     }
   }
 
@@ -1314,9 +1306,8 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
-      if ProcessInfo.processInfo.environment["CI"] == "true" {
-        XCTAssertTrue(
-          output ==
+      XCTAssertTrue(
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
@@ -1326,8 +1317,8 @@ final class PowerAssertTests: XCTestCase {
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
@@ -1337,8 +1328,8 @@ final class PowerAssertTests: XCTestCase {
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
@@ -1348,8 +1339,8 @@ final class PowerAssertTests: XCTestCase {
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
@@ -1359,8 +1350,8 @@ final class PowerAssertTests: XCTestCase {
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
@@ -1370,8 +1361,8 @@ final class PowerAssertTests: XCTestCase {
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
@@ -1381,76 +1372,73 @@ final class PowerAssertTests: XCTestCase {
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-        )
-      } else {
-        XCTAssertTrue(
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   |                           |                 |         | | |  |
                   |                           |                 "prime"   0 2 |  2
                   |                           |                               true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.<computed 0x00000001a128ad3c (Int)>
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-        )
-      }
+      )
     }
   }
 
@@ -1468,9 +1456,8 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
-      if ProcessInfo.processInfo.environment["CI"] == "true" {
-        XCTAssertTrue(
-          output ==
+      XCTAssertTrue(
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
@@ -1480,8 +1467,8 @@ final class PowerAssertTests: XCTestCase {
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
@@ -1491,8 +1478,8 @@ final class PowerAssertTests: XCTestCase {
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
@@ -1502,8 +1489,8 @@ final class PowerAssertTests: XCTestCase {
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
@@ -1513,8 +1500,8 @@ final class PowerAssertTests: XCTestCase {
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
@@ -1524,8 +1511,8 @@ final class PowerAssertTests: XCTestCase {
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
@@ -1535,76 +1522,73 @@ final class PowerAssertTests: XCTestCase {
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-        )
-      } else {
-        XCTAssertTrue(
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   |                           |                 |                  | |  |
                   |                           |                 "hexagonal"        7 |  7
                   |                           |                                      true
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-        )
-      }
+      )
     }
   }
 
@@ -1622,9 +1606,8 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
-      if ProcessInfo.processInfo.environment["CI"] == "true" {
-        XCTAssertTrue(
-          output ==
+      XCTAssertTrue(
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
@@ -1635,8 +1618,8 @@ final class PowerAssertTests: XCTestCase {
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
@@ -1647,8 +1630,8 @@ final class PowerAssertTests: XCTestCase {
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
@@ -1659,8 +1642,8 @@ final class PowerAssertTests: XCTestCase {
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
@@ -1671,8 +1654,8 @@ final class PowerAssertTests: XCTestCase {
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
@@ -1683,8 +1666,8 @@ final class PowerAssertTests: XCTestCase {
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
@@ -1695,82 +1678,79 @@ final class PowerAssertTests: XCTestCase {
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-        )
-      } else {
-        XCTAssertTrue(
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
                   |                           |                                             64
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
                   |                           |                                             64
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
                   |                           |                                             64
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
                   |                           |                                             64
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
                   |                           |                                             64
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           """#
-          ||
-          output ==
+        ||
+        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
           #"""
           #expect(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   |                           |                 |                           | |  |
                   |                           |                 "hexagonal"                 | |  64
                   |                           |                                             | true
                   |                           |                                             64
-                  |                           \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>!.count.bitWidth
+                  |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
           """#
-        )
-      }
+      )
     }
   }
 
@@ -3021,42 +3001,44 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-  func testHigherOrderFunction() {
-    captureConsoleOutput {
-      func testA(_ i: Int) -> Int {
-        return i + 1
-      }
-
-      func testB(_ i: Int) -> Int {
-        return i + 1
-      }
-
-      let array = [0, 1, 2]
-      #expect(array.map { testA($0) } == [1, 2, 3], verbose: true)
-      #expect(array.map(testB) == [1, 2, 3], verbose: true)
-    } completion: { (output) in
-      print(output)
-      XCTAssertEqual(
-        output,
-        """
-        #expect(array.map { testA($0) } == [1, 2, 3])
-                |     |                 |  ||  |  |
-                |     [1, 2, 3]         |  |1  2  3
-                [0, 1, 2]               |  [1, 2, 3]
-                                        true
-        #expect(array.map(testB) == [1, 2, 3])
-                |     |   |      |  ||  |  |
-                |     |   |      |  |1  2  3
-                |     |   |      |  [1, 2, 3]
-                |     |   |      true
-                |     |   (Function)
-                |     [1, 2, 3]
-                [0, 1, 2]
-
-        """
-      )
-    }
-  }
+  // FIXME: Temporarily disable tests due to Swift compiler bug
+  // https://github.com/apple/swift-syntax/issues/1593
+//  func testHigherOrderFunction() {
+//    captureConsoleOutput {
+//      func testA(_ i: Int) -> Int {
+//        return i + 1
+//      }
+//
+//      func testB(_ i: Int) -> Int {
+//        return i + 1
+//      }
+//
+//      let array = [0, 1, 2]
+//      #expect(array.map { testA($0) } == [1, 2, 3], verbose: true)
+//      #expect(array.map(testB) == [1, 2, 3], verbose: true)
+//    } completion: { (output) in
+//      print(output)
+//      XCTAssertEqual(
+//        output,
+//        """
+//        #expect(array.map { testA($0) } == [1, 2, 3])
+//                |     |                 |  ||  |  |
+//                |     [1, 2, 3]         |  |1  2  3
+//                [0, 1, 2]               |  [1, 2, 3]
+//                                        true
+//        #expect(array.map(testB) == [1, 2, 3])
+//                |     |   |      |  ||  |  |
+//                |     |   |      |  |1  2  3
+//                |     |   |      |  [1, 2, 3]
+//                |     |   |      true
+//                |     |   (Function)
+//                |     [1, 2, 3]
+//                [0, 1, 2]
+//
+//        """
+//      )
+//    }
+//  }
 
   func testStringInterpolation() {
     captureConsoleOutput {

@@ -1,4 +1,4 @@
-// swift-tools-version: 999.0
+// swift-tools-version: 5.9
 
 import CompilerPluginSupport
 import PackageDescription
@@ -24,7 +24,6 @@ let package = Package(
   targets: [
     .macro(
       name: "PowerAssertPlugin",
-      group: .package,
       dependencies: [
         .product(name: "SwiftSyntax", package: "swift-syntax"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
