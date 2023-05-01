@@ -5,17 +5,17 @@ import XCTest
 
 public enum PowerAssert {
   public class Assertion {
-    let assertion: String
-    let originalMessage: String
-    let filePath: StaticString
-    let lineNumber: UInt
-    let verbose: Bool
-    var binaryExpressions: [Int: String]
+    private let assertion: String
+    private let originalMessage: String
+    private let filePath: StaticString
+    private let lineNumber: UInt
+    private let verbose: Bool
+    private let binaryExpressions: [Int: String]
 
-    var result: Bool = true
-    var values = [Value]()
-    var errors = [Swift.Error]()
-    var binaryExpressionValues = [(String, Any)]()
+    private var result: Bool = true
+    private var values = [Value]()
+    private var errors = [Swift.Error]()
+    private var binaryExpressionValues = [BinaryExpressionValue]()
 
     public init(
       _ assertion: String,
@@ -101,8 +101,16 @@ public enum PowerAssert {
           Console.output(message, .color(.red))
           if !binaryExpressionValues.isEmpty {
             Console.output(
-              binaryExpressionValues.map { "[\(type(of: $0.1))] \($0.0)\n=> \(valueToString($0.1))" }.joined(separator: "\n"), .color(.red)
+              binaryExpressionValues.map { "[\(type(of: $0.value))] \($0.expression)\n=> \(valueToString($0.value))" }.joined(separator: "\n"), .color(.red)
             )
+
+            let skipped = binaryExpressions.filter { !binaryExpressionValues.map {$0.id }.contains($0.key) }.sorted { $0.key < $1.key }.map { $0.value }
+            if !skipped.isEmpty {
+              Console.output(
+                skipped.map { "[Not Evaluated] \($0)" }.joined(separator: "\n"), .color(.red)
+              )
+            }
+
             Console.output()
           }
 #endif
@@ -110,8 +118,16 @@ public enum PowerAssert {
           Console.output(message, .color(.red))
           if !binaryExpressionValues.isEmpty {
             Console.output(
-              binaryExpressionValues.map { "[\(type(of: $0.1))] \($0.0)\n=> \(valueToString($0.1))" }.joined(separator: "\n"), .color(.red)
+              binaryExpressionValues.map { "[\(type(of: $0.value))] \($0.expression)\n=> \(valueToString($0.value))" }.joined(separator: "\n"), .color(.red)
             )
+
+            let skipped = binaryExpressions.filter { !binaryExpressionValues.map {$0.id }.contains($0.key) }.sorted { $0.key < $1.key }.map { $0.value }
+            if !skipped.isEmpty {
+              Console.output(
+                skipped.map { "[Not Evaluated] \($0)" }.joined(separator: "\n"), .color(.red)
+              )
+            }
+
             Console.output()
           }
         }
@@ -121,7 +137,9 @@ public enum PowerAssert {
     private func store<T>(value: T, column: Int, id: Int) {
       values.append(Value(valueToString(value), column: column))
       if let expr = binaryExpressions[id] {
-        binaryExpressionValues.append((expr, value))
+        binaryExpressionValues.append(
+          BinaryExpressionValue(id: id, value: value, expression: expr)
+        )
       }
     }
   }
@@ -142,6 +160,12 @@ public enum PowerAssert {
     static func ==(lhs: Value, rhs: Value) -> Bool {
       return lhs.column == rhs.column
     }
+  }
+
+  private struct BinaryExpressionValue {
+    let id: Int
+    let value: Any
+    let expression: String
   }
 
   static private func escapeString(_ s: String) -> String {
