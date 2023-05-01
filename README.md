@@ -11,7 +11,7 @@ Power asserts (also known as diagrammed assertions) augment your assertion failu
 
 Power asserts provide descriptive assertion messages for your tests, like the following examples:
 
-```swift
+```
 #assert(max(d, e) == f)
         │   │  │  │  │
         7   4  7  │  12
