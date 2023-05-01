@@ -163,9 +163,8 @@ If you run the above with the `-dump-macro-expansions` option, you will get the 
 ...
 @__swiftmacro_12ExampleTests011PowerAssertB0C04testA0yyF6assertfMf_.swift as ()
 ------------------------------
-
-        PowerAssert.Assertion("#assert(a * b == 91)", message: "", file: #""ExampleTests/ExampleTests.swift""#, line: 8, verbose: false) {
-  $0.capture($0.capture($0.capture(a .self, column: 8) * $0.capture(b .self, column: 12), column: 10) == $0.capture(91, column: 17), column: 14)
+PowerAssert.Assertion("#assert(a * b == 91)", message: "", file: #""ExampleTests/ExampleTests.swift""#, line: 8, verbose: false, binaryExpressions: [0: "a", 2: "a * b", 3: "91", 1: "b"]) {
+    $0.capture($0.capture($0.capture(a .self, column: 8, id: 0) * $0.capture(b .self, column: 12, id: 1), column: 10, id: 2) == $0.capture(91, column: 17, id: 3), column: 14, id: 4)
 }
 .render()
 ------------------------------

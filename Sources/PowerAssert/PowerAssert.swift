@@ -97,7 +97,7 @@ public enum PowerAssert {
         if !result {
 #if canImport(XCTest)
           XCTFail("\(originalMessage)\n" + message, file: filePath, line: lineNumber)
-#else
+#endif
           Console.output(message, .color(.red))
           if !binaryExpressionValues.isEmpty {
             Console.output(
@@ -113,7 +113,6 @@ public enum PowerAssert {
 
             Console.output()
           }
-#endif
         } else if verbose {
           Console.output(message, .color(.red))
           if !binaryExpressionValues.isEmpty {

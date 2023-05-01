@@ -40,7 +40,6 @@ private struct CodeGenerator {
 
     let rewriter = PowerAssertRewriter(expression, macro: macro)
     let expanded = rewriter.rewrite()
-    print("binaryExpressions: \(rewriter.binaryExpressions)")
 
     return """
       PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose), binaryExpressions: \(rewriter.binaryExpressions)) {
