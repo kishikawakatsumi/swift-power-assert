@@ -71,75 +71,95 @@ public enum PowerAssert {
 
     public func render() {
       if !result || verbose {
-        var message = ""
-        message += "\(assertion)\n"
-        values.sort()
-        var current = 0
-        for value in values {
-          PowerAssert.align(&message, current: &current, column: value.column, string: "│")
-        }
-        message += "\n"
-        while !values.isEmpty {
-          var current = 0
-          var index = 0
-          while index < values.count {
-            if index == values.count - 1 || ((values[index].column + values[index].value.count < values[index + 1].column) && values[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty) {
-              PowerAssert.align(&message, current: &current, column: values[index].column, string: values[index].value)
-              values.remove(at: index)
-            } else {
-              PowerAssert.align(&message, current: &current, column: values[index].column, string: "│")
-              index += 1
-            }
-          }
-          message += "\n"
+        let diagram = renderDiagram()
+        let comparison = [renderComparison(), renderSkipped()]
+          .filter { !$0.isEmpty }
+          .joined(separator: "\n")
+        let message: String
+        if comparison.isEmpty {
+          message = diagram
+        } else {
+          message = "\(diagram)\n\(comparison)\n"
         }
 
         if !result {
 #if canImport(XCTest)
           XCTFail("\(originalMessage)\n" + message, file: filePath, line: lineNumber)
-#endif
+#else
           Console.output(message, .color(.red))
-          if !binaryExpressionValues.isEmpty {
-            Console.output(
-              binaryExpressionValues.map { "[\(type(of: $0.value))] \($0.expression)\n=> \(valueToString($0.value))" }.joined(separator: "\n"), .color(.red)
-            )
-
-            let skipped = binaryExpressions.filter { !binaryExpressionValues.map {$0.id }.contains($0.key) }.sorted { $0.key < $1.key }.map { $0.value }
-            if !skipped.isEmpty {
-              Console.output(
-                skipped.map { "[Not Evaluated] \($0)" }.joined(separator: "\n"), .color(.red)
-              )
-            }
-
-            Console.output()
-          }
+#endif
         } else if verbose {
           Console.output(message, .color(.red))
-          if !binaryExpressionValues.isEmpty {
-            Console.output(
-              binaryExpressionValues.map { "[\(type(of: $0.value))] \($0.expression)\n=> \(valueToString($0.value))" }.joined(separator: "\n"), .color(.red)
-            )
-
-            let skipped = binaryExpressions.filter { !binaryExpressionValues.map {$0.id }.contains($0.key) }.sorted { $0.key < $1.key }.map { $0.value }
-            if !skipped.isEmpty {
-              Console.output(
-                skipped.map { "[Not Evaluated] \($0)" }.joined(separator: "\n"), .color(.red)
-              )
-            }
-
-            Console.output()
-          }
         }
       }
     }
 
     private func store<T>(value: T, column: Int, id: Int) {
-      values.append(Value(valueToString(value), column: column))
+      values.append(Value(stringify(value), column: column))
       if let expr = binaryExpressions[id] {
         binaryExpressionValues.append(
           BinaryExpressionValue(id: id, value: value, expression: expr)
         )
       }
+    }
+
+    private func renderDiagram() -> String {
+      func align(_ message: inout String, current: inout Int, column: Int, string: String) {
+        while current < column {
+          message += " "
+          current += 1
+        }
+        message += string
+        current += stringWidth(string)
+      }
+
+      var message = ""
+      message += "\(assertion)\n"
+      values.sort()
+      var current = 0
+      for value in values {
+        align(&message, current: &current, column: value.column, string: "│")
+      }
+      message += "\n"
+
+      while !values.isEmpty {
+        var current = 0
+        var index = 0
+        while index < values.count {
+          if index == values.count - 1 || ((values[index].column + values[index].value.count < values[index + 1].column) && values[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty) {
+            align(&message, current: &current, column: values[index].column, string: values[index].value)
+            values.remove(at: index)
+          } else {
+            align(&message, current: &current, column: values[index].column, string: "│")
+            index += 1
+          }
+        }
+        message += "\n"
+      }
+
+      return message
+    }
+
+    private func renderComparison() -> String {
+      var message = ""
+      if !binaryExpressionValues.isEmpty {
+        message += binaryExpressionValues
+          .map { "[\(type(of: $0.value))] \($0.expression)\n=> \(stringify($0.value))" }
+          .joined(separator: "\n")
+      }
+      return message
+    }
+
+    private func renderSkipped() -> String {
+      var message = ""
+      let skipped = binaryExpressions
+        .filter { !binaryExpressionValues.map { $0.id }.contains($0.key) }
+        .sorted { $0.key < $1.key }
+        .map { $0.value }
+      if !skipped.isEmpty {
+        message += skipped.map { "[Not Evaluated] \($0)" }.joined(separator: "\n")
+      }
+      return message
     }
   }
 
@@ -176,7 +196,7 @@ public enum PowerAssert {
       .replacingOccurrences(of: "\0", with: "\\0")
   }
 
-  static private func valueToString<T>(_ value: T?) -> String {
+  static private func stringify<T>(_ value: T?) -> String {
 #if os(macOS)
     switch value {
     case .some(let v) where v is String || v is Selector: return "\"\(escapeString("\(v)"))\""
@@ -190,14 +210,5 @@ public enum PowerAssert {
     case .none: return "nil"
     }
 #endif
-  }
-
-  static private func align(_ message: inout String, current: inout Int, column: Int, string: String) {
-    while current < column {
-      message += " "
-      current += 1
-    }
-    message += string
-    current += stringWidth(string)
   }
 }
