@@ -948,50 +948,8 @@ final class PowerAssertTests: XCTestCase {
       )
     } completion: { (output) in
       print(output)
-      XCTAssertTrue(
-        output ==
-        """
-        #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-                |     |  |         |  |     |  | |  |       |  | |  |         |  |
-                |     |  "*.swift" |  2     |  1 |  301     |  2 |  |         |  "function"
-                |     true         true     true true       true |  |         true
-                |                                                |  "testMagicLiteralExpression1()"
-                |                                                true
-                "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
-
-        [String] #file
-        => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
-        [String] "*.swift"
-        => "*.swift"
-        [Bool] #file != "*.swift"
-        => true
-        [Int] #line
-        => 2
-        [Int] 1
-        => 1
-        [Bool] #line != 1
-        => true
-        [Bool] #file != "*.swift" && #line != 1
-        => true
-        [Int] #column
-        => 301
-        [Int] 2
-        => 2
-        [Bool] #column != 2
-        => true
-        [Bool] #file != "*.swift" && #line != 1 && #column != 2
-        => true
-        [String] #function
-        => "testMagicLiteralExpression1()"
-        [String] "function"
-        => "function"
-        [Bool] #function != "function"
-        => true
-
-
-        """
-        ||
-        output ==
+      XCTAssertEqual(
+        output,
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 |     |  |         |  |     |  | |  |       |  | |  |         |  |
