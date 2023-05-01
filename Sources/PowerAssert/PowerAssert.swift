@@ -76,7 +76,7 @@ public enum PowerAssert {
         values.sort()
         var current = 0
         for value in values {
-          PowerAssert.align(&message, current: &current, column: value.column, string: "|")
+          PowerAssert.align(&message, current: &current, column: value.column, string: "│")
         }
         message += "\n"
         while !values.isEmpty {
@@ -87,7 +87,7 @@ public enum PowerAssert {
               PowerAssert.align(&message, current: &current, column: values[index].column, string: values[index].value)
               values.remove(at: index)
             } else {
-              PowerAssert.align(&message, current: &current, column: values[index].column, string: "|")
+              PowerAssert.align(&message, current: &current, column: values[index].column, string: "│")
               index += 1
             }
           }
