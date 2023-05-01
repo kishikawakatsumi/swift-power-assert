@@ -2,6 +2,10 @@ import XCTest
 @testable import PowerAssert
 
 final class ExprSyntaxTests: XCTestCase {
+  override func setUp() {
+    setenv("NO_COLOR", "1", 1)
+  }
+  
   func testArrayExprSyntax() {
 
   }
@@ -60,6 +64,12 @@ final class ExprSyntaxTests: XCTestCase {
                 |      0  |       true
                 |         Optional(0)
                 [0, 0.0, 42, 3.14159, "hello", (3.0, 5.0), PowerAssertTests.Movie, (Function)]
+
+        [Optional<Int>] things[0] as? Int
+        => Optional(0)
+        [Optional<Int>] 0
+        => Optional(0)
+        
 
         """
       )

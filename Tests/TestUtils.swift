@@ -6,7 +6,7 @@ func captureConsoleOutput(execute: () -> Void, completion: @escaping (String) ->
   let semaphore = DispatchSemaphore(value: 0)
   pipe.fileHandleForReading.readabilityHandler = { fileHandle in
     let data = fileHandle.availableData
-    if data.isEmpty  { // end-of-file condition
+    if data.isEmpty  {
       fileHandle.readabilityHandler = nil
       completion(output)
       semaphore.signal()
