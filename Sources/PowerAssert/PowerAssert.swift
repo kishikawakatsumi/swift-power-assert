@@ -6,20 +6,32 @@ import XCTest
 public enum PowerAssert {
   public class Assertion {
     let assertion: String
+    let originalMessage: String
     let filePath: StaticString
     let lineNumber: UInt
     let verbose: Bool
+    var binaryExpressions: [Int: String]
+
     var result: Bool = true
-    let originalMessage: String
     var values = [Value]()
     var errors = [Swift.Error]()
+    var binaryExpressionValues = [(String, Any)]()
 
-    public init(_ assertion: String, message: String = "", file: StaticString, line: UInt, verbose: Bool = false, evaluate: (Assertion) throws -> Bool = { _ in true }) {
+    public init(
+      _ assertion: String,
+      message: String = "",
+      file: StaticString,
+      line: UInt,
+      verbose: Bool = false,
+      binaryExpressions: [Int: String],
+      evaluate: (Assertion) throws -> Bool = { _ in true }
+    ) {
       self.assertion = assertion
       self.originalMessage = message
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
+      self.binaryExpressions = binaryExpressions
       do {
         self.result = try evaluate(self)
       } catch {
@@ -27,38 +39,34 @@ public enum PowerAssert {
       }
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> T, column: Int) rethrows -> T {
+    public func capture<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
       let val = try expr()
-      store(value: val, column: column)
+      store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> [T], column: Int) rethrows -> [T] {
+    public func capture<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
       let val = try expr()
-      store(value: val, column: column)
+      store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> T?, column: Int) rethrows -> T? {
+    public func capture<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
       let val = try expr()
-      store(value: val, column: column)
+      store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture(_ expr: @autoclosure () throws -> Float, column: Int) rethrows -> Float {
+    public func capture(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
       let val = try expr()
-      store(value: val, column: column)
+      store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture(_ expr: @autoclosure () throws -> Double, column: Int) rethrows -> Double {
+    public func capture(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
       let val = try expr()
-      store(value: val, column: column)
+      store(value: val, column: column, id: id)
       return val
-    }
-
-    public func store<T>(value: T, column: Int) {
-      values.append(Value(valueToString(value), column: column))
     }
 
     public func render() {
@@ -85,15 +93,35 @@ public enum PowerAssert {
           }
           message += "\n"
         }
+
         if !result {
 #if canImport(XCTest)
           XCTFail("\(originalMessage)\n" + message, file: filePath, line: lineNumber)
 #else
-          print(message, terminator: "")
+          Console.output(message, .color(.red))
+          if !binaryExpressionValues.isEmpty {
+            Console.output(
+              binaryExpressionValues.map { "[\(type(of: $0.1))] \($0.0)\n=> \(valueToString($0.1))" }.joined(separator: "\n"), .color(.red)
+            )
+            Console.output()
+          }
 #endif
         } else if verbose {
-          print(message, terminator: "")
+          Console.output(message, .color(.red))
+          if !binaryExpressionValues.isEmpty {
+            Console.output(
+              binaryExpressionValues.map { "[\(type(of: $0.1))] \($0.0)\n=> \(valueToString($0.1))" }.joined(separator: "\n"), .color(.red)
+            )
+            Console.output()
+          }
         }
+      }
+    }
+
+    private func store<T>(value: T, column: Int, id: Int) {
+      values.append(Value(valueToString(value), column: column))
+      if let expr = binaryExpressions[id] {
+        binaryExpressionValues.append((expr, value))
       }
     }
   }

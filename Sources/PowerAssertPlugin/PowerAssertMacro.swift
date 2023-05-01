@@ -39,10 +39,11 @@ private struct CodeGenerator {
     let verbose = parameters.verbose
 
     let rewriter = PowerAssertRewriter(expression, macro: macro)
+    let expanded = rewriter.rewrite()
 
     return """
-      PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose)) {
-        \(rewriter.rewrite())
+      PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose), binaryExpressions: \(rewriter.binaryExpressions)) {
+        \(expanded)
       }
       .render()
       """

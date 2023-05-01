@@ -3,6 +3,10 @@ import SwiftOperators
 import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
+  var binaryExpressions = [Int: String]()
+  private var nodeId = 0
+  private var currentNode: ExprSyntax?
+
   private let expression: SyntaxProtocol
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
@@ -294,8 +298,17 @@ class PowerAssertRewriter: SyntaxRewriter {
     return super.visit(node)
   }
 
+  override func visitPost(_ node: Syntax) {
+    guard let expr = node.as(ExprSyntax.self) else { return }
+    guard let parent = expr.parent else { return }
+    guard let _ = parent.as(InfixOperatorExprSyntax.self) else { return }
+    guard node.syntaxNodeType != BinaryOperatorExprSyntax.self else { return }
+    guard let _ = currentNode else { return }
+    binaryExpressions[nodeId - 1] = "\(node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+  }
+
   private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
-    return ExprSyntax(
+    let syntax = ExprSyntax(
       FunctionCallExprSyntax(
         leadingTrivia: node.leadingTrivia,
         calledExpression: IdentifierExprSyntax(
@@ -313,6 +326,15 @@ class PowerAssertRewriter: SyntaxRewriter {
             colon: .colonToken().with(\.trailingTrivia, .space),
             expression: IntegerLiteralExprSyntax(
               digits: .integerLiteral("\(column + startColumn)")
+            ),
+            trailingComma: .commaToken(),
+            trailingTrivia: .space
+          ),
+          TupleExprElementSyntax(
+            label: .identifier("id"),
+            colon: .colonToken().with(\.trailingTrivia, .space),
+            expression: IntegerLiteralExprSyntax(
+              digits: .integerLiteral("\(nodeId)")
             )
           ),
         ]),
@@ -320,6 +342,9 @@ class PowerAssertRewriter: SyntaxRewriter {
         trailingTrivia: node.trailingTrivia
       )
     )
+    nodeId += 1
+    currentNode = syntax
+    return syntax
   }
 
   private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
