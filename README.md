@@ -53,14 +53,14 @@ Swift Power Assert is implemented using [macros](https://github.com/apple/swift-
 
 To see PowerAssert in action, go to the Examples directory and run `swift test`.
 
-```shell
+```
 $ cd Example
 $ swift test
 ```
 
 See the following results?
 
-```shell
+```
 ...
 Test Suite 'All tests' started at 2023-04-05 07:17:58.800
 Test Suite 'swift-power-assert-examplePackageTests.xctest' started at 2023-04-05 07:17:58.801
@@ -152,14 +152,14 @@ A: You can use the `-dump-macro-expansions` option to dump the macro expansion.
 
 For example:
 
-```shell
+```
 $ cd Example
 $ swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
 ```
 
 If you run the above with the `-dump-macro-expansions` option, you will get the following output.
 
-```shell
+```
 ...
 @__swiftmacro_12ExampleTests011PowerAssertB0C04testA0yyF6assertfMf_.swift as ()
 ------------------------------
