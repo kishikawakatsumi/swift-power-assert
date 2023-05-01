@@ -31,4 +31,9 @@ workflows:
       - name: Test
         script: |
           export TOOLCHAINS=org.swift.59202304251a
-          swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
+          swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions --enable-code-coverage
+          xcrun llvm-cov report \
+            $(swift build --show-bin-path)/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \
+            -instr-profile=$(swift build --show-bin-path)/codecov/default.profdata \
+            -ignore-filename-regex=".build|Tests" \
+            -use-color
