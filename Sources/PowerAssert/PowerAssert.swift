@@ -84,7 +84,7 @@ public enum PowerAssert {
 
         if !result {
 #if canImport(XCTest)
-          XCTFail("\(originalMessage)\n" + message, file: filePath, line: lineNumber)
+          XCTFail("\(originalMessage)\n\(Console.apply([.color(.red)], to: message))", file: filePath, line: lineNumber)
 #else
           Console.output(message, .color(.red))
 #endif

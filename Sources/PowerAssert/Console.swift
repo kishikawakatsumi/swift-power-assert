@@ -20,7 +20,7 @@ class Console {
     print(apply(styles, to: text))
   }
 
-  private static func apply(_ styles: [Style], to text: String) -> String {
+  static func apply(_ styles: [Style], to text: String) -> String {
     guard isTTY() else { return text }
 
     var result = text
