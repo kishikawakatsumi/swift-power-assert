@@ -2,6 +2,10 @@ import XCTest
 @testable import PowerAssert
 
 final class PowerAssertTests: XCTestCase {
+  override func setUp() {
+    setenv("NO_COLOR", "1", 1)
+  }
+
   func testBinaryExpression1() {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
@@ -18,6 +22,12 @@ final class PowerAssertTests: XCTestCase {
                 |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |       true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
 
         """
       )
@@ -40,6 +50,12 @@ final class PowerAssertTests: XCTestCase {
                 |       | Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |       true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
 
         """
       )
@@ -65,6 +81,12 @@ final class PowerAssertTests: XCTestCase {
                 |     nil            0     |  Optional(2)
                 [1, 2, 3]                  true
 
+        [Optional<Int>] array.firstIndex(of: zero)
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+
+
         """
       )
     }
@@ -88,6 +110,20 @@ final class PowerAssertTests: XCTestCase {
                 |     "[1, 2, 3]" true      "["  |  true |  |     "[1, 2, 3]" false     "Hello"  |  false
                 [1, 2, 3]                        true    |  [1, 2, 3]                            true
                                                          true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("[") == true
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("Hello") == false
+        => true
+
 
         """
       )
@@ -121,6 +157,20 @@ final class PowerAssertTests: XCTestCase {
                                            |  Optional(2)
                                            true
 
+        [Optional<Int>] array.firstIndex(of: zero)
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+        [Bool] array.firstIndex(of: zero) != two
+        => true
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+        [Bool] bar.val != bar.foo.val
+        => true
+
+
         """
       )
     }
@@ -144,6 +194,12 @@ final class PowerAssertTests: XCTestCase {
                 |     1              2      3  |  1
                 [1, 2, 3]                      true
 
+        [Int] array.distance(from: 2, to: 3)
+        => 1
+        [Int] 1
+        => 1
+
+
         """
       )
     }
@@ -165,6 +221,12 @@ final class PowerAssertTests: XCTestCase {
                 ||    |    |      |     |  |
                 |1    2    3      3     |  3
                 [1, 2, 3]               true
+
+        [Int] [one, two, three].count
+        => 3
+        [Int] 3
+        => 3
+
 
         """
       )
@@ -199,6 +261,12 @@ final class PowerAssertTests: XCTestCase {
                 |Object(types: [Optional("string"), Optional(98.6), Optional(true), Optional(false), nil, Optional(nan), Optional(inf), Optional(PowerAssertTests.Person(name: "alice", age: 3))])
                 Person(name: "alice", age: 3)
 
+        [String] (object.types[index] as! Person).name
+        => "alice"
+        [String] bob.name
+        => "bob"
+
+
         """
       )
     }
@@ -222,6 +290,20 @@ final class PowerAssertTests: XCTestCase {
                 |     "[1, 2, 3]" false     "]"  |  true |  |     "[1, 2, 3]" false     "Hello"  |  false
                 [1, 2, 3]                        false   |  [1, 2, 3]                            true
                                                          true
+
+        [Bool] array.description.hasPrefix("]")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("]") == true
+        => false
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("Hello") == false
+        => true
+
 
         """
       )
@@ -252,6 +334,12 @@ final class PowerAssertTests: XCTestCase {
                 |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |       true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
         #assert(bar .val != bar.foo.val)
                 |    |   |  |   |   |
                 |    3   |  |   |   2
@@ -259,6 +347,12 @@ final class PowerAssertTests: XCTestCase {
                 |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |        true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar .val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
         #assert(bar .val != bar .foo .val)
                 |    |   |  |    |    |
                 |    3   |  |    |    2
@@ -266,6 +360,12 @@ final class PowerAssertTests: XCTestCase {
                 |        |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |        true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar .val
+        => 3
+        [Int] bar .foo .val
+        => 2
+
 
         """
       )
@@ -314,14 +414,32 @@ final class PowerAssertTests: XCTestCase {
                 |       |               |     |  |
                 |       nil             0     |  Optional(2)
                 [1, 2, 3]                     true
+
+        [Optional<Int>] array . firstIndex( of: zero)
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+
         #assert(array . firstIndex( of: zero) != two)
                 |       |               |     |  |
                 |       nil             0     |  Optional(2)
                 [1, 2, 3]                     true
+
+        [Optional<Int>] array . firstIndex( of: zero)
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+
         #assert(array .firstIndex( of: zero) != two)
                 |      |               |     |  |
                 |      nil             0     |  Optional(2)
                 [1, 2, 3]                    true
+
+        [Optional<Int>] array .firstIndex( of: zero)
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+
 
         """
       )
@@ -354,6 +472,20 @@ final class PowerAssertTests: XCTestCase {
                 |      "[1, 2, 3]"  true       "["   |  true |  |      "[1, 2, 3]"  false      "Hello"   |  false
                 [1, 2, 3]                            true    |  [1, 2, 3]                                true
                                                              true
+
+        [Bool] array .description .hasPrefix( "[" )
+        => true
+        [Bool] true
+        => true
+        [Bool] array .description .hasPrefix( "[" ) == true
+        => true
+        [Bool] array .description .hasPrefix ("Hello" )
+        => false
+        [Bool] false
+        => false
+        [Bool] array .description .hasPrefix ("Hello" ) == false
+        => true
+
 
         """
       )
@@ -401,6 +533,20 @@ final class PowerAssertTests: XCTestCase {
                                              |  Optional(2)
                                              true
 
+        [Optional<Int>] array.firstIndex( of: zero )
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+        [Bool] array.firstIndex( of: zero ) != two
+        => true
+        [Int] bar .val
+        => 3
+        [Int] bar .foo .val
+        => 2
+        [Bool] bar .val != bar .foo .val
+        => true
+
+
         """
       )
     }
@@ -431,6 +577,12 @@ final class PowerAssertTests: XCTestCase {
                 |      1               2      3  |  4
                 [1, 2, 3]                        true
 
+        [Int] array .distance( from: 2, to: 3)
+        => 1
+        [Int] 4
+        => 4
+
+
         """
       )
     }
@@ -457,6 +609,12 @@ final class PowerAssertTests: XCTestCase {
                 ||    |     |       |     |  |
                 |1    2     3       3     |  10
                 [1, 2, 3]                 true
+
+        [Int] [one, two , three] .count
+        => 3
+        [Int] 10
+        => 10
+
 
         """
       )
@@ -485,6 +643,12 @@ final class PowerAssertTests: XCTestCase {
                 |1    2     3        3     |  10
                 [1, 2, 3]                  true
 
+        [Int] [one, two , three]  .count
+        => 3
+        [Int] 10
+        => 10
+
+
         """
       )
     }
@@ -509,6 +673,12 @@ final class PowerAssertTests: XCTestCase {
                 ||    |    |        |     |  |
                 |1    2    3        3     |  10
                 [1, 2, 3]                 true
+
+        [Int] [one, two, three] . count
+        => 3
+        [Int] 10
+        => 10
+
 
         """
       )
@@ -549,6 +719,12 @@ final class PowerAssertTests: XCTestCase {
                      |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      |             Optional(116 bytes)
                      Foundation.JSONEncoder
+
+        [Optional<Data>] JSONEncoder().encode(landmark)
+        => Optional(116 bytes)
+        [Optional<Data>] #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8)
+        => Optional(22 bytes)
+
         #assert(try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8))
                      |             |      |         |  |                                                                                                                        |            |
                      |             |      |         |  |                                                                                                                        |            Unicode (UTF-8)
@@ -558,6 +734,12 @@ final class PowerAssertTests: XCTestCase {
                      |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      |             Optional(116 bytes)
                      Foundation.JSONEncoder
+
+        [Optional<Data>] JSONEncoder().encode(landmark)
+        => Optional(116 bytes)
+        [Optional<Data>] #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8)
+        => Optional(116 bytes)
+
         #assert(try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark))
                      |                          |           |      |        |     |  |             |      |
                      |                          |           String Encoding |     |  |             |      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
@@ -565,6 +747,12 @@ final class PowerAssertTests: XCTestCase {
                      "{\"name\":\"Tokyo Tower\"}"                           |     |  Foundation.JSONEncoder
                                                                             |     true
                                                                             Unicode (UTF-8)
+
+        [Optional<Data>] #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8)
+        => Optional(22 bytes)
+        [Optional<Data>] JSONEncoder().encode(landmark)
+        => Optional(116 bytes)
+        
 
         """#
       )
@@ -590,6 +778,20 @@ final class PowerAssertTests: XCTestCase {
                 |             true
                 Optional(1234)
 
+        [Optional<Int>] number
+        => Optional(1234)
+        [Optional<Int>] nil
+        => nil
+        [Bool] number != nil
+        => true
+        [Optional<Int>] number
+        => Optional(1234)
+        [Optional<Int>] 1234
+        => Optional(1234)
+        [Bool] number == 1234
+        => true
+
+
         """
       )
     }
@@ -613,6 +815,16 @@ final class PowerAssertTests: XCTestCase {
                 ||      true                     true
                 |Optional(1234)
                 "1234"
+
+        [Optional<Int>] number
+        => Optional(1234)
+        [Optional<Int>] nil
+        => nil
+        [String] (number != nil ? string : hello)
+        => "1234"
+        [String] string
+        => "1234"
+
 
         """
       )
@@ -639,6 +851,16 @@ final class PowerAssertTests: XCTestCase {
                 |Optional(1234)
                 "hello"
 
+        [Optional<Int>] number
+        => Optional(1234)
+        [Optional<Int>] nil
+        => nil
+        [String] (number == nil ? string : hello)
+        => "hello"
+        [String] string
+        => "1234"
+        
+
         """
       )
     }
@@ -661,6 +883,12 @@ final class PowerAssertTests: XCTestCase {
                 ||    |    |      |              |     |  |
                 |1    2    3      nil            0     |  Optional(2)
                 [1, 2, 3]                              true
+
+        [Optional<Int>] [one, two, three].firstIndex(of: zero)
+        => nil
+        [Optional<Int>] two
+        => Optional(2)
+
 
         """
       )
@@ -686,6 +914,12 @@ final class PowerAssertTests: XCTestCase {
                 |0     1    2    3      2     |  3
                 [0: 1, 2: 3]                  true
 
+        [Int] [zero: one, two: three].count
+        => 2
+        [Int] three
+        => 3
+
+
         """
         ||
         output ==
@@ -694,6 +928,12 @@ final class PowerAssertTests: XCTestCase {
                 ||     |    |    |      |     |  |
                 |0     1    2    3      2     |  3
                 [2: 3, 0: 1]                  true
+
+        [Int] [zero: one, two: three].count
+        => 2
+        [Int] three
+        => 3
+        
 
         """
       )
@@ -713,11 +953,41 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 |     |  |         |  |     |  | |  |       |  | |  |         |  |
-                |     |  "*.swift" |  2     |  1 |  252     |  2 |  |         |  "function"
+                |     |  "*.swift" |  2     |  1 |  301     |  2 |  |         |  "function"
                 |     true         true     true true       true |  |         true
                 |                                                |  "testMagicLiteralExpression1()"
                 |                                                true
                 "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
+
+        [String] #file
+        => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
+        [String] "*.swift"
+        => "*.swift"
+        [Bool] #file != "*.swift"
+        => true
+        [Int] #line
+        => 2
+        [Int] 1
+        => 1
+        [Bool] #line != 1
+        => true
+        [Bool] #file != "*.swift" && #line != 1
+        => true
+        [Int] #column
+        => 301
+        [Int] 2
+        => 2
+        [Bool] #column != 2
+        => true
+        [Bool] #file != "*.swift" && #line != 1 && #column != 2
+        => true
+        [String] #function
+        => "testMagicLiteralExpression1()"
+        [String] "function"
+        => "function"
+        [Bool] #function != "function"
+        => true
+
 
         """
         ||
@@ -725,11 +995,41 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 |     |  |         |  |     |  | |  |       |  | |  |         |  |
-                |     |  "*.swift" |  2     |  1 |  252     |  2 |  |         |  "function"
+                |     |  "*.swift" |  2     |  1 |  301     |  2 |  |         |  "function"
                 |     true         true     true true       true |  |         true
                 |                                                |  "testMagicLiteralExpression1()"
                 |                                                true
                 "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
+
+        [String] #file
+        => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
+        [String] "*.swift"
+        => "*.swift"
+        [Bool] #file != "*.swift"
+        => true
+        [Int] #line
+        => 2
+        [Int] 1
+        => 1
+        [Bool] #line != 1
+        => true
+        [Bool] #file != "*.swift" && #line != 1
+        => true
+        [Int] #column
+        => 301
+        [Int] 2
+        => 2
+        [Bool] #column != 2
+        => true
+        [Bool] #file != "*.swift" && #line != 1 && #column != 2
+        => true
+        [String] #function
+        => "testMagicLiteralExpression1()"
+        [String] "function"
+        => "function"
+        [Bool] #function != "function"
+        => true
+
 
         """
       )
@@ -759,6 +1059,20 @@ final class PowerAssertTests: XCTestCase {
                                                                                                   |  true
                                                                                                   1.0
 
+        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        [_NSTaggedPointerColor] .blue
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [Bool] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue
+        => true
+        [_NSTaggedPointerColor] .blue
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        [Bool] .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => true
+
+
         """
       )
     }
@@ -785,6 +1099,28 @@ final class PowerAssertTests: XCTestCase {
                 |                            true
                 -[PowerAssertTests testSelfExpression]
 
+        [String] self.stringValue
+        => "string"
+        [String] "string"
+        => "string"
+        [Bool] self.stringValue == "string"
+        => true
+        [Int] self.intValue
+        => 100
+        [Int] 100
+        => 100
+        [Bool] self.intValue == 100
+        => true
+        [Bool] self.stringValue == "string" && self.intValue == 100
+        => true
+        [Double] self.doubleValue
+        => 999.9
+        [Double] 999.9
+        => 999.9
+        [Bool] self.doubleValue == 999.9
+        => true
+
+
         """
       )
     }
@@ -803,6 +1139,12 @@ final class PowerAssertTests: XCTestCase {
                 |     true                 |  true
                 |                          true
                 -[PowerAssertTests testSuperExpression]
+
+        [Bool] super.continueAfterFailure
+        => true
+        [Bool] true
+        => true
+
 
         """
       )
@@ -833,6 +1175,20 @@ final class PowerAssertTests: XCTestCase {
                 | true         |  | true
                 64             |  64
                                true
+
+        [Int] i
+        => 64
+        [Int] .bitWidth
+        => 64
+        [Bool] i == .bitWidth
+        => true
+        [Int] i
+        => 64
+        [Int] Double.Exponent.bitWidth
+        => 64
+        [Bool] i == Double.Exponent.bitWidth
+        => true
+
         #assert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
                 |    |  ||                  |                |                  |
                 |    |  |CAAutoresizingMask |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
@@ -840,6 +1196,12 @@ final class PowerAssertTests: XCTestCase {
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
+
+        [CAAutoresizingMask] mask
+        => CAAutoresizingMask(rawValue: 36)
+        [CAAutoresizingMask] [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin]
+        => CAAutoresizingMask(rawValue: 36)
+
         #assert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
                 |    |  ||                  |                 |
                 |    |  |CAAutoresizingMask |                 CAAutoresizingMask(rawValue: 32)
@@ -847,6 +1209,12 @@ final class PowerAssertTests: XCTestCase {
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
+
+        [CAAutoresizingMask] mask
+        => CAAutoresizingMask(rawValue: 36)
+        [CAAutoresizingMask] [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin]
+        => CAAutoresizingMask(rawValue: 36)
+
         #assert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
                 |    |  | |                |                  |
                 |    |  | |                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
@@ -854,6 +1222,12 @@ final class PowerAssertTests: XCTestCase {
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
+
+        [CAAutoresizingMask] mask
+        => CAAutoresizingMask(rawValue: 36)
+        [CAAutoresizingMask] [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin]
+        => CAAutoresizingMask(rawValue: 36)
+
         #assert(mask == [.layerMaxXMargin, .layerMaxYMargin])
                 |    |  | |                 |
                 |    |  | |                 CAAutoresizingMask(rawValue: 32)
@@ -861,6 +1235,12 @@ final class PowerAssertTests: XCTestCase {
                 |    |  CAAutoresizingMask(rawValue: 36)
                 |    true
                 CAAutoresizingMask(rawValue: 36)
+
+        [CAAutoresizingMask] mask
+        => CAAutoresizingMask(rawValue: 36)
+        [CAAutoresizingMask] [.layerMaxXMargin, .layerMaxYMargin]
+        => CAAutoresizingMask(rawValue: 36)
+
 
         """
       )
@@ -894,12 +1274,24 @@ final class PowerAssertTests: XCTestCase {
                 |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
                 |     true
                 ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+
+        [(String, Int, Date)] tuple
+        => ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+        [(String, Int, Date)] (name: "Katsumi", age: 37, birthday: date2)
+        => ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
+
         #assert(tuple != ("Katsumi", 37, date2))
                 |     |  ||          |   |
                 |     |  |"Katsumi"  37  2000-12-30 15:00:00 +0000
                 |     |  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
                 |     true
                 ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+
+        [(String, Int, Date)] tuple
+        => ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+        [(String, Int, Date)] ("Katsumi", 37, date2)
+        => ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
+
         #assert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
                 |     |    |  ||          |   |      | |
                 |     |    |  |"Katsumi"  37  |      | true
@@ -910,6 +1302,14 @@ final class PowerAssertTests: XCTestCase {
                 |     "Katsumi"
                 (name: "Katsumi", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 
+        [String] tuple.name
+        => "Katsumi"
+        [String] ("Katsumi", 37, date2).0
+        => "Katsumi"
+        [Bool] tuple.name == ("Katsumi", 37, date2).0
+        => true
+
+        
         """
       )
     }
@@ -943,6 +1343,12 @@ final class PowerAssertTests: XCTestCase {
                   |          |             12
                   |          \SomeStructure.someValue
                   SomeStructure(someValue: 12)
+
+          [Int] s[keyPath: pathToProperty]
+          => 12
+          [Int] 12
+          => 12
+
           #assert(s[keyPath: \SomeStructure.someValue] == 12)
                   |          |                       | |  |
                   |          |                       | |  12
@@ -950,12 +1356,24 @@ final class PowerAssertTests: XCTestCase {
                   |          |                       12
                   |          \SomeStructure.someValue
                   SomeStructure(someValue: 12)
+
+          [Int] s[keyPath: \SomeStructure.someValue]
+          => 12
+          [Int] 12
+          => 12
+
           #assert(s.getValue(keyPath: \.someValue) == 12)
                   | |                 |            |  |
                   | 12                |            |  12
                   |                   |            true
                   |                   \SomeStructure.someValue
                   SomeStructure(someValue: 12)
+
+          [Int] s.getValue(keyPath: \.someValue)
+          => 12
+          [Int] 12
+          => 12
+
           #assert(nested[keyPath: nestedKeyPath] == 24)
                   |               |            | |  |
                   |               |            | |  24
@@ -963,6 +1381,12 @@ final class PowerAssertTests: XCTestCase {
                   |               |            24
                   |               \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          [Int] nested[keyPath: nestedKeyPath]
+          => 24
+          [Int] 24
+          => 24
+
           #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
                   |               |                              | |  |
                   |               |                              | |  24
@@ -970,12 +1394,24 @@ final class PowerAssertTests: XCTestCase {
                   |               |                              24
                   |               \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          [Int] nested[keyPath: \OuterStructure.outer.someValue]
+          => 24
+          [Int] 24
+          => 24
+
           #assert(nested.getValue(keyPath: \.outer.someValue) == 24)
                   |      |                 |                  |  |
                   |      24                |                  |  24
                   |                        |                  true
                   |                        \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          [Int] nested.getValue(keyPath: \.outer.someValue)
+          => 24
+          [Int] 24
+          => 24
+
 
           """#
         ||
@@ -988,6 +1424,12 @@ final class PowerAssertTests: XCTestCase {
                   |          |             12
                   |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
+
+          [Int] s[keyPath: pathToProperty]
+          => 12
+          [Int] 12
+          => 12
+
           #assert(s[keyPath: \SomeStructure.someValue] == 12)
                   |          |                       | |  |
                   |          |                       | |  12
@@ -995,12 +1437,24 @@ final class PowerAssertTests: XCTestCase {
                   |          |                       12
                   |          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
+
+          [Int] s[keyPath: \SomeStructure.someValue]
+          => 12
+          [Int] 12
+          => 12
+
           #assert(s.getValue(keyPath: \.someValue) == 12)
                   | |                 |            |  |
                   | 12                |            |  12
                   |                   |            true
                   |                   Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
+
+          [Int] s.getValue(keyPath: \.someValue)
+          => 12
+          [Int] 12
+          => 12
+
           #assert(nested[keyPath: nestedKeyPath] == 24)
                   |               |            | |  |
                   |               |            | |  24
@@ -1008,6 +1462,12 @@ final class PowerAssertTests: XCTestCase {
                   |               |            24
                   |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          [Int] nested[keyPath: nestedKeyPath]
+          => 24
+          [Int] 24
+          => 24
+
           #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
                   |               |                              | |  |
                   |               |                              | |  24
@@ -1015,12 +1475,24 @@ final class PowerAssertTests: XCTestCase {
                   |               |                              24
                   |               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          [Int] nested[keyPath: \OuterStructure.outer.someValue]
+          => 24
+          [Int] 24
+          => 24
+
           #assert(nested.getValue(keyPath: \.outer.someValue) == 24)
                   |      |                 |                  |  |
                   |      24                |                  |  24
                   |                        |                  true
                   |                        Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
+
+          [Int] nested.getValue(keyPath: \.outer.someValue)
+          => 24
+          [Int] 24
+          => 24
+
 
           """#
       )
@@ -1045,6 +1517,12 @@ final class PowerAssertTests: XCTestCase {
                 |                  |            "hola"
                 |                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
                 ["hello", "hola", "bonjour", "안녕"]
+
+        [String] greetings[keyPath: \[String].[1]]
+        => "hola"
+        [String] "hola"
+        => "hola"
+
         #assert(greetings[keyPath: \[String].first?.count] == 5)
                 |                  |                     | |  |
                 |                  |                     | |  Optional(5)
@@ -1052,6 +1530,12 @@ final class PowerAssertTests: XCTestCase {
                 |                  |                     Optional(5)
                 |                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
                 ["hello", "hola", "bonjour", "안녕"]
+
+        [Optional<Int>] greetings[keyPath: \[String].first?.count]
+        => Optional(5)
+        [Optional<Int>] 5
+        => Optional(5)
+
 
         """#
         ||
@@ -1064,6 +1548,12 @@ final class PowerAssertTests: XCTestCase {
                 |                  |            "hola"
                 |                  \Array<String>.<computed 0x0000000000000000 (String)>
                 ["hello", "hola", "bonjour", "안녕"]
+
+        [String] greetings[keyPath: \[String].[1]]
+        => "hola"
+        [String] "hola"
+        => "hola"
+
         #assert(greetings[keyPath: \[String].first?.count] == 5)
                 |                  |                     | |  |
                 |                  |                     | |  Optional(5)
@@ -1071,6 +1561,12 @@ final class PowerAssertTests: XCTestCase {
                 |                  |                     Optional(5)
                 |                  \Array<String>.first?.count?
                 ["hello", "hola", "bonjour", "안녕"]
+
+        [Optional<Int>] greetings[keyPath: \[String].first?.count]
+        => Optional(5)
+        [Optional<Int>] 5
+        => Optional(5)
+
 
         """#
       )
@@ -1328,6 +1824,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
+
           """#
         ||
         output ==
@@ -1338,6 +1840,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                               true
                   |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
 
           """#
         ||
@@ -1350,6 +1858,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
+
           """#
         ||
         output ==
@@ -1360,6 +1874,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                               true
                   |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
 
           """#
         ||
@@ -1372,6 +1892,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
+
           """#
         ||
         output ==
@@ -1382,6 +1908,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                               true
                   |                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
 
           """#
         ||
@@ -1394,6 +1926,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1404,6 +1942,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                               true
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
 
           """#
         ||
@@ -1416,6 +1960,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1426,6 +1976,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                               true
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
 
           """#
         ||
@@ -1438,6 +1994,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1448,6 +2010,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                               true
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
+          => 2
+          [Int] 2
+          => 2
+
 
           """#
       )
@@ -1478,6 +2046,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
+
           """#
         ||
         output ==
@@ -1488,6 +2062,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                      true
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
 
           """#
         ||
@@ -1500,6 +2080,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
+
           """#
         ||
         output ==
@@ -1510,6 +2096,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                      true
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
 
           """#
         ||
@@ -1522,6 +2114,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
+
           """#
         ||
         output ==
@@ -1532,6 +2130,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                      true
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
 
           """#
         ||
@@ -1544,6 +2148,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1554,6 +2164,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                      true
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
 
           """#
         ||
@@ -1566,6 +2182,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1576,6 +2198,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                      true
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
 
           """#
         ||
@@ -1588,6 +2216,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1598,6 +2232,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                      true
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
+          => 7
+          [Int] 7
+          => 7
+
 
           """#
       )
@@ -1629,6 +2269,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
+
           """#
         ||
         output ==
@@ -1640,6 +2286,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                             64
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
 
           """#
         ||
@@ -1653,6 +2305,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
+
           """#
         ||
         output ==
@@ -1664,6 +2322,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                             64
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
 
           """#
         ||
@@ -1688,6 +2352,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                             64
                   |                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
 
           """#
         ||
@@ -1701,6 +2371,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1712,6 +2388,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                             64
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
 
           """#
         ||
@@ -1725,6 +2407,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1736,6 +2424,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                             64
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
 
           """#
         ||
@@ -1749,6 +2443,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
+
           """#
         ||
         output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
@@ -1760,6 +2460,12 @@ final class PowerAssertTests: XCTestCase {
                   |                           |                                             64
                   |                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
 
           """#
       )
@@ -1802,6 +2508,20 @@ final class PowerAssertTests: XCTestCase {
                 |      Optional(Swift.String)
                 Optional(Swift.String)
 
+        [Optional<Any.Type>] String.self
+        => Optional(Swift.String)
+        [Optional<Any.Type>] Int.self
+        => Optional(Swift.Int)
+        [Bool] String.self != Int.self
+        => true
+        [String] "string".self
+        => "string"
+        [String] "string"
+        => "string"
+        [Bool] "string".self == "string"
+        => true
+
+
         """
       )
     }
@@ -1825,6 +2545,12 @@ final class PowerAssertTests: XCTestCase {
                 |0 |  0
                 |  true
                 Optional(0)
+
+        [Int] x!
+        => 0
+        [Int] 0
+        => 0
+
         #assert(someDictionary["a"]![0] == 1)
                 ||             |  |  || |  |
                 |[1, 2, 3]     |  |  |1 |  1
@@ -1832,6 +2558,12 @@ final class PowerAssertTests: XCTestCase {
                 |              |  Optional([1, 2, 3])
                 |              "a"
                 ["a": [1, 2, 3], "b": [10, 20]]
+
+        [Int] someDictionary["a"]![0]
+        => 1
+        [Int] 1
+        => 1
+
 
         """
         ||
@@ -1842,6 +2574,12 @@ final class PowerAssertTests: XCTestCase {
                 |0 |  0
                 |  true
                 Optional(0)
+
+        [Int] x!
+        => 0
+        [Int] 0
+        => 0
+
         #assert(someDictionary["a"]![0] == 1)
                 ||             |  |  || |  |
                 |[1, 2, 3]     |  |  |1 |  1
@@ -1849,6 +2587,12 @@ final class PowerAssertTests: XCTestCase {
                 |              |  Optional([1, 2, 3])
                 |              "a"
                 ["b": [10, 20], "a": [1, 2, 3]]
+
+        [Int] someDictionary["a"]![0]
+        => 1
+        [Int] 1
+        => 1
+
 
         """
       )
@@ -1877,6 +2621,12 @@ final class PowerAssertTests: XCTestCase {
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
+
+          [Optional<Bool>] c?.property.performAction()
+          => nil
+          [Optional<Bool>] nil
+          => nil
+
           #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
@@ -1884,18 +2634,31 @@ final class PowerAssertTests: XCTestCase {
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
+
           #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
+
+          [Optional<Bool>] c?.property.performAction()
+          => Optional(true)
+          [Optional<Bool>] nil
+          => nil
+
           #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
+
+          [Optional<Int>] someDictionary["not here"]?[0]
+          => nil
+          [Optional<Int>] 99
+          => Optional(99)
+
           #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
@@ -1906,6 +2669,12 @@ final class PowerAssertTests: XCTestCase {
                   |              "a"
                   ["a": [1, 2, 3], "b": [10, 20]]
 
+          [Optional<Int>] someDictionary["a"]?[0]
+          => Optional(1)
+          [Optional<Int>] 99
+          => Optional(99)
+
+
           """
         ||
         output ==
@@ -1914,6 +2683,12 @@ final class PowerAssertTests: XCTestCase {
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
+
+          [Optional<Bool>] c?.property.performAction()
+          => nil
+          [Optional<Bool>] nil
+          => nil
+
           #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
@@ -1921,18 +2696,31 @@ final class PowerAssertTests: XCTestCase {
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
+
           #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
+
+          [Optional<Bool>] c?.property.performAction()
+          => Optional(true)
+          [Optional<Bool>] nil
+          => nil
+
           #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["b": [10, 20], "a": [1, 2, 3]]
+
+          [Optional<Int>] someDictionary["not here"]?[0]
+          => nil
+          [Optional<Int>] 99
+          => Optional(99)
+
           #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
@@ -1943,6 +2731,11 @@ final class PowerAssertTests: XCTestCase {
                   |              "a"
                   ["a": [1, 2, 3], "b": [10, 20]]
 
+          [Optional<Int>] someDictionary["a"]?[0]
+          => Optional(1)
+          [Optional<Int>] 99
+          => Optional(99)
+
           """
         ||
         output ==
@@ -1951,6 +2744,12 @@ final class PowerAssertTests: XCTestCase {
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
+
+          [Optional<Bool>] c?.property.performAction()
+          => nil
+          [Optional<Bool>] nil
+          => nil
+
           #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
@@ -1958,18 +2757,31 @@ final class PowerAssertTests: XCTestCase {
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
+
           #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
+
+          [Optional<Bool>] c?.property.performAction()
+          => Optional(true)
+          [Optional<Bool>] nil
+          => nil
+
           #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
+
+          [Optional<Int>] someDictionary["not here"]?[0]
+          => nil
+          [Optional<Int>] 99
+          => Optional(99)
+
           #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
@@ -1980,6 +2792,12 @@ final class PowerAssertTests: XCTestCase {
                   |              "a"
                   ["b": [10, 20], "a": [1, 2, 3]]
 
+          [Optional<Int>] someDictionary["a"]?[0]
+          => Optional(1)
+          [Optional<Int>] 99
+          => Optional(99)
+
+
           """
         ||
         output ==
@@ -1988,6 +2806,12 @@ final class PowerAssertTests: XCTestCase {
                   |  |        |               |  |
                   |  nil      nil             |  nil
                   nil                         true
+
+          [Optional<Bool>] c?.property.performAction()
+          => nil
+          [Optional<Bool>] nil
+          => nil
+
           #assert((c?.property.performAction())!)
                   ||| |        |
                   ||| |        Optional(true)
@@ -1995,18 +2819,31 @@ final class PowerAssertTests: XCTestCase {
                   ||Optional(PowerAssertTests.SomeClass)
                   |true
                   Optional(true)
+
           #assert(c?.property.performAction() != nil)
                   |  |        |               |  |
                   |  |        Optional(true)  |  nil
                   |  |                        true
                   |  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
+
+          [Optional<Bool>] c?.property.performAction()
+          => Optional(true)
+          [Optional<Bool>] nil
+          => nil
+
           #assert(someDictionary["not here"]?[0] != 99)
                   |              |         |   | |  |
                   |              |         nil | |  Optional(99)
                   |              "not here"    | true
                   |                            nil
                   ["b": [10, 20], "a": [1, 2, 3]]
+
+          [Optional<Int>] someDictionary["not here"]?[0]
+          => nil
+          [Optional<Int>] 99
+          => Optional(99)
+
           #assert(someDictionary["a"]?[0] != 99)
                   |              |  |  || |  |
                   |              |  |  || |  Optional(99)
@@ -2016,6 +2853,12 @@ final class PowerAssertTests: XCTestCase {
                   |              |  Optional([1, 2, 3])
                   |              "a"
                   ["b": [10, 20], "a": [1, 2, 3]]
+
+          [Optional<Int>] someDictionary["a"]?[0]
+          => Optional(1)
+          [Optional<Int>] 99
+          => Optional(99)
+
 
           """
       )
@@ -2038,6 +2881,12 @@ final class PowerAssertTests: XCTestCase {
                 |  |                 |        |                 |               |  |
                 |  nil               nil      nil               nil             |  nil
                 nil                                                             true
+
+        [Optional<Bool>] c?.optionalProperty?.property.optionalProperty?.performAction()
+        => nil
+        [Optional<Bool>] nil
+        => nil
+
 
         """
       )
@@ -2075,6 +2924,12 @@ final class PowerAssertTests: XCTestCase {
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
+        [(String, Int, Date)] tuple
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        [(String, Int, Date)] (name: kanjiName, age: 37, birthday: date)
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
         #assert(tuple == (kanjiName, 37, date))
                 |     |  ||          |   |
                 |     |  ||          37  1980-10-27 15:00:00 +0000
@@ -2082,6 +2937,12 @@ final class PowerAssertTests: XCTestCase {
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
+        [(String, Int, Date)] tuple
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        [(String, Int, Date)] (kanjiName, 37, date)
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
         #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |
                 |     |    |  ||          37  |     | true
@@ -2092,6 +2953,14 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (kanjiName, 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == (kanjiName, 37, date).0
+        => true
+
         #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
                 |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
@@ -2108,6 +2977,20 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (kanjiName, 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == (kanjiName, 37, date).0
+        => true
+        [Int] tuple.age
+        => 37
+        [Int] (kanjiName, 37, date).1
+        => 37
+        [Bool] tuple.age == (kanjiName, 37, date).1
+        => true
+
 
         """
       )
@@ -2149,6 +3032,14 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (emojiName, 37, date).0
+        => "😇岸川克己🇯🇵"
+        [Bool] tuple.name != (emojiName, 37, date).0
+        => true
+
         #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
                 |     |    |  ||          |   |     | |
                 |     |    |  ||          37  |     | true
@@ -2159,6 +3050,14 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (kanjiName, 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == (kanjiName, 37, date).0
+        => true
+
         #assert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
                 |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
                 |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
@@ -2175,6 +3074,20 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (emojiName, 37, date).0
+        => "😇岸川克己🇯🇵"
+        [Bool] tuple.name != (emojiName, 37, date).0
+        => true
+        [Int] tuple.age
+        => 37
+        [Int] (kanjiName, 37, date).1
+        => 37
+        [Bool] tuple.age == (kanjiName, 37, date).1
+        => true
+
         #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1)
                 |     |    |  ||          |   |     | |  |     |   |  ||          |   |     |
                 |     |    |  ||          37  |     | |  |     37  |  ||          37  |     37
@@ -2191,6 +3104,20 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (kanjiName, 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == (kanjiName, 37, date).0
+        => true
+        [Int] tuple.age
+        => 37
+        [Int] (emojiName, 37, date).1
+        => 37
+        [Bool] tuple.age == (emojiName, 37, date).1
+        => true
+
 
         """
       )
@@ -2228,6 +3155,12 @@ final class PowerAssertTests: XCTestCase {
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
+        [(String, Int, Date)] tuple
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        [(String, Int, Date)] (name: "岸川克己", age: 37, birthday: date)
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
         #assert(tuple == ("岸川克己", 37, date))
                 |     |  ||           |   |
                 |     |  ||           37  1980-10-27 15:00:00 +0000
@@ -2235,6 +3168,12 @@ final class PowerAssertTests: XCTestCase {
                 |     |  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
                 |     true
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
+        [(String, Int, Date)] tuple
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+        [(String, Int, Date)] ("岸川克己", 37, date)
+        => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+
         #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||           |   |     | |
                 |     |    |  ||           37  |     | true
@@ -2245,6 +3184,14 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("岸川克己", 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == ("岸川克己", 37, date).0
+        => true
+
         #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||           |   |     | |  |     |   |  ||           |   |     |
                 |     |    |  ||           37  |     | |  |     37  |  ||           37  |     37
@@ -2261,6 +3208,20 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("岸川克己", 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == ("岸川克己", 37, date).0
+        => true
+        [Int] tuple.age
+        => 37
+        [Int] ("岸川克己", 37, date).1
+        => 37
+        [Bool] tuple.age == ("岸川克己", 37, date).1
+        => true
+
 
         """
       )
@@ -2301,6 +3262,14 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("😇岸川克己🇯🇵", 37, date).0
+        => "😇岸川克己🇯🇵"
+        [Bool] tuple.name != ("😇岸川克己🇯🇵", 37, date).0
+        => true
+
         #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
                 |     |    |  ||           |   |     | |
                 |     |    |  ||           37  |     | true
@@ -2311,6 +3280,14 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("岸川克己", 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == ("岸川克己", 37, date).0
+        => true
+
         #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
                 |     |    |  ||              |   |     | |  |     |   |  ||           |   |     |
                 |     |    |  ||              37  |     | |  |     37  |  ||           37  |     37
@@ -2327,6 +3304,20 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("😇岸川克己🇯🇵", 37, date).0
+        => "😇岸川克己🇯🇵"
+        [Bool] tuple.name != ("😇岸川克己🇯🇵", 37, date).0
+        => true
+        [Int] tuple.age
+        => 37
+        [Int] ("岸川克己", 37, date).1
+        => 37
+        [Bool] tuple.age == ("岸川克己", 37, date).1
+        => true
+
         #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
                 |     |    |  ||           |   |     | |  |     |   |  ||              |   |     |
                 |     |    |  ||           37  |     | |  |     37  |  ||              37  |     37
@@ -2343,6 +3334,20 @@ final class PowerAssertTests: XCTestCase {
                 |     |    true
                 |     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("岸川克己", 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name == ("岸川克己", 37, date).0
+        => true
+        [Int] tuple.age
+        => 37
+        [Int] ("😇岸川克己🇯🇵", 37, date).1
+        => 37
+        [Bool] tuple.age == ("😇岸川克己🇯🇵", 37, date).1
+        => true
+
 
         """
       )
@@ -2367,6 +3372,12 @@ final class PowerAssertTests: XCTestCase {
                 |       |  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
                 |       true
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+        
 
         """
       )
@@ -2481,6 +3492,20 @@ final class PowerAssertTests: XCTestCase {
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
 
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+
+
         """
       )
     }
@@ -2514,11 +3539,39 @@ final class PowerAssertTests: XCTestCase {
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+
         #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+        
 
         """
       )
@@ -2566,21 +3619,77 @@ final class PowerAssertTests: XCTestCase {
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+
         #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+
         #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+
         #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
                 |     |           |         |    |  |     |  |     |           |         |        |  |
                 |     "[1, 2, 3]" true      "["  |  false |  |     "[1, 2, 3]" false     "Hello"  |  true
                 [1, 2, 3]                        true     |  [1, 2, 3]                            true
                                                           true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") != false
+        => true
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") != true
+        => true
+
 
         """
       )
@@ -2604,6 +3713,12 @@ final class PowerAssertTests: XCTestCase {
                 |          |  "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
                 |          true
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        [String] loremIpsum
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        [String] "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
+        => "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
+
 
         """#
       )
@@ -2629,21 +3744,45 @@ final class PowerAssertTests: XCTestCase {
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
+
+        [String] lyric1
+        => "Feet, don't fail me now."
+        [String] "Feet, don't fail me now."
+        => "Feet, don't fail me now."
+
         #assert(lyric1 == "Feet, don\'t fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
+
+        [String] lyric1
+        => "Feet, don't fail me now."
+        [String] "Feet, don\'t fail me now."
+        => "Feet, don't fail me now."
+
         #assert(lyric2 == "Feet, don't fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
+
+        [String] lyric2
+        => "Feet, don't fail me now."
+        [String] "Feet, don't fail me now."
+        => "Feet, don't fail me now."
+
         #assert(lyric2 == "Feet, don\'t fail me now.")
                 |      |  |
                 |      |  "Feet, don't fail me now."
                 |      true
                 "Feet, don't fail me now."
+
+        [String] lyric2
+        => "Feet, don't fail me now."
+        [String] "Feet, don\'t fail me now."
+        => "Feet, don't fail me now."
+
 
         """#
       )
@@ -2669,21 +3808,45 @@ final class PowerAssertTests: XCTestCase {
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
+        [String] nestedQuote1
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        [String] "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
         #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
+        [String] nestedQuote1
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        [String] "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
         #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
+        [String] nestedQuote2
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        [String] "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
         #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 |            |  |
                 |            |  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
                 |            true
                 "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
+        [String] nestedQuote2
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        [String] "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
+        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+
 
         """#
       )
@@ -2704,6 +3867,12 @@ final class PowerAssertTests: XCTestCase {
                 |        |  "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
                 |        true
                 "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+
+        [String] helpText
+        => "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+        [String] "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+        => "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
+
 
         """#
       )
@@ -2733,21 +3902,45 @@ final class PowerAssertTests: XCTestCase {
                 |             |  "Null character\0Null character"
                 |             true
                 "Null character\0Null character"
+
+        [String] nullCharacter
+        => "Null character\0Null character"
+        [String] "Null character\0Null character"
+        => "Null character\0Null character"
+
         #assert(lineFeed == "Line feed\nLine feed")
                 |        |  |
                 |        |  "Line feed\nLine feed"
                 |        true
                 "Line feed\nLine feed"
+
+        [String] lineFeed
+        => "Line feed\nLine feed"
+        [String] "Line feed\nLine feed"
+        => "Line feed\nLine feed"
+
         #assert(carriageReturn == "Carriage Return\rCarriage Return")
                 |              |  |
                 |              |  "Carriage Return\rCarriage Return"
                 |              true
                 "Carriage Return\rCarriage Return"
+
+        [String] carriageReturn
+        => "Carriage Return\rCarriage Return"
+        [String] "Carriage Return\rCarriage Return"
+        => "Carriage Return\rCarriage Return"
+
         #assert(backslash == "Backslash\\Backslash")
                 |         |  |
                 |         |  "Backslash\Backslash"
                 |         true
                 "Backslash\Backslash"
+
+        [String] backslash
+        => "Backslash\Backslash"
+        [String] "Backslash\\Backslash"
+        => "Backslash\Backslash"
+
 
         """#
       )
@@ -2774,20 +3967,44 @@ final class PowerAssertTests: XCTestCase {
                 |         |  "\"Imagination is more important than knowledge\" - Einstein"
                 |         true
                 "\"Imagination is more important than knowledge\" - Einstein"
+
+        [String] wiseWords
+        => "\"Imagination is more important than knowledge\" - Einstein"
+        [String] "\"Imagination is more important than knowledge\" - Einstein"
+        => "\"Imagination is more important than knowledge\" - Einstein"
+
         #assert(dollarSign == "\u{24}")
                 |          |  |
                 "$"        |  "$"
                            true
+
+        [String] dollarSign
+        => "$"
+        [String] "\u{24}"
+        => "$"
+
         #assert(blackHeart == "\u{2665}")
                 |          |  |
                 |          |  "♥"
                 |          true
                 "♥"
+
+        [String] blackHeart
+        => "♥"
+        [String] "\u{2665}"
+        => "♥"
+
         #assert(sparklingHeart == "\u{1F496}")
                 |              |  |
                 |              |  "💖"
                 |              true
                 "💖"
+
+        [String] sparklingHeart
+        => "💖"
+        [String] "\u{1F496}"
+        => "💖"
+
 
         """#
       )
@@ -2809,15 +4026,33 @@ final class PowerAssertTests: XCTestCase {
                 |     |  |
                 "#"   |  "#"
                       true
+
+        [String] pound
+        => "#"
+        [String] "#"
+        => "#"
+
         #assert("#" == pound)
                 |   |  |
                 "#" |  "#"
                     true
+
+        [String] "#"
+        => "#"
+        [String] pound
+        => "#"
+
         #assert(String("#") == pound)
                 |      |    |  |
                 "#"    "#"  |  "#"
                             true
 
+        [String] String("#")
+        => "#"
+        [String] pound
+        => "#"
+
+        
         """#
       )
     }
@@ -2847,11 +4082,23 @@ final class PowerAssertTests: XCTestCase {
                 |                |  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 |                true
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        [String] multilineLiteral
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        [String] "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
         #assert(multilineLiteral == multilineLiteral)
                 |                |  |
                 |                |  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 |                true
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        [String] multilineLiteral
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        [String] multilineLiteral
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
 
         """#
       )
@@ -2882,6 +4129,12 @@ final class PowerAssertTests: XCTestCase {
                 |                true
                 "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
 
+        [String] multilineLiteral
+        => "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
+        [String] #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#
+        => "Escaping the first quotation mark \\"\"\"\nEscaping all three quotation marks \\"\\"\\""
+
+
         """##
       )
     }
@@ -2891,7 +4144,7 @@ final class PowerAssertTests: XCTestCase {
     captureConsoleOutput {
       let number1 = 100.0
       let number2 = 200.0
-      #assert(number1 × number2 == 20000.0, verbose: true) // FIXME: Print the value of the expression
+      #assert(number1 × number2 == 20000.0, verbose: true)
       #assert(√number2 == 14.142135623730951, verbose: true)
       #assert(√√number2 != 200.0, verbose: true)
       #assert(3.760603093086394 == √√number2, verbose: true)
@@ -2905,26 +4158,51 @@ final class PowerAssertTests: XCTestCase {
                 |       | |          |
                 100.0   | 200.0      20000.0
                         true
+        
         #assert(√number2 == 14.142135623730951)
                 ||       |  |
                 |200.0   |  14.142135623730951
                 |        true
                 14.142135623730951
+
+        [Double] √number2
+        => 14.142135623730951
+        [Double] 14.142135623730951
+        => 14.142135623730951
+
         #assert(√√number2 != 200.0)
                 | |       |  |
                 | 200.0   |  200.0
                 |         true
                 3.760603093086394
+
+        [Double] √√number2
+        => 3.760603093086394
+        [Double] 200.0
+        => 200.0
+
         #assert(3.760603093086394 == √√number2)
                 |                 |  | |
                 3.760603093086394 |  | 200.0
                                   |  3.760603093086394
                                   true
+
+        [Double] 3.760603093086394
+        => 3.760603093086394
+        [Double] √√number2
+        => 3.760603093086394
+
         #assert(√number2 != √√number2)
                 ||       |    ||
                 |200.0   true |3.760603093086394
                 |             200.0
                 14.142135623730951
+
+        [Double] √number2
+        => 14.142135623730951
+        [Double] √√number2
+        => 3.760603093086394
+        
 
         """
       )
@@ -2950,6 +4228,12 @@ final class PowerAssertTests: XCTestCase {
                 | | |
                 1 | 1
                   true
+
+        [Int] i2
+        => 1
+        [Int] 1
+        => 1
+
         #assert(b1==false&&i1<i2||false==b1&&i2==1)
                 | | |    | | || |
                 | | |    | 0 |1 true
@@ -2958,11 +4242,28 @@ final class PowerAssertTests: XCTestCase {
                 | | false
                 | true
                 false
+
+        [Bool] b1
+        => false
+        [Bool] false
+        => false
+        [Bool] b1==false
+        => true
+        [Int] i1
+        => 0
+        [Int] i2
+        => 1
+        [Bool] i1<i2
+        => true
+        [Bool] b1==false&&i1<i2
+        => true
+
         #assert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
                 | | |      |  |
                 | | false  0  1
                 | true
                 false
+
 
         """
       )
@@ -2988,6 +4289,12 @@ final class PowerAssertTests: XCTestCase {
                 | | |
                 1 | 1
                   true
+
+        [Int] i2
+        => 1
+        [Int] 1
+        => 1
+
         #assert(b1==false&&i1<i2&&false==b1&&i2==1)
                 | | |    | | || | |    | | | | | |
                 | | |    | 0 |1 | |    | | | 1 | 1
@@ -3002,12 +4309,43 @@ final class PowerAssertTests: XCTestCase {
                 | | false
                 | true
                 false
+
+        [Bool] b1
+        => false
+        [Bool] false
+        => false
+        [Bool] b1==false
+        => true
+        [Int] i1
+        => 0
+        [Int] i2
+        => 1
+        [Bool] i1<i2
+        => true
+        [Bool] b1==false&&i1<i2
+        => true
+        [Bool] false
+        => false
+        [Bool] b1
+        => false
+        [Bool] false==b1
+        => true
+        [Bool] b1==false&&i1<i2&&false==b1
+        => true
+        [Int] i2
+        => 1
+        [Int] 1
+        => 1
+        [Bool] i2==1
+        => true
+
         #assert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0)
                 | | |      |  |   |      |   |   |
                 | | false  0  1   false  |   1   1
                 | true                   false
                 false
 
+        
         """
       )
     }
@@ -3072,10 +4410,22 @@ final class PowerAssertTests: XCTestCase {
                 |        |        |  |
                 |        "World!" |  "Hello World!"
                 "Hello World!"    true
+
+        [String] "Hello \(string)"
+        => "Hello World!"
+        [String] "Hello World!"
+        => "Hello World!"
+
         #assert("value == \(testA(i))" == "value == 100")
                 |           |     |    |  |
                 |           100   99   |  "value == 100"
                 "value == 100"         true
+
+        [String] "value == \(testA(i))"
+        => "value == 100"
+        [String] "value == 100"
+        => "value == 100"
+
 
         """#
       )
@@ -3111,6 +4461,12 @@ final class PowerAssertTests: XCTestCase {
                     |     |                                                                            true
                     |     Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
+
+        [Optional<Match>] regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")
+        => Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
+        [_OptionalNilComparisonType] nil
+        => _OptionalNilComparisonType()
+
         #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0)
                     |                                            |              |                                                              |      | |  |       |      |
                     |                                            |              "CREDIT    03/01/2022    Payroll from employer      $200.23"   |      | |  |       |      Optional("CREDIT    03/01/2022")
@@ -3121,6 +4477,12 @@ final class PowerAssertTests: XCTestCase {
                     |                                            |                                                                             Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
                     |                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
+
+        [Optional<Substring>] #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0
+        => Optional("CREDIT    03/01/2022")
+        [Optional<Substring>] result?.output.0
+        => Optional("CREDIT    03/01/2022")
+
         #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT")
                     |                                            |              |                                                              |      | |  |
                     |                                            |              "CREDIT    03/01/2022    Payroll from employer      $200.23"   |      | |  Optional("CREDIT")
@@ -3130,6 +4492,12 @@ final class PowerAssertTests: XCTestCase {
                     |                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
 
+        [Optional<Substring>] #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1
+        => Optional("CREDIT")
+        [Optional<Substring>] "CREDIT"
+        => Optional("CREDIT")
+
+        
         """#
       )
     }
