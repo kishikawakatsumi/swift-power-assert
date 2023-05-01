@@ -2378,6 +2378,12 @@ final class PowerAssertTests: XCTestCase {
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
+          [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
+          => 64
+          [Int] 64
+          => 64
+
+
           """#
         ||
         output ==
