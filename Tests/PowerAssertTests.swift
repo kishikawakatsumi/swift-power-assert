@@ -310,6 +310,40 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testBinaryExpression10() {
+    captureConsoleOutput {
+      let one = 1
+      let two = 2
+      let three = 3
+
+      let array = [one, two, three]
+      #assert(array.description.hasPrefix("]") == false || array.description.hasPrefix("Hello") == false, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(array.description.hasPrefix("]") == false || array.description.hasPrefix("Hello") == false)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" false     "]"  │  false true
+                [1, 2, 3]                        true
+
+        [Bool] array.description.hasPrefix("]")
+        => false
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("]") == false
+        => true
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] false
+        [Not Evaluated] array.description.hasPrefix("Hello") == false
+
+
+        """
+      )
+    }
+  }
+
   func testMultilineExpression1() {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
@@ -752,7 +786,7 @@ final class PowerAssertTests: XCTestCase {
         => Optional(22 bytes)
         [Optional<Data>] JSONEncoder().encode(landmark)
         => Optional(116 bytes)
-        
+
 
         """#
       )
@@ -859,7 +893,7 @@ final class PowerAssertTests: XCTestCase {
         => "hello"
         [String] string
         => "1234"
-        
+
 
         """
       )
@@ -933,7 +967,7 @@ final class PowerAssertTests: XCTestCase {
         => 2
         [Int] three
         => 3
-        
+
 
         """
       )
@@ -1308,8 +1342,11 @@ final class PowerAssertTests: XCTestCase {
         => "Katsumi"
         [Bool] tuple.name == ("Katsumi", 37, date2).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("Katsumi", 37, date2).1
+        [Not Evaluated] tuple.age != ("Katsumi", 37, date2).1
 
-        
+
         """
       )
     }
@@ -2960,6 +2997,9 @@ final class PowerAssertTests: XCTestCase {
         => "岸川克己"
         [Bool] tuple.name == (kanjiName, 37, date).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] (kanjiName, 37, date).1
+        [Not Evaluated] tuple.age == (kanjiName, 37, date).1
 
         #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
                 │     │    │  ││          │   │     │ │  │     │   │  ││          │   │     │
@@ -3039,6 +3079,9 @@ final class PowerAssertTests: XCTestCase {
         => "😇岸川克己🇯🇵"
         [Bool] tuple.name != (emojiName, 37, date).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] (kanjiName, 37, date).1
+        [Not Evaluated] tuple.age == (kanjiName, 37, date).1
 
         #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
                 │     │    │  ││          │   │     │ │
@@ -3057,6 +3100,9 @@ final class PowerAssertTests: XCTestCase {
         => "岸川克己"
         [Bool] tuple.name == (kanjiName, 37, date).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] (emojiName, 37, date).1
+        [Not Evaluated] tuple.age == (emojiName, 37, date).1
 
         #assert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
                 │     │    │  ││          │   │     │ │  │     │   │  ││          │   │     │
@@ -3191,6 +3237,9 @@ final class PowerAssertTests: XCTestCase {
         => "岸川克己"
         [Bool] tuple.name == ("岸川克己", 37, date).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("岸川克己", 37, date).1
+        [Not Evaluated] tuple.age == ("岸川克己", 37, date).1
 
         #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
                 │     │    │  ││           │   │     │ │  │     │   │  ││           │   │     │
@@ -3269,6 +3318,9 @@ final class PowerAssertTests: XCTestCase {
         => "😇岸川克己🇯🇵"
         [Bool] tuple.name != ("😇岸川克己🇯🇵", 37, date).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("岸川克己", 37, date).1
+        [Not Evaluated] tuple.age == ("岸川克己", 37, date).1
 
         #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
                 │     │    │  ││           │   │     │ │
@@ -3287,6 +3339,9 @@ final class PowerAssertTests: XCTestCase {
         => "岸川克己"
         [Bool] tuple.name == ("岸川克己", 37, date).0
         => true
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("😇岸川克己🇯🇵", 37, date).1
+        [Not Evaluated] tuple.age == ("😇岸川克己🇯🇵", 37, date).1
 
         #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
                 │     │    │  ││              │   │     │ │  │     │   │  ││           │   │     │
@@ -3377,7 +3432,7 @@ final class PowerAssertTests: XCTestCase {
         => 3
         [Int] bar.foo.val
         => 2
-        
+
 
         """
       )
@@ -3571,7 +3626,7 @@ final class PowerAssertTests: XCTestCase {
         => true
         [Bool] array.description.hasPrefix("Hello") != true
         => true
-        
+
 
         """
       )
@@ -4052,7 +4107,7 @@ final class PowerAssertTests: XCTestCase {
         [String] pound
         => "#"
 
-        
+
         """#
       )
     }
@@ -4158,7 +4213,7 @@ final class PowerAssertTests: XCTestCase {
                 │       │ │          │
                 100.0   │ 200.0      20000.0
                         true
-        
+
         #assert(√number2 == 14.142135623730951)
                 ││       │  │
                 │200.0   │  14.142135623730951
@@ -4202,7 +4257,7 @@ final class PowerAssertTests: XCTestCase {
         => 14.142135623730951
         [Double] √√number2
         => 3.760603093086394
-        
+
 
         """
       )
@@ -4257,6 +4312,13 @@ final class PowerAssertTests: XCTestCase {
         => true
         [Bool] b1==false&&i1<i2
         => true
+        [Not Evaluated] false
+        [Not Evaluated] b1
+        [Not Evaluated] false==b1
+        [Not Evaluated] i2
+        [Not Evaluated] 1
+        [Not Evaluated] i2==1
+        [Not Evaluated] false==b1&&i2==1
 
         #assert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
                 │ │ │      │  │
@@ -4345,7 +4407,7 @@ final class PowerAssertTests: XCTestCase {
                 │ true                   false
                 false
 
-        
+
         """
       )
     }
@@ -4497,7 +4559,7 @@ final class PowerAssertTests: XCTestCase {
         [Optional<Substring>] "CREDIT"
         => Optional("CREDIT")
 
-        
+
         """#
       )
     }
