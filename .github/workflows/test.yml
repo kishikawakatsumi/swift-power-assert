@@ -5,6 +5,8 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.3.app
 
 jobs:
   build:
@@ -18,6 +20,12 @@ jobs:
       - name: Build
         run: |
           export TOOLCHAINS=org.swift.59202304251a
-          swift build -v
+          swift build
       - name: Run tests
-        run: swift test -v
+        run: |
+          swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions --enable-code-coverage
+          xcrun llvm-cov report \
+            $(swift build --show-bin-path)/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \
+            -instr-profile=$(swift build --show-bin-path)/codecov/default.profdata \
+            -ignore-filename-regex=".build|Tests" \
+            -use-color
