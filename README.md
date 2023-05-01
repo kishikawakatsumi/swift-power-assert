@@ -12,20 +12,30 @@ Power asserts (also known as diagrammed assertions) augment your assertion failu
 Power asserts provide descriptive assertion messages for your tests, like the following examples:
 
 ```swift
-#assert(max(a, b) == c)
-        |   |  |  |  |
-        7   4  7  |  12
+#assert(max(d, e) == f)
+        │   │  │  │  │
+        7   4  7  │  12
                   false
 
+[Int] max(d, e)
+=> 7
+[Int] f
+=> 12
+
 #assert(xs.contains(4))
-        |  |        |
-        |  false    4
+        │  │        │
+        │  false    4
         [1, 2, 3]
 
 #assert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
-        |       |         |    |  |         |         |
-        "hello" true      "h"  |  "goodbye" false     "y"
-                              false
+        │       │         │    │  │         │         │
+        "hello" true      "h"  │  "goodbye" false     "y"
+                               false
+
+[Bool] "hello".hasPrefix("h")
+=> true
+[Bool] "goodbye".hasSuffix("y")
+=> false
 ```
 
 ## Why Power Assert?
@@ -68,13 +78,23 @@ Test Suite 'PowerAssertTests' started at 2023-04-05 07:17:58.801
 Test Case '-[ExampleTests.PowerAssertTests testExample]' started.
 /swift-power-assert/Example/"ExampleTests/ExampleTests.swift":8: error: -[ExampleTests.PowerAssertTests testExample] : failed -
 #assert(a * b == 91)
-        |   | |  |
-        10  9 |  91
-              false
+        │ │ │ │  │
+        │ │ 9 │  91
+        │ 90  false
+        10
+
+[Int] a
+=> 10
+[Int] b
+=> 9
+[Int] a * b
+=> 90
+[Int] 91
+=> 91
 /swift-power-assert/Example/"ExampleTests/ExampleTests.swift":11: error: -[ExampleTests.PowerAssertTests testExample] : failed -
 #assert(xs.contains(4))
-        |  |        |
-        |  false    4
+        │  │        │
+        │  false    4
         [1, 2, 3]
 ...
 ```
