@@ -302,14 +302,17 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visitPost(_ node: Syntax) {
-    guard let expr = node.as(ExprSyntax.self) else { return }
-    let id = index
-    index += 1
-    guard let parent = expr.parent else { return }
-    guard let _ = parent.as(InfixOperatorExprSyntax.self) else { return }
-    guard node.syntaxNodeType != BinaryOperatorExprSyntax.self else { return }
+    if let expr = node.as(ExprSyntax.self) {
+      let id = index
+      index += 1
 
-    expressionStore.append(node, id: id, type: .comparison)
+      if let parent = expr.parent,
+         let _ = parent.as(InfixOperatorExprSyntax.self),
+         node.syntaxNodeType != BinaryOperatorExprSyntax.self
+      {
+        expressionStore.append(node, id: id, type: .comparison)
+      }
+    }
   }
 
   private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
