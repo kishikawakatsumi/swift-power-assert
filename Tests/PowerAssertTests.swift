@@ -987,7 +987,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  2     │  1 │  345     │  2 │  │         │  "function"
+                │     │  "*.swift" │  9     │  1 │  345     │  2 │  │         │  "function"
                 │     true         true     true true       true │  │         true
                 │                                                │  "testMagicLiteralExpression1()"
                 │                                                true
@@ -1000,7 +1000,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift"
         => true
         [Int] #line
-        => 2
+        => 9
         [Int] 1
         => 1
         [Bool] #line != 1
@@ -1029,7 +1029,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  2     │  1 │  345     │  2 │  │         │  "function"
+                │     │  "*.swift" │  9     │  1 │  345     │  2 │  │         │  "function"
                 │     true         true     true true       true │  │         true
                 │                                                │  "testMagicLiteralExpression1()"
                 │                                                true
@@ -1042,7 +1042,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift"
         => true
         [Int] #line
-        => 2
+        => 9
         [Int] 1
         => 1
         [Bool] #line != 1

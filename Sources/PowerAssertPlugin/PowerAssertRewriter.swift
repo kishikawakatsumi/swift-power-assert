@@ -3,14 +3,13 @@ import SwiftOperators
 import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
-  var comparisons = [Int: String]()
-  private var nodeId = 0
-  private var currentNode: ExprSyntax?
-
   private let expression: SyntaxProtocol
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
   private let isAwaitExpression: Bool
+
+  private var index = 0
+  private let expressionStore = ExpressionStore()
 
   init(_ expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
@@ -24,7 +23,8 @@ class PowerAssertRewriter: SyntaxRewriter {
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
     startColumn = endLocation.column - startLocation.column
-    self.isAwaitExpression = expression
+
+    isAwaitExpression = expression
       .tokens(viewMode: .fixedUp)
       .map { $0 }
       .contains { $0.tokenKind == .keyword(.await) }
@@ -32,6 +32,14 @@ class PowerAssertRewriter: SyntaxRewriter {
 
   func rewrite() -> SyntaxProtocol {
     visit(expression.cast(SourceFileSyntax.self))
+  }
+
+  func comparisons() -> [Int: String] {
+    expressionStore
+      .expressions(of: .comparison)
+      .reduce(into: [Int: String]()) {
+        $0[$1.id] = "\($1.node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+      }
   }
 
   override func visit(_ node: ArrowExprSyntax) -> ExprSyntax {
@@ -307,11 +315,13 @@ class PowerAssertRewriter: SyntaxRewriter {
 
   override func visitPost(_ node: Syntax) {
     guard let expr = node.as(ExprSyntax.self) else { return }
+    let id = index
+    index += 1
     guard let parent = expr.parent else { return }
     guard let _ = parent.as(InfixOperatorExprSyntax.self) else { return }
     guard node.syntaxNodeType != BinaryOperatorExprSyntax.self else { return }
-    guard let _ = currentNode else { return }
-    comparisons[nodeId - 1] = "\(node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+
+    expressionStore.append(node, id: id, type: .comparison)
   }
 
   private func apply(_ node: ExprSyntax, column: Int, original: SyntaxProtocol) -> ExprSyntax {
@@ -342,7 +352,7 @@ class PowerAssertRewriter: SyntaxRewriter {
           label: .identifier("id"),
           colon: .colonToken().with(\.trailingTrivia, .space),
           expression: IntegerLiteralExprSyntax(
-            digits: .integerLiteral("\(nodeId)")
+            digits: .integerLiteral("\(index)")
           )
         ),
       ]),
@@ -356,9 +366,6 @@ class PowerAssertRewriter: SyntaxRewriter {
     } else {
       exprSyntax = ExprSyntax(functionCallExpr)
     }
-
-    nodeId += 1
-    currentNode = exprSyntax
 
     return exprSyntax
   }
@@ -418,4 +425,26 @@ class PowerAssertRewriter: SyntaxRewriter {
     }
     return column
   }
+}
+
+private class ExpressionStore {
+  private var expressions = [Expression]()
+
+  func append(_ node: Syntax, id: Int, type: Expression.ExpressionType) {
+    expressions.append(Expression(node: node, id: id, type: type))
+  }
+
+  func expressions(of type: Expression.ExpressionType) -> [Expression] {
+    return expressions.filter { $0.type == type }
+  }
+}
+
+private struct Expression {
+  enum ExpressionType {
+    case comparison
+  }
+
+  let node: Syntax
+  let id: Int
+  let type: ExpressionType
 }
