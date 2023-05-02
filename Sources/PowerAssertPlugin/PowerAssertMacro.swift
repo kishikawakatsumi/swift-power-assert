@@ -37,16 +37,17 @@ private struct CodeGenerator {
     let file = parameters.file
     let line = parameters.line
     let verbose = parameters.verbose
-
+    
     let rewriter = PowerAssertRewriter(expression, macro: macro)
     let expanded = rewriter.rewrite()
 
     return """
-      PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose), binaryExpressions: \(rewriter.binaryExpressions)) {
+      PowerAssert.Assertion(\(assertion), message: \(message), file: \(file), line: \(line), verbose: \(verbose), comparison: \(rewriter.comparisons)) {
         \(expanded)
       }
       .render()
       """
+      .replacingOccurrences(of: "await await", with: "await ")
   }
 }
 

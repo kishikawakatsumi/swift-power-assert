@@ -3,13 +3,14 @@ import SwiftOperators
 import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
-  var binaryExpressions = [Int: String]()
+  var comparisons = [Int: String]()
   private var nodeId = 0
   private var currentNode: ExprSyntax?
 
   private let expression: SyntaxProtocol
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
+  private let isAwaitExpression: Bool
 
   init(_ expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
@@ -23,6 +24,10 @@ class PowerAssertRewriter: SyntaxRewriter {
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
     startColumn = endLocation.column - startLocation.column
+    self.isAwaitExpression = expression
+      .tokens(viewMode: .fixedUp)
+      .map { $0 }
+      .contains { $0.tokenKind == .keyword(.await) }
   }
 
   func rewrite() -> SyntaxProtocol {
@@ -304,47 +309,56 @@ class PowerAssertRewriter: SyntaxRewriter {
     guard let _ = parent.as(InfixOperatorExprSyntax.self) else { return }
     guard node.syntaxNodeType != BinaryOperatorExprSyntax.self else { return }
     guard let _ = currentNode else { return }
-    binaryExpressions[nodeId - 1] = "\(node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+    comparisons[nodeId - 1] = "\(node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
   }
 
   private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
-    let syntax = ExprSyntax(
-      FunctionCallExprSyntax(
-        leadingTrivia: node.leadingTrivia,
-        calledExpression: IdentifierExprSyntax(
-          identifier: TokenSyntax(.identifier("$0.capture"), presence: .present)
+    let hasOperator = findLeftSiblings(tokens: "==", node: Syntax(node))
+
+    let functionCallExpr = FunctionCallExprSyntax(
+      leadingTrivia: node.leadingTrivia,
+      calledExpression: IdentifierExprSyntax(
+        identifier: TokenSyntax(.identifier(isAwaitExpression ? "$0.capturea" : "$0.capture"), presence: .present)
+      ),
+      leftParen: .leftParenToken(),
+      argumentList: TupleExprElementListSyntax([
+        TupleExprElementSyntax(
+          expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
+          trailingComma: .commaToken(),
+          trailingTrivia: .space
         ),
-        leftParen: .leftParenToken(),
-        argumentList: TupleExprElementListSyntax([
-          TupleExprElementSyntax(
-            expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
-            trailingComma: .commaToken(),
-            trailingTrivia: .space
+        TupleExprElementSyntax(
+          label: .identifier("column"),
+          colon: .colonToken().with(\.trailingTrivia, .space),
+          expression: IntegerLiteralExprSyntax(
+            digits: .integerLiteral("\(column + startColumn)")
           ),
-          TupleExprElementSyntax(
-            label: .identifier("column"),
-            colon: .colonToken().with(\.trailingTrivia, .space),
-            expression: IntegerLiteralExprSyntax(
-              digits: .integerLiteral("\(column + startColumn)")
-            ),
-            trailingComma: .commaToken(),
-            trailingTrivia: .space
-          ),
-          TupleExprElementSyntax(
-            label: .identifier("id"),
-            colon: .colonToken().with(\.trailingTrivia, .space),
-            expression: IntegerLiteralExprSyntax(
-              digits: .integerLiteral("\(nodeId)")
-            )
-          ),
-        ]),
-        rightParen: .rightParenToken(),
-        trailingTrivia: node.trailingTrivia
-      )
+          trailingComma: .commaToken(),
+          trailingTrivia: .space
+        ),
+        TupleExprElementSyntax(
+          label: .identifier("id"),
+          colon: .colonToken().with(\.trailingTrivia, .space),
+          expression: IntegerLiteralExprSyntax(
+            digits: .integerLiteral("\(nodeId)")
+          )
+        ),
+      ]),
+      rightParen: .rightParenToken(),
+      trailingTrivia: node.trailingTrivia
     )
+
+    let exprSyntax: ExprSyntax
+    if isAwaitExpression && !hasOperator {
+      exprSyntax = ExprSyntax(AwaitExprSyntax(expression: functionCallExpr.with(\.leadingTrivia, .space)))
+    } else {
+      exprSyntax = ExprSyntax(functionCallExpr)
+    }
+
     nodeId += 1
-    currentNode = syntax
-    return syntax
+    currentNode = exprSyntax
+
+    return exprSyntax
   }
 
   private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
@@ -373,6 +387,24 @@ class PowerAssertRewriter: SyntaxRewriter {
       }
     }
     return nil
+  }
+
+  func findLeftSiblings(tokens: String..., node: Syntax) -> Bool {
+    guard let parent = node.parent else {
+      return false
+    }
+
+    for sibling in parent.children(viewMode: .fixedUp) {
+      if sibling == node {
+        break
+      }
+
+      if tokens.contains("\(sibling.with(\.leadingTrivia, []).with(\.trailingTrivia, []))") {
+        return true
+      }
+    }
+
+    return false
   }
 
   private func graphemeColumn(_ node: SyntaxProtocol) -> Int {
