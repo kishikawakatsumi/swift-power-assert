@@ -165,6 +165,11 @@ class PowerAssertRewriter: SyntaxRewriter {
 
   override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
+    
+    guard node.macro.tokenKind != .identifier("selector") else {
+      return apply(ExprSyntax(node), column: column)
+    }
+
     let visitedNode = super.visit(node)
     return apply(ExprSyntax(visitedNode), column: column)
   }
