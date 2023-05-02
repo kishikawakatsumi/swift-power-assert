@@ -4571,7 +4571,7 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-  func testAsyncExpression() async {
+  func testAsyncExpression1() async {
     await captureConsoleOutput(execute: {
       let status = "OK"
       await #assert(await upload(content: "example") == status, verbose: true)
@@ -4593,6 +4593,47 @@ final class PowerAssertTests: XCTestCase {
         """#
       )
     })
+  }
+
+  func testAsyncExpression2() async {
+    await captureConsoleOutput {
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+      #assert(bar.val != bar.foo.val, verbose: true)
+
+      let status = "OK"
+      await #assert(await upload(content: "example") == status, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(bar.val != bar.foo.val)
+                │   │   │  │   │   │
+                │   3   │  │   │   2
+                │       │  │   Foo(val: 2)
+                │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                │       true
+                Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
+        #assert(await upload(content: "example") == status)
+                      │               │          │  │
+                      "OK"            "example"  │  "OK"
+                                                 true
+
+        [String] upload(content: "example")
+        => "OK"
+        [String] status
+        => "OK"
+
+
+        """
+      )
+    }
   }
 
 //  func testStringWidth() async throws {

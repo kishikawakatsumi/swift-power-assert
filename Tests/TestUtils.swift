@@ -27,7 +27,10 @@ func captureConsoleOutput(execute: () -> Void, completion: @escaping (String) ->
   dup2(stdout, STDOUT_FILENO)
   try? pipe.fileHandleForWriting.close()
   close(stdout)
-  XCTWaiter.wait(for: [semaphore])
+
+  if XCTWaiter.wait(for: [semaphore]) != .completed {
+    XCTFail("timeout")
+  }
 }
 
 func captureConsoleOutput(execute: () async -> Void, completion: @escaping (String) -> Void) async {
@@ -61,7 +64,10 @@ func captureConsoleOutput(execute: () async -> Void, completion: @escaping (Stri
   dup2(stdout, STDOUT_FILENO)
   try? pipe.fileHandleForWriting.close()
   close(stdout)
-  await XCTWaiter.fulfillment(of: [semaphore])
+
+  if await XCTWaiter.fulfillment(of: [semaphore]) != .completed {
+    XCTFail("timeout")
+  }
 }
 
 struct Bar {
