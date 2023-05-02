@@ -3492,10 +3492,11 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  // FIXME: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
 //  func testClosureExpression() {
 //    captureConsoleOutput {
 //      let arr = [1000, 1500, 2000]
-//      #powerAssert(
+//      #assert(
 //        [10, 3, 20, 15, 4]
 //          .sorted()
 //          .filter { $0 > 5 }
@@ -3507,19 +3508,18 @@ final class PowerAssertTests: XCTestCase {
 //      XCTAssertEqual(
 //        output,
 //        """
-//        #powerAssert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
-//                     ││   │  │   │   │   │         │                  │                │  │
-//                     │10  3  20  15  4   │         [10, 15, 20]       │                │  [1000, 1500, 2000]
-//                     [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           │                true
-//                                                                      [1000, 1500, 2000]
+//        #assert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
+//                ││   │  │   │   │   │         │                  │                │  │
+//                │10  3  20  15  4   │         [10, 15, 20]       │                │  [1000, 1500, 2000]
+//                [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           │                true
+//                                                                 [1000, 1500, 2000]
 //
 //        """
 //      )
 //    }
 //  }
 
-  // FIXME: If closures that span multiple lines are formatted on a single line,
-  // such as consecutive variable definitions, the statements must be separated by a semicolon.
+  // FIXME: If closures that span multiple lines are formatted on a single line, such as consecutive variable definitions, the statements must be separated by a semicolon.
 //  func testMultipleStatementInClosure() {
 //    captureConsoleOutput {
 //      let a = 5
@@ -4721,34 +4721,4 @@ final class PowerAssertTests: XCTestCase {
       )
     }
   }
-
-//  func testStringWidth() async throws {
-//    #powerAssert("12345678901234567890".count == -1)
-//    #powerAssert("foo".count == -1)
-//    #powerAssert("⌚⭐⺎⽋豈Ａ🚀".count == -1)
-//    #powerAssert("\u{0008}\u{007F}".count == -1)
-//    #powerAssert("\u{001B}[31mfoo\u{001B}[39m".count == -1)
-//    #powerAssert("\u{001B}]8;;https://foo.com\u{0007}bar\u{001B}]8;;\u{0007}".count == -1)
-//    #powerAssert("".count == -1)
-//    #powerAssert("☠️".count == -1)
-//    #powerAssert("👩".count == -1)
-//    #powerAssert("👩🏿".count == -1)
-//    #powerAssert("x\u{1F3FF}".count == -1)
-//    #powerAssert("🇺🇸".count == -1)
-//    #powerAssert("🏴󠁧󠁢󠁥󠁮󠁧󠁿".count == -1)
-//    #powerAssert(#"#️⃣"#.count == -1)
-//    #powerAssert("👨‍❤️‍💋‍👨🏳️‍🌈".count == -1)
-//    #powerAssert("🦹🏻‍♀️".count == -1)
-//    #powerAssert("🦹🏻‍♀".count == -1)
-//    #powerAssert("👨️‍⚕️".count == -1)
-//    #powerAssert("⛹️‍😕️".count == -1)
-//    #powerAssert("😕🏻‍🦰".count == -1)
-//    #powerAssert("👨‍😕🏼".count == -1)
-//    #powerAssert("🙆🏾🏾‍♂️".count == -1)
-//    #powerAssert("🧑🏽‍🤝🏿🏿‍🧑🏿".count == -1)
-//  }
-
-  private let stringValue = "string"
-  private let intValue = 100
-  private let doubleValue = 999.9
 }
