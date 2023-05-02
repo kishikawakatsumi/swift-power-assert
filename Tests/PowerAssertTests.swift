@@ -3451,35 +3451,47 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-//  func testSelectorExpression() {
-//    captureConsoleOutput {
-//      #powerAssert(
-//        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
-//        verbose: true
-//      )
-//      #powerAssert(
-//        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #powerAssert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
-//                     │         │                              │  │                 │
-//                     │         SomeObjCClass                  │  "description"     NSObject
-//                     "doSomethingWithInt:"                    true
-//        #powerAssert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
-//                     │                 │                       │  │                 │
-//                     "property"        SomeObjCClass           │  "description"     NSObject
-//                                                               true
-//
-//        """
-//      )
-//    }
-//  }
-//
+  func testSelectorExpression() {
+    captureConsoleOutput {
+      #assert(
+        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
+        verbose: true
+      )
+      #assert(
+        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
+                │                                        │  │
+                "doSomethingWithInt:"                    │  "description"
+                                                         true
+
+        [Selector] #selector(SomeObjCClass.doSomething(_:))
+        => "doSomethingWithInt:"
+        [Selector] #selector(getter: NSObjectProtocol.description)
+        => "description"
+
+        #assert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
+                │                                         │  │
+                "property"                                │  "description"
+                                                          true
+
+        [Selector] #selector(getter: SomeObjCClass.property)
+        => "property"
+        [Selector] #selector(getter: NSObjectProtocol.description)
+        => "description"
+
+
+        """
+      )
+    }
+  }
+
 //  func testClosureExpression() {
 //    captureConsoleOutput {
 //      let arr = [1000, 1500, 2000]
