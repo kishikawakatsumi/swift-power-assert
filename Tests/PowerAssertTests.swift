@@ -1613,7 +1613,7 @@ final class PowerAssertTests: XCTestCase {
 //        "triangular": [1, 3, 6, 10, 15, 21, 28],
 //        "hexagonal": [1, 6, 15, 28, 45, 66, 91]
 //      ]
-//      #powerAssert(
+//      #assert(
 //        interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15],
 //        verbose: true
 //      )
@@ -1624,103 +1624,103 @@ final class PowerAssertTests: XCTestCase {
 //        XCTAssertTrue(
 //          output ==
 //          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                       │["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
-//                       [2, 3, 5, 7, 11, 13, 15]
+//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
+//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
+//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      │        │  true
+//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      ["prime"]
+//                  ││                          ││        Array<Int>
+//                  ││                          │Dictionary<String, Array<Int>>
+//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+//                  │["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+//                  [2, 3, 5, 7, 11, 13, 15]
 //
 //          """#
 //          ||
 //          output ==
 //          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                       │["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
-//                       [2, 3, 5, 7, 11, 13, 15]
+//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
+//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
+//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      │        │  true
+//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      ["prime"]
+//                  ││                          ││        Array<Int>
+//                  ││                          │Dictionary<String, Array<Int>>
+//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+//                  │["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+//                  [2, 3, 5, 7, 11, 13, 15]
 //
 //          """#
 //          ||
 //          output ==
 //          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                       │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
-//                       [2, 3, 5, 7, 11, 13, 15]
+//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
+//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
+//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      │        │  true
+//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      ["prime"]
+//                  ││                          ││        Array<Int>
+//                  ││                          │Dictionary<String, Array<Int>>
+//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+//                  │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+//                  [2, 3, 5, 7, 11, 13, 15]
 //
 //          """#
 //          ||
 //          output ==
 //          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                       │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
-//                       [2, 3, 5, 7, 11, 13, 15]
+//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
+//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
+//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      │        │  true
+//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      ["prime"]
+//                  ││                          ││        Array<Int>
+//                  ││                          │Dictionary<String, Array<Int>>
+//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+//                  │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+//                  [2, 3, 5, 7, 11, 13, 15]
 //
 //          """#
 //          ||
 //          output ==
 //          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                       │["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
-//                       [2, 3, 5, 7, 11, 13, 15]
+//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
+//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
+//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      │        │  true
+//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      ["prime"]
+//                  ││                          ││        Array<Int>
+//                  ││                          │Dictionary<String, Array<Int>>
+//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+//                  │["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+//                  [2, 3, 5, 7, 11, 13, 15]
 //
 //          """#
 //          ||
 //          output ==
 //          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                       │["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
-//                       [2, 3, 5, 7, 11, 13, 15]
+//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
+//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
+//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
+//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      │        │  true
+//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
+//                  ││                          ││        │      ["prime"]
+//                  ││                          ││        Array<Int>
+//                  ││                          │Dictionary<String, Array<Int>>
+//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+//                  │["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+//                  [2, 3, 5, 7, 11, 13, 15]
 //
 //          """#
 //        )
@@ -2909,7 +2909,7 @@ final class PowerAssertTests: XCTestCase {
       var c: SomeClass?
       #assert(c?.optionalProperty?.property.optionalProperty?.performAction() == nil, verbose: true)
       c = SomeClass()
-//      #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil, verbose: true)
+      #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil, verbose: true)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
@@ -2926,7 +2926,17 @@ final class PowerAssertTests: XCTestCase {
         [Optional<Bool>] nil
         => nil
 
+        #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil)
+                │  │                 │        │        │                 │               │  │
+                │  Optional(nil)     nil      nil      nil               nil             │  nil
+                Optional(PowerAssertTests.SomeClass)                                     true
 
+        [Optional<Bool>] c?.optionalProperty?.property.property.optionalProperty?.performAction()
+        => nil
+        [Optional<Bool>] nil
+        => nil
+
+        
         """
       )
     }
