@@ -41,13 +41,13 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: ArrayExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: AsExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node.asTok)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: AssignmentExprSyntax) -> ExprSyntax {
@@ -65,7 +65,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: BooleanLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: BorrowExprSyntax) -> ExprSyntax {
@@ -79,7 +79,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: DictionaryExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: DiscardAssignmentExprSyntax) -> ExprSyntax {
@@ -93,13 +93,13 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: ForcedValueExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
@@ -110,7 +110,7 @@ class PowerAssertRewriter: SyntaxRewriter {
       column = graphemeColumn(node)
     }
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
@@ -126,7 +126,8 @@ class PowerAssertRewriter: SyntaxRewriter {
       ExprSyntax("\(visitedNode).self")
         .with(\.leadingTrivia, visitedNode.leadingTrivia)
         .with(\.trailingTrivia, visitedNode.trailingTrivia),
-      column: column
+      column: column,
+      original: node
     )
   }
 
@@ -141,13 +142,13 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node.operatorOperand)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: IntegerLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: IsExprSyntax) -> ExprSyntax {
@@ -157,13 +158,13 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: KeyPathExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
@@ -175,13 +176,13 @@ class PowerAssertRewriter: SyntaxRewriter {
     if let optionalChainingExpr = findDescendants(syntaxType: OptionalChainingExprSyntax.self, node: node) {
       if let _ = findAncestors(syntaxType: MemberAccessExprSyntax.self, node: node) {
         return ExprSyntax(
-          "\(apply(ExprSyntax(visitedNode), column: column))\(optionalChainingExpr.questionMark)"
+          "\(apply(ExprSyntax(visitedNode), column: column, original: node))\(optionalChainingExpr.questionMark)"
         )
       } else {
-        return apply(ExprSyntax(visitedNode), column: column)
+        return apply(ExprSyntax(visitedNode), column: column, original: node)
       }
     } else {
-      return apply(ExprSyntax(visitedNode), column: column)
+      return apply(ExprSyntax(visitedNode), column: column, original: node)
     }
   }
 
@@ -196,7 +197,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: OptionalChainingExprSyntax) -> ExprSyntax {
@@ -218,13 +219,13 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: PrefixOperatorExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: RegexLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {
@@ -233,7 +234,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     }
     let column = graphemeColumn(binaryOperatorExpr)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: SpecializeExprSyntax) -> ExprSyntax {
@@ -243,13 +244,13 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: SubscriptExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node.rightBracket)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: SuperRefExprSyntax) -> ExprSyntax {
@@ -259,7 +260,8 @@ class PowerAssertRewriter: SyntaxRewriter {
       ExprSyntax("\(visitedNode).self")
         .with(\.leadingTrivia, visitedNode.leadingTrivia)
         .with(\.trailingTrivia, visitedNode.trailingTrivia),
-      column: column
+      column: column,
+      original: node
     )
   }
 
@@ -270,7 +272,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: TernaryExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: TryExprSyntax) -> ExprSyntax {
@@ -280,7 +282,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: TupleExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(ExprSyntax(visitedNode), column: column)
+    return apply(ExprSyntax(visitedNode), column: column, original: node)
   }
 
   override func visit(_ node: TypeExprSyntax) -> ExprSyntax {
@@ -312,8 +314,8 @@ class PowerAssertRewriter: SyntaxRewriter {
     comparisons[nodeId - 1] = "\(node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
   }
 
-  private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
-    let hasOperator = findLeftSiblings(tokens: "==", node: Syntax(node))
+  private func apply(_ node: ExprSyntax, column: Int, original: SyntaxProtocol) -> ExprSyntax {
+    let hasOperator = findLeftSiblings(tokens: "==", node: original)
 
     let functionCallExpr = FunctionCallExprSyntax(
       leadingTrivia: node.leadingTrivia,
@@ -323,7 +325,7 @@ class PowerAssertRewriter: SyntaxRewriter {
       leftParen: .leftParenToken(),
       argumentList: TupleExprElementListSyntax([
         TupleExprElementSyntax(
-          expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
+          expression: isAwaitExpression && !hasOperator ? ExprSyntax(AwaitExprSyntax(expression: node.with(\.leadingTrivia, .space).with(\.trailingTrivia, .space))) : node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
           trailingComma: .commaToken(),
           trailingTrivia: .space
         ),
@@ -389,16 +391,15 @@ class PowerAssertRewriter: SyntaxRewriter {
     return nil
   }
 
-  func findLeftSiblings(tokens: String..., node: Syntax) -> Bool {
+  func findLeftSiblings(tokens: String..., node: SyntaxProtocol) -> Bool {
     guard let parent = node.parent else {
       return false
     }
 
     for sibling in parent.children(viewMode: .fixedUp) {
-      if sibling == node {
-        break
+      if sibling.id == node.id {
+        return false
       }
-
       if tokens.contains("\(sibling.with(\.leadingTrivia, []).with(\.trailingTrivia, []))") {
         return true
       }

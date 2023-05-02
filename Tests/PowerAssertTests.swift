@@ -4571,6 +4571,57 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testAsyncExpression() async {
+    let pipe = Pipe()
+
+    class OutputRef {
+      var output = ""
+    }
+    let ref = OutputRef()
+
+    let semaphore = expectation(description: "semaphore")
+    pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+      let data = fileHandle.availableData
+      if data.isEmpty  {
+        fileHandle.readabilityHandler = nil
+        semaphore.fulfill()
+      } else {
+        if let string = String(data: data,  encoding: .utf8) {
+          ref.output += string
+        }
+      }
+    }
+
+    setvbuf(stdout, nil, _IONBF, 0)
+    let stdout = dup(STDOUT_FILENO)
+    dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
+
+    let status = "OK"
+    await #assert(await upload(content: "example") == status, verbose: true)
+
+    dup2(stdout, STDOUT_FILENO)
+    try? pipe.fileHandleForWriting.close()
+    close(stdout)
+    await fulfillment(of: [semaphore])
+
+    XCTAssertEqual(
+      ref.output,
+        #"""
+        #assert(await upload(content: "example") == status)
+                      │               │          │  │
+                      "OK"            "example"  │  "OK"
+                                                 true
+
+        [String] upload(content: "example")
+        => "OK"
+        [String] status
+        => "OK"
+
+
+        """#
+    )
+  }
+
 //  func testStringWidth() async throws {
 //    #powerAssert("12345678901234567890".count == -1)
 //    #powerAssert("foo".count == -1)
