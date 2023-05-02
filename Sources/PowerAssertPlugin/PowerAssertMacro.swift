@@ -37,7 +37,7 @@ private struct CodeGenerator {
     let file = parameters.file
     let line = parameters.line
     let verbose = parameters.verbose
-    
+
     let rewriter = PowerAssertRewriter(expression, macro: macro)
     let expanded = rewriter.rewrite()
 
@@ -47,7 +47,6 @@ private struct CodeGenerator {
       }
       .render()
       """
-      .replacingOccurrences(of: "await await", with: "await ")
   }
 }
 

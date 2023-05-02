@@ -24,7 +24,7 @@ public enum PowerAssert {
       line: UInt,
       verbose: Bool = false,
       comparison: [Int: String],
-      evaluate: (Assertion) throws -> Bool = { _ in true }
+      evaluateSync: (Assertion) throws -> Bool = { _ in true }
     ) {
       self.assertion = assertion
       self.originalMessage = message
@@ -33,7 +33,7 @@ public enum PowerAssert {
       self.verbose = verbose
       self.comparison = comparison
       do {
-        self.result = try evaluate(self)
+        self.result = try evaluateSync(self)
       } catch {
         errors.append(error)
       }
@@ -46,7 +46,7 @@ public enum PowerAssert {
       line: UInt,
       verbose: Bool = false,
       comparison: [Int: String],
-      evaluatea: (Assertion) async throws -> Bool = { _ in true }
+      evaluateAsync: (Assertion) async throws -> Bool = { _ in true }
     ) async {
       self.assertion = assertion
       self.originalMessage = message
@@ -55,67 +55,67 @@ public enum PowerAssert {
       self.verbose = verbose
       self.comparison = comparison
       do {
-        self.result = try await evaluatea(self)
+        self.result = try await evaluateAsync(self)
       } catch {
         errors.append(error)
       }
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
+    public func captureSync<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
+    public func captureSync<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
+    public func captureSync<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
+    public func captureSync(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
+    public func captureSync(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capturea<T>(_ expr: @autoclosure () async throws -> T, column: Int, id: Int) async rethrows -> T {
+    public func captureAsync<T>(_ expr: @autoclosure () async throws -> T, column: Int, id: Int) async rethrows -> T {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capturea<T>(_ expr: @autoclosure () async throws -> [T], column: Int, id: Int) async rethrows -> [T] {
+    public func captureAsync<T>(_ expr: @autoclosure () async throws -> [T], column: Int, id: Int) async rethrows -> [T] {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capturea<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
+    public func captureAsync<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capturea(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
+    public func captureAsync(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capturea(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
+    public func captureAsync(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val

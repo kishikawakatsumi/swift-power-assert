@@ -320,7 +320,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     let functionCallExpr = FunctionCallExprSyntax(
       leadingTrivia: node.leadingTrivia,
       calledExpression: IdentifierExprSyntax(
-        identifier: TokenSyntax(.identifier(isAwaitExpression ? "$0.capturea" : "$0.capture"), presence: .present)
+        identifier: TokenSyntax(.identifier(isAwaitExpression ? "$0.captureAsync" : "$0.captureSync"), presence: .present)
       ),
       leftParen: .leftParenToken(),
       argumentList: TupleExprElementListSyntax([
