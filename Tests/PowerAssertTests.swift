@@ -4636,6 +4636,77 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testAsyncExpression3() async throws {
+    try await captureConsoleOutput {
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+      #assert(bar.val != bar.foo.val, verbose: true)
+
+      let status = "OK"
+      await #assert(await upload(content: "example") == status, verbose: true)
+
+      let request = URLRequest(url: URL(string: "https://example.com")!)
+      let session = URLSession(configuration: .ephemeral)
+      let (data, response) = try await session.data(for: request)
+      await #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(bar.val != bar.foo.val)
+                │   │   │  │   │   │
+                │   3   │  │   │   2
+                │       │  │   Foo(val: 2)
+                │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                │       true
+                Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
+        #assert(await upload(content: "example") == status)
+                      │               │          │  │
+                      "OK"            "example"  │  "OK"
+                                                 true
+
+        [String] upload(content: "example")
+        => "OK"
+        [String] status
+        => "OK"
+
+        #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0)
+                ││        │                     │          │  │   │  │    │     │ │
+                ││        │                     │          │  │   │  │    1256  │ 0
+                ││        │                     │          │  │   │  1256 bytes true
+                ││        │                     │          │  │   true
+                ││        │                     │          │  Optional(200)
+                ││        │                     │          true
+                ││        │                     Optional(200)
+                ││        Optional(Status Code: 200 (no error), URL: https://example.com/)
+                │Status Code: 200 (no error), URL: https://example.com/
+                Optional(Status Code: 200 (no error), URL: https://example.com/)
+
+        [Optional<Int>] (response as? HTTPURLResponse)?.statusCode
+        => Optional(200)
+        [Optional<Int>] 200
+        => Optional(200)
+        [Bool] (response as? HTTPURLResponse)?.statusCode == 200
+        => true
+        [Int] data.count
+        => 1256
+        [Int] 0
+        => 0
+        [Bool] data.count > 0
+        => true
+
+
+        """
+      )
+    }
+  }
+
 //  func testStringWidth() async throws {
 //    #powerAssert("12345678901234567890".count == -1)
 //    #powerAssert("foo".count == -1)
