@@ -78,13 +78,13 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(array.firstIndex(of: zero) != two)
                 │     │              │     │  │
-                │     nil            0     │  Optional(2)
+                │     nil            0     │  2
                 [1, 2, 3]                  true
 
         [Optional<Int>] array.firstIndex(of: zero)
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
 
 
         """
@@ -148,19 +148,17 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(array.firstIndex(of: zero) != two && bar.val != bar.foo.val)
                 │     │              │     │  │   │  │   │   │  │   │   │
-                │     nil            0     │  │   │  │   3   │  │   │   2
-                [1, 2, 3]                  │  │   │  │       │  │   Foo(val: 2)
-                                           │  │   │  │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                                           │  │   │  │       true
-                                           │  │   │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                                           │  │   true
-                                           │  Optional(2)
-                                           true
+                │     nil            0     │  2   │  │   3   │  │   │   2
+                [1, 2, 3]                  true   │  │       │  │   Foo(val: 2)
+                                                  │  │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                                                  │  │       true
+                                                  │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                                                  true
 
         [Optional<Int>] array.firstIndex(of: zero)
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
         [Bool] array.firstIndex(of: zero) != two
         => true
         [Int] bar.val
@@ -446,33 +444,33 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(array . firstIndex( of: zero) != two)
                 │       │               │     │  │
-                │       nil             0     │  Optional(2)
+                │       nil             0     │  2
                 [1, 2, 3]                     true
 
         [Optional<Int>] array . firstIndex( of: zero)
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
 
         #assert(array . firstIndex( of: zero) != two)
                 │       │               │     │  │
-                │       nil             0     │  Optional(2)
+                │       nil             0     │  2
                 [1, 2, 3]                     true
 
         [Optional<Int>] array . firstIndex( of: zero)
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
 
         #assert(array .firstIndex( of: zero) != two)
                 │      │               │     │  │
-                │      nil             0     │  Optional(2)
+                │      nil             0     │  2
                 [1, 2, 3]                    true
 
         [Optional<Int>] array .firstIndex( of: zero)
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
 
 
         """
@@ -558,19 +556,17 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(array.firstIndex( of: zero ) != two && bar .val != bar .foo .val)
                 │     │               │      │  │   │  │    │   │  │    │    │
-                │     nil             0      │  │   │  │    3   │  │    │    2
-                [1, 2, 3]                    │  │   │  │        │  │    Foo(val: 2)
-                                             │  │   │  │        │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                                             │  │   │  │        true
-                                             │  │   │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                                             │  │   true
-                                             │  Optional(2)
-                                             true
+                │     nil             0      │  2   │  │    3   │  │    │    2
+                [1, 2, 3]                    true   │  │        │  │    Foo(val: 2)
+                                                    │  │        │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                                                    │  │        true
+                                                    │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                                                    true
 
         [Optional<Int>] array.firstIndex( of: zero )
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
         [Bool] array.firstIndex( of: zero ) != two
         => true
         [Int] bar .val
@@ -806,7 +802,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(number != nil && number == 1234)
                 │      │  │   │  │      │  │
-                │      │  nil │  │      │  Optional(1234)
+                │      │  nil │  │      │  1234
                 │      true   │  │      true
                 │             │  Optional(1234)
                 │             true
@@ -820,8 +816,8 @@ final class PowerAssertTests: XCTestCase {
         => true
         [Optional<Int>] number
         => Optional(1234)
-        [Optional<Int>] 1234
-        => Optional(1234)
+        [Int] 1234
+        => 1234
         [Bool] number == 1234
         => true
 
@@ -915,13 +911,13 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert([one, two, three].firstIndex(of: zero) != two)
                 ││    │    │      │              │     │  │
-                │1    2    3      nil            0     │  Optional(2)
+                │1    2    3      nil            0     │  2
                 [1, 2, 3]                              true
 
         [Optional<Int>] [one, two, three].firstIndex(of: zero)
         => nil
-        [Optional<Int>] two
-        => Optional(2)
+        [Int] two
+        => 2
 
 
         """
@@ -1562,7 +1558,7 @@ final class PowerAssertTests: XCTestCase {
 
         #assert(greetings[keyPath: \[String].first?.count] == 5)
                 │                  │                     │ │  │
-                │                  │                     │ │  Optional(5)
+                │                  │                     │ │  5
                 │                  │                     │ true
                 │                  │                     Optional(5)
                 │                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
@@ -1570,8 +1566,8 @@ final class PowerAssertTests: XCTestCase {
 
         [Optional<Int>] greetings[keyPath: \[String].first?.count]
         => Optional(5)
-        [Optional<Int>] 5
-        => Optional(5)
+        [Int] 5
+        => 5
 
 
         """#
@@ -1593,7 +1589,7 @@ final class PowerAssertTests: XCTestCase {
 
         #assert(greetings[keyPath: \[String].first?.count] == 5)
                 │                  │                     │ │  │
-                │                  │                     │ │  Optional(5)
+                │                  │                     │ │  5
                 │                  │                     │ true
                 │                  │                     Optional(5)
                 │                  \Array<String>.first?.count?
@@ -1601,8 +1597,8 @@ final class PowerAssertTests: XCTestCase {
 
         [Optional<Int>] greetings[keyPath: \[String].first?.count]
         => Optional(5)
-        [Optional<Int>] 5
-        => Optional(5)
+        [Int] 5
+        => 5
 
 
         """#
@@ -2692,19 +2688,19 @@ final class PowerAssertTests: XCTestCase {
 
           #assert(someDictionary["not here"]?[0] != 99)
                   │              │         │   │ │  │
-                  │              │         nil │ │  Optional(99)
+                  │              │         nil │ │  99
                   │              "not here"    │ true
                   │                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
           #assert(someDictionary["a"]?[0] != 99)
                   │              │  │  ││ │  │
-                  │              │  │  ││ │  Optional(99)
+                  │              │  │  ││ │  99
                   │              │  │  ││ true
                   │              │  │  │Optional(1)
                   │              │  │  0
@@ -2714,8 +2710,8 @@ final class PowerAssertTests: XCTestCase {
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
 
           """
@@ -2754,19 +2750,19 @@ final class PowerAssertTests: XCTestCase {
 
           #assert(someDictionary["not here"]?[0] != 99)
                   │              │         │   │ │  │
-                  │              │         nil │ │  Optional(99)
+                  │              │         nil │ │  99
                   │              "not here"    │ true
                   │                            nil
                   ["b": [10, 20], "a": [1, 2, 3]]
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
           #assert(someDictionary["a"]?[0] != 99)
                   │              │  │  ││ │  │
-                  │              │  │  ││ │  Optional(99)
+                  │              │  │  ││ │  99
                   │              │  │  ││ true
                   │              │  │  │Optional(1)
                   │              │  │  0
@@ -2776,8 +2772,8 @@ final class PowerAssertTests: XCTestCase {
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
           """
         ||
@@ -2815,19 +2811,19 @@ final class PowerAssertTests: XCTestCase {
 
           #assert(someDictionary["not here"]?[0] != 99)
                   │              │         │   │ │  │
-                  │              │         nil │ │  Optional(99)
+                  │              │         nil │ │  99
                   │              "not here"    │ true
                   │                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
           #assert(someDictionary["a"]?[0] != 99)
                   │              │  │  ││ │  │
-                  │              │  │  ││ │  Optional(99)
+                  │              │  │  ││ │  99
                   │              │  │  ││ true
                   │              │  │  │Optional(1)
                   │              │  │  0
@@ -2837,8 +2833,8 @@ final class PowerAssertTests: XCTestCase {
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
 
           """
@@ -2877,19 +2873,19 @@ final class PowerAssertTests: XCTestCase {
 
           #assert(someDictionary["not here"]?[0] != 99)
                   │              │         │   │ │  │
-                  │              │         nil │ │  Optional(99)
+                  │              │         nil │ │  99
                   │              "not here"    │ true
                   │                            nil
                   ["b": [10, 20], "a": [1, 2, 3]]
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
           #assert(someDictionary["a"]?[0] != 99)
                   │              │  │  ││ │  │
-                  │              │  │  ││ │  Optional(99)
+                  │              │  │  ││ │  99
                   │              │  │  ││ true
                   │              │  │  │Optional(1)
                   │              │  │  0
@@ -2899,8 +2895,8 @@ final class PowerAssertTests: XCTestCase {
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
-          [Optional<Int>] 99
-          => Optional(99)
+          [Int] 99
+          => 99
 
 
           """
@@ -4678,20 +4674,17 @@ final class PowerAssertTests: XCTestCase {
 
         #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0)
                 ││        │                     │          │  │   │  │    │     │ │
-                ││        │                     │          │  │   │  │    1256  │ 0
-                ││        │                     │          │  │   │  1256 bytes true
-                ││        │                     │          │  │   true
-                ││        │                     │          │  Optional(200)
-                ││        │                     │          true
-                ││        │                     Optional(200)
+                ││        │                     │          │  200 │  │    1256  │ 0
+                ││        │                     │          true   │  1256 bytes true
+                ││        │                     Optional(200)     true
                 ││        Optional(Status Code: 200 (no error), URL: https://example.com/)
                 │Status Code: 200 (no error), URL: https://example.com/
                 Optional(Status Code: 200 (no error), URL: https://example.com/)
 
         [Optional<Int>] (response as? HTTPURLResponse)?.statusCode
         => Optional(200)
-        [Optional<Int>] 200
-        => Optional(200)
+        [Int] 200
+        => 200
         [Bool] (response as? HTTPURLResponse)?.statusCode == 200
         => true
         [Int] data.count

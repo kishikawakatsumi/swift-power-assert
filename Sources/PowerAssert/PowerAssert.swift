@@ -67,55 +67,7 @@ public enum PowerAssert {
       return val
     }
 
-    public func captureSync<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
-      let val = try expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureSync<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
-      let val = try expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureSync(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
-      let val = try expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureSync(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
-      let val = try expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
     public func captureAsync<T>(_ expr: @autoclosure () async throws -> T, column: Int, id: Int) async rethrows -> T {
-      let val = try await expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureAsync<T>(_ expr: @autoclosure () async throws -> [T], column: Int, id: Int) async rethrows -> [T] {
-      let val = try await expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureAsync<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
-      let val = try await expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureAsync(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
-      let val = try await expr()
-      store(value: val, column: column, id: id)
-      return val
-    }
-
-    public func captureAsync(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val
@@ -215,6 +167,31 @@ public enum PowerAssert {
     }
   }
 
+  static private func stringify<T>(_ value: T?) -> String {
+    func escapeString(_ string: String) -> String {
+      string
+        .replacingOccurrences(of: "\"", with: "\\\"")
+        .replacingOccurrences(of: "\t", with: "\\t")
+        .replacingOccurrences(of: "\r", with: "\\r")
+        .replacingOccurrences(of: "\n", with: "\\n")
+        .replacingOccurrences(of: "\0", with: "\\0")
+    }
+
+#if os(macOS)
+    switch value {
+    case .some(let v) where v is String || v is Selector: return "\"\(escapeString("\(v)"))\""
+    case .some(let v): return "\(v)".replacingOccurrences(of: "\n", with: " ")
+    case .none: return "nil"
+    }
+#else
+    switch value {
+    case .some(let v) where v is String: return "\"\(escapeString("\(v)"))\""
+    case .some(let v): return "\(v)".replacingOccurrences(of: "\n", with: " ")
+    case .none: return "nil"
+    }
+#endif
+  }
+
   struct Value: Comparable {
     let value: String
     let column: Int
@@ -238,29 +215,80 @@ public enum PowerAssert {
     let value: Any
     let expression: String
   }
+}
 
-  static private func escapeString(_ s: String) -> String {
-    return s
-      .replacingOccurrences(of: "\"", with: "\\\"")
-      .replacingOccurrences(of: "\t", with: "\\t")
-      .replacingOccurrences(of: "\r", with: "\\r")
-      .replacingOccurrences(of: "\n", with: "\\n")
-      .replacingOccurrences(of: "\0", with: "\\0")
+extension PowerAssert.Assertion {
+  public func captureSync(_ expr: @autoclosure () throws -> Int, column: Int, id: Int) rethrows -> Int {
+    let val = try expr()
+    store(value: val, column: column, id: id)
+    return val
   }
 
-  static private func stringify<T>(_ value: T?) -> String {
-#if os(macOS)
-    switch value {
-    case .some(let v) where v is String || v is Selector: return "\"\(escapeString("\(v)"))\""
-    case .some(let v): return "\(v)".replacingOccurrences(of: "\n", with: " ")
-    case .none: return "nil"
-    }
-#else
-    switch value {
-    case .some(let v) where v is String: return "\"\(escapeString("\(v)"))\""
-    case .some(let v): return "\(v)".replacingOccurrences(of: "\n", with: " ")
-    case .none: return "nil"
-    }
-#endif
+  public func captureSync(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
+    let val = try expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureSync(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
+    let val = try expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureSync(_ expr: @autoclosure () throws -> String, column: Int, id: Int) rethrows -> String {
+    let val = try expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureSync<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
+    let val = try expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureSync<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
+    let val = try expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+}
+
+extension PowerAssert.Assertion {
+  public func captureAsync(_ expr: @autoclosure () async throws -> Int, column: Int, id: Int) async rethrows -> Int {
+    let val = try await expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureAsync(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
+    let val = try await expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureAsync(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
+    let val = try await expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureAsync(_ expr: @autoclosure () async throws -> String, column: Int, id: Int) async rethrows -> String {
+    let val = try await expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureAsync<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
+    let val = try await expr()
+    store(value: val, column: column, id: id)
+    return val
+  }
+
+  public func captureAsync<T>(_ expr: @autoclosure () async throws -> [T], column: Int, id: Int) async rethrows -> [T] {
+    let val = try await expr()
+    store(value: val, column: column, id: id)
+    return val
   }
 }
