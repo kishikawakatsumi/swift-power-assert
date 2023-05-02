@@ -10,12 +10,12 @@ public enum PowerAssert {
     private let filePath: StaticString
     private let lineNumber: UInt
     private let verbose: Bool
-    private let binaryExpressions: [Int: String]
+    private let comparison: [Int: String]
 
     private var result: Bool = true
     private var values = [Value]()
     private var errors = [Swift.Error]()
-    private var binaryExpressionValues = [BinaryExpressionValue]()
+    private var comparisonValues = [ComparisonValue]()
 
     public init(
       _ assertion: String,
@@ -23,48 +23,100 @@ public enum PowerAssert {
       file: StaticString,
       line: UInt,
       verbose: Bool = false,
-      binaryExpressions: [Int: String],
-      evaluate: (Assertion) throws -> Bool = { _ in true }
+      comparison: [Int: String],
+      evaluateSync: (Assertion) throws -> Bool = { _ in true }
     ) {
       self.assertion = assertion
       self.originalMessage = message
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
-      self.binaryExpressions = binaryExpressions
+      self.comparison = comparison
       do {
-        self.result = try evaluate(self)
+        self.result = try evaluateSync(self)
       } catch {
         errors.append(error)
       }
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
+    public init(
+      _ assertion: String,
+      message: String = "",
+      file: StaticString,
+      line: UInt,
+      verbose: Bool = false,
+      comparison: [Int: String],
+      evaluateAsync: (Assertion) async throws -> Bool = { _ in true }
+    ) async {
+      self.assertion = assertion
+      self.originalMessage = message
+      self.filePath = file
+      self.lineNumber = line
+      self.verbose = verbose
+      self.comparison = comparison
+      do {
+        self.result = try await evaluateAsync(self)
+      } catch {
+        errors.append(error)
+      }
+    }
+
+    public func captureSync<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
+    public func captureSync<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
+    public func captureSync<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
+    public func captureSync(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
     }
 
-    public func capture(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
+    public func captureSync(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
       let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureAsync<T>(_ expr: @autoclosure () async throws -> T, column: Int, id: Int) async rethrows -> T {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureAsync<T>(_ expr: @autoclosure () async throws -> [T], column: Int, id: Int) async rethrows -> [T] {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureAsync<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureAsync(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureAsync(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
+      let val = try await expr()
       store(value: val, column: column, id: id)
       return val
     }
@@ -96,9 +148,9 @@ public enum PowerAssert {
 
     private func store<T>(value: T, column: Int, id: Int) {
       values.append(Value(stringify(value), column: column))
-      if let expr = binaryExpressions[id] {
-        binaryExpressionValues.append(
-          BinaryExpressionValue(id: id, value: value, expression: expr)
+      if let expr = comparison[id] {
+        comparisonValues.append(
+          ComparisonValue(id: id, value: value, expression: expr)
         )
       }
     }
@@ -142,8 +194,8 @@ public enum PowerAssert {
 
     private func renderComparison() -> String {
       var message = ""
-      if !binaryExpressionValues.isEmpty {
-        message += binaryExpressionValues
+      if !comparisonValues.isEmpty {
+        message += comparisonValues
           .map { "[\(type(of: $0.value))] \($0.expression)\n=> \(stringify($0.value))" }
           .joined(separator: "\n")
       }
@@ -152,8 +204,8 @@ public enum PowerAssert {
 
     private func renderSkipped() -> String {
       var message = ""
-      let skipped = binaryExpressions
-        .filter { !binaryExpressionValues.map { $0.id }.contains($0.key) }
+      let skipped = comparison
+        .filter { !comparisonValues.map { $0.id }.contains($0.key) }
         .sorted { $0.key < $1.key }
         .map { $0.value }
       if !skipped.isEmpty {
@@ -181,7 +233,7 @@ public enum PowerAssert {
     }
   }
 
-  private struct BinaryExpressionValue {
+  private struct ComparisonValue {
     let id: Int
     let value: Any
     let expression: String

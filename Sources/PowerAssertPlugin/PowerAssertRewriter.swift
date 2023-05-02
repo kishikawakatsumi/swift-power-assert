@@ -3,13 +3,13 @@ import SwiftOperators
 import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
-  var binaryExpressions = [Int: String]()
-  private var nodeId = 0
-  private var currentNode: ExprSyntax?
-
   private let expression: SyntaxProtocol
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
+  private let isAwaitPresent: Bool
+
+  private var index = 0
+  private let expressionStore = ExpressionStore()
 
   init(_ expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
@@ -23,10 +23,23 @@ class PowerAssertRewriter: SyntaxRewriter {
     let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
     startColumn = endLocation.column - startLocation.column
+
+    isAwaitPresent = expression
+      .tokens(viewMode: .fixedUp)
+      .map { $0 }
+      .contains { $0.tokenKind == .keyword(.await) }
   }
 
   func rewrite() -> SyntaxProtocol {
     visit(expression.cast(SourceFileSyntax.self))
+  }
+
+  func comparisons() -> [Int: String] {
+    expressionStore
+      .expressions(of: .comparison)
+      .reduce(into: [Int: String]()) {
+        $0[$1.id] = "\($1.node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+      }
   }
 
   override func visit(_ node: ArrowExprSyntax) -> ExprSyntax {
@@ -117,12 +130,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     }
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(
-      ExprSyntax("\(visitedNode).self")
-        .with(\.leadingTrivia, visitedNode.leadingTrivia)
-        .with(\.trailingTrivia, visitedNode.trailingTrivia),
-      column: column
-    )
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: IfExprSyntax) -> ExprSyntax {
@@ -250,12 +258,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   override func visit(_ node: SuperRefExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     let visitedNode = super.visit(node)
-    return apply(
-      ExprSyntax("\(visitedNode).self")
-        .with(\.leadingTrivia, visitedNode.leadingTrivia)
-        .with(\.trailingTrivia, visitedNode.trailingTrivia),
-      column: column
-    )
+    return apply(ExprSyntax(visitedNode), column: column)
   }
 
   override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
@@ -300,51 +303,83 @@ class PowerAssertRewriter: SyntaxRewriter {
 
   override func visitPost(_ node: Syntax) {
     guard let expr = node.as(ExprSyntax.self) else { return }
+    let id = index
+    index += 1
     guard let parent = expr.parent else { return }
     guard let _ = parent.as(InfixOperatorExprSyntax.self) else { return }
     guard node.syntaxNodeType != BinaryOperatorExprSyntax.self else { return }
-    guard let _ = currentNode else { return }
-    binaryExpressions[nodeId - 1] = "\(node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+
+    expressionStore.append(node, id: id, type: .comparison)
   }
 
   private func apply(_ node: ExprSyntax, column: Int) -> ExprSyntax {
-    let syntax = ExprSyntax(
-      FunctionCallExprSyntax(
-        leadingTrivia: node.leadingTrivia,
-        calledExpression: IdentifierExprSyntax(
-          identifier: TokenSyntax(.identifier("$0.capture"), presence: .present)
-        ),
-        leftParen: .leftParenToken(),
-        argumentList: TupleExprElementListSyntax([
-          TupleExprElementSyntax(
-            expression: node.with(\.leadingTrivia, []).with(\.trailingTrivia, []),
-            trailingComma: .commaToken(),
-            trailingTrivia: .space
-          ),
-          TupleExprElementSyntax(
-            label: .identifier("column"),
-            colon: .colonToken().with(\.trailingTrivia, .space),
-            expression: IntegerLiteralExprSyntax(
-              digits: .integerLiteral("\(column + startColumn)")
-            ),
-            trailingComma: .commaToken(),
-            trailingTrivia: .space
-          ),
-          TupleExprElementSyntax(
-            label: .identifier("id"),
-            colon: .colonToken().with(\.trailingTrivia, .space),
-            expression: IntegerLiteralExprSyntax(
-              digits: .integerLiteral("\(nodeId)")
-            )
-          ),
-        ]),
-        rightParen: .rightParenToken(),
-        trailingTrivia: node.trailingTrivia
+    let nonAssignOpToLeft = findLeftSiblingOperator(node)
+
+    let exprNode: ExprSyntax
+    if node.syntaxNodeType == IdentifierExprSyntax.self {
+      exprNode = ExprSyntax("\(node).self")
+        .with(\.leadingTrivia, node.leadingTrivia).with(\.trailingTrivia, node.trailingTrivia)
+    } else if node.syntaxNodeType == SuperRefExprSyntax.self {
+      exprNode = ExprSyntax("\(node).self")
+        .with(\.leadingTrivia, node.leadingTrivia).with(\.trailingTrivia, node.trailingTrivia)
+    } else {
+      exprNode = node
+    }
+
+    let expression: ExprSyntax
+    if isAwaitPresent && !nonAssignOpToLeft && node.syntaxNodeType == FunctionCallExprSyntax.self {
+      expression = ExprSyntax(
+        AwaitExprSyntax(
+          expression: exprNode.with(\.leadingTrivia, .space).with(\.trailingTrivia, [])
+        )
       )
+    } else {
+      expression = exprNode.with(\.leadingTrivia, []).with(\.trailingTrivia, [])
+    }
+
+    let functionCallExpr = FunctionCallExprSyntax(
+      leadingTrivia: node.leadingTrivia,
+      calledExpression: IdentifierExprSyntax(
+        identifier: TokenSyntax(
+          .identifier(isAwaitPresent ? "$0.captureAsync" : "$0.captureSync"), presence: .present
+        )
+      ),
+      leftParen: .leftParenToken(),
+      argumentList: TupleExprElementListSyntax([
+        TupleExprElementSyntax(
+          expression: expression,
+          trailingComma: .commaToken(),
+          trailingTrivia: .space
+        ),
+        TupleExprElementSyntax(
+          label: .identifier("column"),
+          colon: .colonToken().with(\.trailingTrivia, .space),
+          expression: IntegerLiteralExprSyntax(
+            digits: .integerLiteral("\(column + startColumn)")
+          ),
+          trailingComma: .commaToken(),
+          trailingTrivia: .space
+        ),
+        TupleExprElementSyntax(
+          label: .identifier("id"),
+          colon: .colonToken().with(\.trailingTrivia, .space),
+          expression: IntegerLiteralExprSyntax(
+            digits: .integerLiteral("\(index)")
+          )
+        ),
+      ]),
+      rightParen: .rightParenToken(),
+      trailingTrivia: node.trailingTrivia
     )
-    nodeId += 1
-    currentNode = syntax
-    return syntax
+
+    let exprSyntax: ExprSyntax
+    if isAwaitPresent && !nonAssignOpToLeft {
+      exprSyntax = ExprSyntax(AwaitExprSyntax(expression: functionCallExpr.with(\.leadingTrivia, .space)))
+    } else {
+      exprSyntax = ExprSyntax(functionCallExpr)
+    }
+
+    return exprSyntax
   }
 
   private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
@@ -375,6 +410,23 @@ class PowerAssertRewriter: SyntaxRewriter {
     return nil
   }
 
+  private func findLeftSiblingOperator(_ node: SyntaxProtocol) -> Bool {
+    guard let parent = node.parent else {
+      return false
+    }
+
+    for token in parent.tokens(viewMode: .fixedUp) {
+      if token.position >= node.position {
+        return false
+      }
+      if case .binaryOperator = token.tokenKind {
+        return true
+      }
+    }
+
+    return false
+  }
+
   private func graphemeColumn(_ node: SyntaxProtocol) -> Int {
     let startLocation = node.startLocation(converter: sourceLocationConverter)
     let column: Int
@@ -385,4 +437,26 @@ class PowerAssertRewriter: SyntaxRewriter {
     }
     return column
   }
+}
+
+private class ExpressionStore {
+  private var expressions = [Expression]()
+
+  func append(_ node: Syntax, id: Int, type: Expression.ExpressionType) {
+    expressions.append(Expression(node: node, id: id, type: type))
+  }
+
+  func expressions(of type: Expression.ExpressionType) -> [Expression] {
+    return expressions.filter { $0.type == type }
+  }
+}
+
+private struct Expression {
+  enum ExpressionType {
+    case comparison
+  }
+
+  let node: Syntax
+  let id: Int
+  let type: ExpressionType
 }

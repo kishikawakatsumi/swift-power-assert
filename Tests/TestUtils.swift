@@ -1,15 +1,16 @@
-import Foundation
+import XCTest
 
 func captureConsoleOutput(execute: () -> Void, completion: @escaping (String) -> Void) {
   let pipe = Pipe()
   var output = ""
-  let semaphore = DispatchSemaphore(value: 0)
+
+  let semaphore = XCTestExpectation(description: "semaphore")
   pipe.fileHandleForReading.readabilityHandler = { fileHandle in
     let data = fileHandle.availableData
     if data.isEmpty  {
       fileHandle.readabilityHandler = nil
       completion(output)
-      semaphore.signal()
+      semaphore.fulfill()
     } else {
       if let string = String(data: data,  encoding: .utf8) {
         output += string
@@ -26,7 +27,84 @@ func captureConsoleOutput(execute: () -> Void, completion: @escaping (String) ->
   dup2(stdout, STDOUT_FILENO)
   try? pipe.fileHandleForWriting.close()
   close(stdout)
-  semaphore.wait()
+
+  if XCTWaiter.wait(for: [semaphore]) != .completed {
+    XCTFail("timeout")
+  }
+}
+
+func captureConsoleOutput(execute: () async -> Void, completion: @escaping (String) -> Void) async {
+  let pipe = Pipe()
+
+  class OutputRef {
+    var output = ""
+  }
+  let ref = OutputRef()
+
+  let semaphore = XCTestExpectation(description: "semaphore")
+  pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+    let data = fileHandle.availableData
+    if data.isEmpty  {
+      fileHandle.readabilityHandler = nil
+      completion(ref.output)
+      semaphore.fulfill()
+    } else {
+      if let string = String(data: data,  encoding: .utf8) {
+        ref.output += string
+      }
+    }
+  }
+
+  setvbuf(stdout, nil, _IONBF, 0)
+  let stdout = dup(STDOUT_FILENO)
+  dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
+
+  await execute()
+
+  dup2(stdout, STDOUT_FILENO)
+  try? pipe.fileHandleForWriting.close()
+  close(stdout)
+
+  if await XCTWaiter.fulfillment(of: [semaphore]) != .completed {
+    XCTFail("timeout")
+  }
+}
+
+func captureConsoleOutput(execute: () async throws -> Void, completion: @escaping (String) -> Void) async throws {
+  let pipe = Pipe()
+
+  class OutputRef {
+    var output = ""
+  }
+  let ref = OutputRef()
+
+  let semaphore = XCTestExpectation(description: "semaphore")
+  pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+    let data = fileHandle.availableData
+    if data.isEmpty  {
+      fileHandle.readabilityHandler = nil
+      completion(ref.output)
+      semaphore.fulfill()
+    } else {
+      if let string = String(data: data,  encoding: .utf8) {
+        ref.output += string
+      }
+    }
+  }
+
+  setvbuf(stdout, nil, _IONBF, 0)
+  let stdout = dup(STDOUT_FILENO)
+  dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
+
+  try await execute()
+
+  dup2(stdout, STDOUT_FILENO)
+  try? pipe.fileHandleForWriting.close()
+  close(stdout)
+
+  if await XCTWaiter.fulfillment(of: [semaphore]) != .completed {
+    XCTFail("timeout")
+  }
 }
 
 struct Bar {
@@ -174,4 +252,11 @@ prefix func √√(number: Double) -> Double {
 
 func upload(content: String) async -> String {
   "OK"
+}
+
+extension HTTPURLResponse {
+  open override var description: String {
+    let statusCodeDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+    return "Status Code: \(statusCode) (\(statusCodeDescription)), URL: \(url?.absoluteString ?? "nil")"
+  }
 }

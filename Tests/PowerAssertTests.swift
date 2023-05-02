@@ -987,7 +987,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  2     │  1 │  301     │  2 │  │         │  "function"
+                │     │  "*.swift" │  9     │  1 │  345     │  2 │  │         │  "function"
                 │     true         true     true true       true │  │         true
                 │                                                │  "testMagicLiteralExpression1()"
                 │                                                true
@@ -1000,7 +1000,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift"
         => true
         [Int] #line
-        => 2
+        => 9
         [Int] 1
         => 1
         [Bool] #line != 1
@@ -1008,7 +1008,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift" && #line != 1
         => true
         [Int] #column
-        => 301
+        => 345
         [Int] 2
         => 2
         [Bool] #column != 2
@@ -1029,7 +1029,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  2     │  1 │  301     │  2 │  │         │  "function"
+                │     │  "*.swift" │  9     │  1 │  345     │  2 │  │         │  "function"
                 │     true         true     true true       true │  │         true
                 │                                                │  "testMagicLiteralExpression1()"
                 │                                                true
@@ -1042,7 +1042,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift"
         => true
         [Int] #line
-        => 2
+        => 9
         [Int] 1
         => 1
         [Bool] #line != 1
@@ -1050,7 +1050,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift" && #line != 1
         => true
         [Int] #column
-        => 301
+        => 345
         [Int] 2
         => 2
         [Bool] #column != 2
@@ -4567,6 +4567,142 @@ final class PowerAssertTests: XCTestCase {
 
 
         """#
+      )
+    }
+  }
+
+  func testAsyncExpression1() async {
+    await captureConsoleOutput(execute: {
+      let status = "OK"
+      await #assert(await upload(content: "example") == status, verbose: true)
+    }, completion: { (output) in
+      XCTAssertEqual(
+        output,
+        #"""
+        #assert(await upload(content: "example") == status)
+                      │               │          │  │
+                      "OK"            "example"  │  "OK"
+                                                 true
+
+        [String] upload(content: "example")
+        => "OK"
+        [String] status
+        => "OK"
+
+
+        """#
+      )
+    })
+  }
+
+  func testAsyncExpression2() async {
+    await captureConsoleOutput {
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+      #assert(bar.val != bar.foo.val, verbose: true)
+
+      let status = "OK"
+      await #assert(await upload(content: "example") == status, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(bar.val != bar.foo.val)
+                │   │   │  │   │   │
+                │   3   │  │   │   2
+                │       │  │   Foo(val: 2)
+                │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                │       true
+                Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
+        #assert(await upload(content: "example") == status)
+                      │               │          │  │
+                      "OK"            "example"  │  "OK"
+                                                 true
+
+        [String] upload(content: "example")
+        => "OK"
+        [String] status
+        => "OK"
+
+
+        """
+      )
+    }
+  }
+
+  func testAsyncExpression3() async throws {
+    try await captureConsoleOutput {
+      let bar = Bar(foo: Foo(val: 2), val: 3)
+      #assert(bar.val != bar.foo.val, verbose: true)
+
+      let status = "OK"
+      await #assert(await upload(content: "example") == status, verbose: true)
+
+      let request = URLRequest(url: URL(string: "https://example.com")!)
+      let session = URLSession(configuration: .ephemeral)
+      let (data, response) = try await session.data(for: request)
+      await #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(bar.val != bar.foo.val)
+                │   │   │  │   │   │
+                │   3   │  │   │   2
+                │       │  │   Foo(val: 2)
+                │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+                │       true
+                Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        [Int] bar.val
+        => 3
+        [Int] bar.foo.val
+        => 2
+
+        #assert(await upload(content: "example") == status)
+                      │               │          │  │
+                      "OK"            "example"  │  "OK"
+                                                 true
+
+        [String] upload(content: "example")
+        => "OK"
+        [String] status
+        => "OK"
+
+        #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0)
+                ││        │                     │          │  │   │  │    │     │ │
+                ││        │                     │          │  │   │  │    1256  │ 0
+                ││        │                     │          │  │   │  1256 bytes true
+                ││        │                     │          │  │   true
+                ││        │                     │          │  Optional(200)
+                ││        │                     │          true
+                ││        │                     Optional(200)
+                ││        Optional(Status Code: 200 (no error), URL: https://example.com/)
+                │Status Code: 200 (no error), URL: https://example.com/
+                Optional(Status Code: 200 (no error), URL: https://example.com/)
+
+        [Optional<Int>] (response as? HTTPURLResponse)?.statusCode
+        => Optional(200)
+        [Optional<Int>] 200
+        => Optional(200)
+        [Bool] (response as? HTTPURLResponse)?.statusCode == 200
+        => true
+        [Int] data.count
+        => 1256
+        [Int] 0
+        => 0
+        [Bool] data.count > 0
+        => true
+
+
+        """
       )
     }
   }
