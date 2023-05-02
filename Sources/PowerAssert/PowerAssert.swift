@@ -79,6 +79,12 @@ public enum PowerAssert {
       return val
     }
 
+    public func captureSync(_ expr: @autoclosure () throws -> Int, column: Int, id: Int) rethrows -> Int {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
     public func captureSync(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
       let val = try expr()
       store(value: val, column: column, id: id)
@@ -86,6 +92,12 @@ public enum PowerAssert {
     }
 
     public func captureSync(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureSync(_ expr: @autoclosure () throws -> String, column: Int, id: Int) rethrows -> String {
       let val = try expr()
       store(value: val, column: column, id: id)
       return val
@@ -109,6 +121,12 @@ public enum PowerAssert {
       return val
     }
 
+    public func captureAsync(_ expr: @autoclosure () async throws -> Int, column: Int, id: Int) async rethrows -> Int {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
     public func captureAsync(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
       let val = try await expr()
       store(value: val, column: column, id: id)
@@ -116,6 +134,12 @@ public enum PowerAssert {
     }
 
     public func captureAsync(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    }
+
+    public func captureAsync(_ expr: @autoclosure () async throws -> String, column: Int, id: Int) async rethrows -> String {
       let val = try await expr()
       store(value: val, column: column, id: id)
       return val
