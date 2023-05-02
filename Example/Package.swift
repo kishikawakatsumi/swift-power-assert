@@ -11,7 +11,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
-      branch: "0.5.2"
+      branch: "0.6.0"
     ),
   ],
   targets: [
