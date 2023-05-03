@@ -4705,7 +4705,7 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
-        output.replacing(#/0x([:xdigit:]{9}|0x[:xdigit:]{12})/#, with: "0x000000000"),
+        output.replacing(#/0x(?:[:xdigit:]{12}|[:xdigit:]{9})/#, with: "0x000000000"),
         """
         #assert(bar.val != bar.foo.val)
                 │   │   │  │   │   │
