@@ -23,14 +23,15 @@ workflows:
     scripts:
       - name: Install pre-release Swift toolchain
         script: |
-          version=swift-DEVELOPMENT-SNAPSHOT-2023-04-25-a
+          version=swift-5.9-DEVELOPMENT-SNAPSHOT-2023-05-02-a
           file_name=$version-osx.pkg
-          wget https://download.swift.org/development/xcode/$version/$file_name
+          branch=swift-5.9-branch
+          wget https://download.swift.org/$branch/xcode/$version/$file_name
           xattr -dr com.apple.quarantine $file_name
           installer -pkg $file_name -target CurrentUserHomeDirectory
       - name: Test
         script: |
-          export TOOLCHAINS=org.swift.59202304251a
+          export TOOLCHAINS=org.swift.59202305021a
           swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions --enable-code-coverage
           xcrun llvm-cov report \
             $(swift build --show-bin-path)/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \

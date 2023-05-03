@@ -15,11 +15,11 @@ jobs:
       - name: Install Swift
         uses: slashmo/install-swift@v0.4.0
         with:
-          version: swift-DEVELOPMENT-SNAPSHOT-2023-04-25-a
+          version: swift-5.9-DEVELOPMENT-SNAPSHOT-2023-05-02-a
       - uses: actions/checkout@v3
       - name: Build
         run: |
-          export TOOLCHAINS=org.swift.59202304251a
+          export TOOLCHAINS=org.swift.59202305021a
           swift build
       - name: Run tests
         run: |
