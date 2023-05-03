@@ -1572,7 +1572,7 @@ final class PowerAssertTests: XCTestCase {
 
         """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
         #"""
         #assert(greetings[keyPath: \[String].[1]] == "hola")
                 │                  │          │ │ │  │
@@ -1950,7 +1950,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -1967,7 +1967,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -1984,7 +1984,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2001,7 +2001,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2018,7 +2018,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2035,7 +2035,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2172,7 +2172,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2189,7 +2189,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2206,7 +2206,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2223,7 +2223,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2240,7 +2240,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2257,7 +2257,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2400,7 +2400,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2418,7 +2418,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2436,7 +2436,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2454,7 +2454,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2472,7 +2472,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2490,7 +2490,7 @@ final class PowerAssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/[:xdigit:]{16}/#, with: "0000000000000000") ==
+        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │

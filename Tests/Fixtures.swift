@@ -39,7 +39,7 @@ struct SomeStructure {
   var someValue: Int
 
   func getValue(keyPath: KeyPath<SomeStructure, Int>) -> Int {
-    return self[keyPath: keyPath]
+    self[keyPath: keyPath]
   }
 }
 
@@ -51,7 +51,7 @@ struct OuterStructure {
   }
 
   func getValue(keyPath: KeyPath<OuterStructure, Int>) -> Int {
-    return self[keyPath: keyPath]
+    self[keyPath: keyPath]
   }
 }
 
@@ -62,7 +62,7 @@ class SomeClass {
   init() {}
 
   func performAction() -> Bool {
-    return true
+    true
   }
 }
 
@@ -73,7 +73,7 @@ class OtherClass {
   init() {}
 
   func performAction() -> Bool {
-    return true
+    true
   }
 }
 
@@ -84,7 +84,7 @@ class AnotherClass {
   init() {}
 
   func performAction() -> Bool {
-    return true
+    true
   }
 }
 
@@ -94,7 +94,7 @@ class TheClass {
   init() {}
 
   func performAction() -> Bool {
-    return true
+    true
   }
 }
 
@@ -134,19 +134,24 @@ class SomeObjCClass: NSObject {
   }
 }
 
+infix operator ====
+func ====(lhs: String.Type, rhs: String.Type) -> Bool {
+  lhs == rhs
+}
+
 infix operator ×: MultiplicationPrecedence
 func ×(left: Double, right: Double) -> Double {
-  return left * right
+  left * right
 }
 
 prefix operator √
 prefix func √(number: Double) -> Double {
-  return sqrt(number)
+  sqrt(number)
 }
 
 prefix operator √√
 prefix func √√(number: Double) -> Double {
-  return sqrt(sqrt(number))
+  sqrt(sqrt(number))
 }
 
 func upload(content: String) async -> String {

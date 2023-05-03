@@ -10,7 +10,7 @@ public enum PowerAssert {
     private let filePath: StaticString
     private let lineNumber: UInt
     private let verbose: Bool
-    private let comparison: [Int: String]
+    private let comparisons: [Int: String]
 
     private var result: Bool = true
     private var values = [Value]()
@@ -23,7 +23,7 @@ public enum PowerAssert {
       file: StaticString,
       line: UInt,
       verbose: Bool = false,
-      comparison: [Int: String],
+      comparisons: [Int: String],
       evaluateSync: (Assertion) throws -> Bool = { _ in true }
     ) {
       self.assertion = assertion
@@ -31,7 +31,7 @@ public enum PowerAssert {
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
-      self.comparison = comparison
+      self.comparisons = comparisons
       do {
         self.result = try evaluateSync(self)
       } catch {
@@ -45,7 +45,7 @@ public enum PowerAssert {
       file: StaticString,
       line: UInt,
       verbose: Bool = false,
-      comparison: [Int: String],
+      comparisons: [Int: String],
       evaluateAsync: (Assertion) async throws -> Bool = { _ in true }
     ) async {
       self.assertion = assertion
@@ -53,7 +53,7 @@ public enum PowerAssert {
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
-      self.comparison = comparison
+      self.comparisons = comparisons
       do {
         self.result = try await evaluateAsync(self)
       } catch {
@@ -100,7 +100,7 @@ public enum PowerAssert {
 
     private func store<T>(value: T, column: Int, id: Int) {
       values.append(Value(stringify(value), column: column))
-      if let expr = comparison[id] {
+      if let expr = comparisons[id] {
         comparisonValues.append(
           ComparisonValue(id: id, value: value, expression: expr)
         )
@@ -156,7 +156,7 @@ public enum PowerAssert {
 
     private func renderSkipped() -> String {
       var message = ""
-      let skipped = comparison
+      let skipped = comparisons
         .filter { !comparisonValues.map { $0.id }.contains($0.key) }
         .sorted { $0.key < $1.key }
         .map { $0.value }
