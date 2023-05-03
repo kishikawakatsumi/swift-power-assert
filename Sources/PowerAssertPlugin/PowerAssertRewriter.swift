@@ -6,6 +6,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   private let expression: SyntaxProtocol
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
+  private let isTryPresent: Bool
   private let isAwaitPresent: Bool
 
   private var index = 0
@@ -24,22 +25,22 @@ class PowerAssertRewriter: SyntaxRewriter {
     let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
     startColumn = endLocation.column - startLocation.column
 
-    isAwaitPresent = expression
-      .tokens(viewMode: .fixedUp)
-      .map { $0 }
-      .contains { $0.tokenKind == .keyword(.await) }
+    let tokens = expression.tokens(viewMode: .fixedUp).map { $0 }
+    isTryPresent = tokens.contains { $0.tokenKind == .keyword(.try) }
+    isAwaitPresent = tokens.contains { $0.tokenKind == .keyword(.await) }
   }
 
-  func rewrite() -> SyntaxProtocol {
-    visit(expression.cast(SourceFileSyntax.self))
+  func rewrite() -> String {
+    "\(isTryPresent ? "try " : "")\(visit(expression.cast(SourceFileSyntax.self)))"
   }
 
-  func comparisons() -> [Int: String] {
+  func comparisons() -> String {
     expressionStore
       .expressions(of: .comparison)
       .reduce(into: [Int: String]()) {
         $0[$1.id] = "\($1.node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
       }
+      .description
   }
 
   override func visit(_ node: ArrowExprSyntax) -> ExprSyntax {

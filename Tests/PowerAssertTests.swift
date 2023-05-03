@@ -4700,12 +4700,12 @@ final class PowerAssertTests: XCTestCase {
 
       let request = URLRequest(url: URL(string: "https://example.com")!)
       let session = URLSession(configuration: .ephemeral)
-      let (data, response) = try await session.data(for: request)
-      await #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0, verbose: true)
+      await #assert(try await session.data(for: request).0.count > 0, verbose: true)
+      await #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 200, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
-        output,
+        output.replacing(#/0x[:xdigit:]{9}/#, with: "0x000000000"),
         """
         #assert(bar.val != bar.foo.val)
                 │   │   │  │   │   │
@@ -4730,27 +4730,36 @@ final class PowerAssertTests: XCTestCase {
         [String] status
         => "OK"
 
-        #assert((response as? HTTPURLResponse)?.statusCode == 200 && data.count > 0)
-                ││        │                     │          │  │   │  │    │     │ │
-                ││        │                     │          │  200 │  │    1256  │ 0
-                ││        │                     │          true   │  1256 bytes true
-                ││        │                     Optional(200)     true
-                ││        Optional(Status Code: 200 (no error), URL: https://example.com/)
-                │Status Code: 200 (no error), URL: https://example.com/
-                Optional(Status Code: 200 (no error), URL: https://example.com/)
+        #assert(try await session.data(for: request).0.count > 0)
+                          │       │         │        │ │     │ │
+                          │       │         │        │ 1256  │ 0
+                          │       │         │        │       true
+                          │       │         │        1256 bytes
+                          │       │         https://example.com
+                          │       (1256 bytes, Status Code: 200 (no error), URL: https://example.com/)
+                          <__NSURLSessionLocal: 0x000000000>
 
-        [Optional<Int>] (response as? HTTPURLResponse)?.statusCode
-        => Optional(200)
-        [Int] 200
-        => 200
-        [Bool] (response as? HTTPURLResponse)?.statusCode == 200
-        => true
-        [Int] data.count
+        [Int] session.data(for: request).0.count
         => 1256
         [Int] 0
         => 0
-        [Bool] data.count > 0
-        => true
+
+        #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 200)
+                │          │       │         │        │ │                     │          │  │
+                │          │       │         │        │ │                     │          │  200
+                │          │       │         │        │ │                     │          true
+                │          │       │         │        │ │                     Optional(200)
+                │          │       │         │        │ Optional(Status Code: 200 (no error), URL: https://example.com/)
+                │          │       │         │        Status Code: 200 (no error), URL: https://example.com/
+                │          │       │         https://example.com
+                │          │       (1256 bytes, Status Code: 200 (no error), URL: https://example.com/)
+                │          <__NSURLSessionLocal: 0x000000000>
+                Optional(Status Code: 200 (no error), URL: https://example.com/)
+
+        [Optional<Int>] (try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode
+        => Optional(200)
+        [Int] 200
+        => 200
 
 
         """
