@@ -715,7 +715,7 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-  func testTryExpression() {
+  func testTryExpression1() {
     captureConsoleOutput {
       let landmark = Landmark(
         name: "Tokyo Tower",
@@ -784,6 +784,42 @@ final class PowerAssertTests: XCTestCase {
         => Optional(116 bytes)
 
 
+        """#
+      )
+    }
+  }
+
+  func testTryExpression2() throws {
+    try captureConsoleOutput {
+      let landmark = Landmark(
+        name: "Tokyo Tower",
+        foundingYear: 1957,
+        location: Coordinate(latitude: 35.658581, longitude: 139.745438)
+      )
+
+      #assert(
+        try JSONEncoder().encode(landmark).count > 0,
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #assert(try JSONEncoder().encode(landmark).count > 0)
+                    │             │      │         │     │ │
+                    │             │      │         116   │ 0
+                    │             │      │               true
+                    │             │      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
+                    │             116 bytes
+                    Foundation.JSONEncoder
+
+        [Int] JSONEncoder().encode(landmark).count
+        => 116
+        [Int] 0
+        => 0
+
+        
         """#
       )
     }

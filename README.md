@@ -203,4 +203,4 @@ To support this project, you can become a sponsor through [GitHub Sponsors](http
 
 ## License
 
-The project is released under the [MIT License](https://github.com/kishikawakatsumi/SwiftPowerAssert/blob/master/LICENSE.txt)
+The project is released under the [MIT License](https://github.com/kishikawakatsumi/swift-power-assert/blob/main/LICENSE)

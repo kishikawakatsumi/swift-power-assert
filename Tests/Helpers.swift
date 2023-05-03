@@ -33,6 +33,39 @@ func captureConsoleOutput(execute: () -> Void, completion: @escaping (String) ->
   }
 }
 
+func captureConsoleOutput(execute: () throws -> Void, completion: @escaping (String) -> Void) throws {
+  let pipe = Pipe()
+  var output = ""
+
+  let semaphore = XCTestExpectation(description: "semaphore")
+  pipe.fileHandleForReading.readabilityHandler = { fileHandle in
+    let data = fileHandle.availableData
+    if data.isEmpty  {
+      fileHandle.readabilityHandler = nil
+      completion(output)
+      semaphore.fulfill()
+    } else {
+      if let string = String(data: data,  encoding: .utf8) {
+        output += string
+      }
+    }
+  }
+
+  setvbuf(stdout, nil, _IONBF, 0)
+  let stdout = dup(STDOUT_FILENO)
+  dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
+
+  try execute()
+
+  dup2(stdout, STDOUT_FILENO)
+  try? pipe.fileHandleForWriting.close()
+  close(stdout)
+
+  if XCTWaiter.wait(for: [semaphore]) != .completed {
+    XCTFail("timeout")
+  }
+}
+
 func captureConsoleOutput(execute: () async -> Void, completion: @escaping (String) -> Void) async {
   let pipe = Pipe()
 
