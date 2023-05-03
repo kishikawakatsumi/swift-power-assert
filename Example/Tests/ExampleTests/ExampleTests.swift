@@ -23,6 +23,11 @@ final class PowerAssertTests: XCTestCase {
     #assert(john.isTeenager)
     #assert(mike.isTeenager && john.age < mike.age)
   }
+
+  func testConcurrency() async {
+    let ok = "OK"
+    #assert(await upload(content: "example") == ok, verbose: true)
+  }
 }
 
 struct Person {
@@ -32,4 +37,8 @@ struct Person {
   var isTeenager: Bool {
     return age <= 12 && age >= 20
   }
+}
+
+func upload(content: String) async -> String {
+  "OK"
 }

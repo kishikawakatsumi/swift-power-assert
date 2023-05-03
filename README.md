@@ -150,6 +150,17 @@ final class MyLibraryTests: XCTestCase {
 }
 ```
 
+### Concurrency (async/await) support
+
+Swift Power Assert library allows you to write assertions with `async/await` expressions directly. Here's a sample code demonstrating its seamless support for `async/await`:
+
+```swift
+func testConcurrency() async {
+  let ok = "OK"
+  #assert(await upload(content: "example") == ok, verbose: true)
+}
+```
+
 ## Testing assistance requested
 
 Swift Power Assert is still in the early stages of development. If you could help us with testing, we would greatly appreciate it! Please try different code patterns using this library and report any problems you encounter. We welcome your feedback and improvement suggestions. Thank you very much!
