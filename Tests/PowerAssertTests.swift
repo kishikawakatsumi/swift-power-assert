@@ -4705,7 +4705,7 @@ final class PowerAssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
-        output.replacing(#/0x[:xdigit:]{9}/#, with: "0x000000000"),
+        output.replacing(#/0x[:xdigit:]{9}/#, with: "0x0000000000a0"),
         """
         #assert(bar.val != bar.foo.val)
                 │   │   │  │   │   │
@@ -4737,7 +4737,7 @@ final class PowerAssertTests: XCTestCase {
                           │       │         │        1256 bytes
                           │       │         https://example.com
                           │       (1256 bytes, Status Code: 200 (no error), URL: https://example.com/)
-                          <__NSURLSessionLocal: 0x000000000>
+                          <__NSURLSessionLocal: 0x0000000000a0>
 
         [Int] session.data(for: request).0.count
         => 1256
@@ -4753,7 +4753,7 @@ final class PowerAssertTests: XCTestCase {
                 │          │       │         │        Status Code: 200 (no error), URL: https://example.com/
                 │          │       │         https://example.com
                 │          │       (1256 bytes, Status Code: 200 (no error), URL: https://example.com/)
-                │          <__NSURLSessionLocal: 0x000000000>
+                │          <__NSURLSessionLocal: 0x0000000000a0>
                 Optional(Status Code: 200 (no error), URL: https://example.com/)
 
         [Optional<Int>] (try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode
