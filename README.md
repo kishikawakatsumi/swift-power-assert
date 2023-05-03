@@ -202,15 +202,15 @@ PowerAssert.Assertion("#assert(a * b == 91)", message: "", file: #""ExampleTests
 ...
 ```
 
-## Author
-
-[Kishikawa Katsumi](https://github.com/kishikawakatsumi)
-
 ## Supporters & Sponsors
 
 Open source projects thrive on the generosity and support of people like you. If you find this project valuable, please consider extending your support. Contributing to the project not only sustains its growth, but also helps drive innovation and improve its features.
 
 To support this project, you can become a sponsor through [GitHub Sponsors](https://github.com/sponsors/kishikawakatsumi). Your contribution will be greatly appreciated and will help keep the project alive and thriving. Thanks for your consideration! :heart:
+
+## Author
+
+[Kishikawa Katsumi](https://github.com/kishikawakatsumi)
 
 ## License
 
