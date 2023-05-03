@@ -7,7 +7,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
   private let isTryPresent: Bool
-  private let isAwaitPresent: Bool
+  let isAwaitPresent: Bool
 
   private var index = 0
   private let expressionStore = ExpressionStore()

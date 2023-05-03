@@ -42,7 +42,7 @@ private struct CodeGenerator {
     let captures = rewriter.rewrite()
 
     return """
-      PowerAssert.Assertion(
+      \(rewriter.isAwaitPresent ? "await " : "")PowerAssert.Assertion(
         \(assertion),
         message: \(message),
         file: \(file),
