@@ -179,6 +179,10 @@ class PowerAssertRewriter: SyntaxRewriter {
     guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self  else {
       return super.visit(node)
     }
+    guard node.name.tokenKind != .identifier("Type") else {
+      return ExprSyntax(node)
+    }
+
     let column = graphemeColumn(node.name)
     let visitedNode = super.visit(node)
     if let optionalChainingExpr = findDescendants(syntaxType: OptionalChainingExprSyntax.self, node: node) {
