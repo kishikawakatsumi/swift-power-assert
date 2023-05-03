@@ -5,6 +5,7 @@
 # Swift Power Assert
 
 ![test workflow](https://github.com/kishikawakatsumi/swift-power-assert/actions/workflows/test.yml/badge.svg)
+[![Build Status](https://app.bitrise.io/app/4018c2f1-9f94-4913-8a4c-deb1a8e1410a/status.svg?token=weITzhYlOhv2XfaNU41GkQ&branch=main)](https://app.bitrise.io/app/4018c2f1-9f94-4913-8a4c-deb1a8e1410a)
 
 Power asserts (also known as diagrammed assertions) augment your assertion failures with information about the values produced during evaluation of a condition, and present it in an easily digestible form. Power asserts are a popular feature of [Spock](https://github.com/spockframework/spock) (and later the entire [Groovy](https://github.com/apache/groovy) language independent of Spock), [ScalaTest](http://www.scalatest.org/) and [Expecty](https://github.com/pniederw/expecty).
 
