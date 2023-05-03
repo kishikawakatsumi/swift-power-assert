@@ -4628,7 +4628,7 @@ final class PowerAssertTests: XCTestCase {
   func testAsyncExpression1() async {
     await captureConsoleOutput(execute: {
       let status = "OK"
-      await #assert(await upload(content: "example") == status, verbose: true)
+      #assert(await upload(content: "example") == status, verbose: true)
     }, completion: { (output) in
       XCTAssertEqual(
         output,
@@ -4655,7 +4655,7 @@ final class PowerAssertTests: XCTestCase {
       #assert(bar.val != bar.foo.val, verbose: true)
 
       let status = "OK"
-      await #assert(await upload(content: "example") == status, verbose: true)
+      #assert(await upload(content: "example") == status, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
@@ -4696,12 +4696,12 @@ final class PowerAssertTests: XCTestCase {
       #assert(bar.val != bar.foo.val, verbose: true)
 
       let status = "OK"
-      await #assert(await upload(content: "example") == status, verbose: true)
+      #assert(await upload(content: "example") == status, verbose: true)
 
       let request = URLRequest(url: URL(string: "https://example.com")!)
       let session = URLSession(configuration: .ephemeral)
-      await #assert(try await session.data(for: request).0.count > 0, verbose: true)
-      await #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 200, verbose: true)
+      #assert(try await session.data(for: request).0.count > 0, verbose: true)
+      #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 200, verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
