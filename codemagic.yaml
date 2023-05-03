@@ -25,7 +25,8 @@ workflows:
         script: |
           version=swift-5.9-DEVELOPMENT-SNAPSHOT-2023-05-02-a
           file_name=$version-osx.pkg
-          wget https://download.swift.org/development/xcode/$version/$file_name
+          branch=swift-5.9-branch
+          wget https://download.swift.org/$branch/xcode/$version/$file_name
           xattr -dr com.apple.quarantine $file_name
           installer -pkg $file_name -target CurrentUserHomeDirectory
       - name: Test
