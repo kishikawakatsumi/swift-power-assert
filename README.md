@@ -157,7 +157,7 @@ Swift Power Assert library allows you to write assertions with `async/await` exp
 ```swift
 func testConcurrency() async {
   let ok = "OK"
-  #assert(await upload(content: "example") == ok, verbose: true)
+  #assert(await upload(content: "example") == ok)
 }
 ```
 

@@ -26,7 +26,7 @@ final class PowerAssertTests: XCTestCase {
 
   func testConcurrency() async {
     let ok = "OK"
-    #assert(await upload(content: "example") == ok, verbose: true)
+    #assert(await upload(content: "example") == ok)
   }
 }
 
@@ -40,5 +40,5 @@ struct Person {
 }
 
 func upload(content: String) async -> String {
-  "OK"
+  "Fail"
 }
