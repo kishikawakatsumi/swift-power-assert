@@ -38,7 +38,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     expressionStore
       .expressions(of: .comparison)
       .reduce(into: [Int: String]()) {
-        $0[$1.id] = "\($1.node.with(\.leadingTrivia, []).with(\.trailingTrivia, []))"
+        $0[$1.id] = "\($1.node.trimmed)"
       }
       .description
   }
@@ -326,10 +326,10 @@ class PowerAssertRewriter: SyntaxRewriter {
 
     let exprNode: ExprSyntax
     if node.syntaxNodeType == IdentifierExprSyntax.self {
-      exprNode = ExprSyntax("\(node).self")
+      exprNode = ExprSyntax("\(node.trimmed).self")
         .with(\.leadingTrivia, node.leadingTrivia).with(\.trailingTrivia, node.trailingTrivia)
     } else if node.syntaxNodeType == SuperRefExprSyntax.self {
-      exprNode = ExprSyntax("\(node).self")
+      exprNode = ExprSyntax("\(node.trimmed).self")
         .with(\.leadingTrivia, node.leadingTrivia).with(\.trailingTrivia, node.trailingTrivia)
     } else {
       exprNode = node
@@ -343,7 +343,7 @@ class PowerAssertRewriter: SyntaxRewriter {
         )
       )
     } else {
-      expression = exprNode.with(\.leadingTrivia, []).with(\.trailingTrivia, [])
+      expression = exprNode.trimmed
     }
 
     let functionCallExpr = FunctionCallExprSyntax(
