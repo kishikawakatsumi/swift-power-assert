@@ -4625,6 +4625,124 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
+  func testTypeIdentifier1() {
+    captureConsoleOutput {
+      #assert(String.Type.self != Int.Type.self, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(String.Type.self != Int.Type.self)
+                            │    │           │
+                            │    true        Optional(Swift.Int.Type)
+                            Optional(Swift.String.Type)
+
+        [Optional<Any.Type>] String.Type.self
+        => Optional(Swift.String.Type)
+        [Optional<Any.Type>] Int.Type.self
+        => Optional(Swift.Int.Type)
+
+
+        """
+      )
+    }
+  }
+
+  func testTypeIdentifier2() {
+    captureConsoleOutput {
+      #assert(String.Type.self !=== Int.Type.self, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(String.Type.self !=== Int.Type.self)
+                            │    │             │
+                            │    true          Int.Type
+                            String.Type
+
+
+        """
+      )
+    }
+  }
+
+  func testTypeIdentifier3() {
+    captureConsoleOutput {
+      let s: Any = "string"
+      #assert(s as? String.Type == nil, verbose: true)
+      #assert(s as? String.Type != String.Type.self, verbose: true)
+      #assert(s as? String.Type != String.self, verbose: true)
+      #assert(String.Type.self != s as? String.Type, verbose: true)
+      #assert(String.self != s as? String.Type, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(s as? String.Type == nil)
+                │ │               │  │
+                │ nil             │  nil
+                "string"          true
+
+        [Optional<String.Type>] s as? String.Type
+        => nil
+        [Optional<Any.Type>] nil
+        => nil
+
+        #assert(s as? String.Type != String.Type.self)
+                │ │               │              │
+                │ nil             true           Optional(Swift.String.Type)
+                "string"
+
+        [Optional<String.Type>] s as? String.Type
+        => nil
+        [Optional<Any.Type>] String.Type.self
+        => Optional(Swift.String.Type)
+
+        #assert(s as? String.Type != String.self)
+                │ │               │  │      │
+                │ nil             │  │      Optional(Swift.String)
+                "string"          │  Optional(Swift.String)
+                                  true
+
+        [Optional<String.Type>] s as? String.Type
+        => nil
+        [Optional<Any.Type>] String.self
+        => Optional(Swift.String)
+
+        #assert(String.Type.self != s as? String.Type)
+                            │    │  │ │
+                            │    │  │ nil
+                            │    │  "string"
+                            │    true
+                            Optional(Swift.String.Type)
+
+        [Optional<Any.Type>] String.Type.self
+        => Optional(Swift.String.Type)
+        [Optional<String.Type>] s as? String.Type
+        => nil
+
+        #assert(String.self != s as? String.Type)
+                │      │    │  │ │
+                │      │    │  │ nil
+                │      │    │  "string"
+                │      │    true
+                │      Optional(Swift.String)
+                Optional(Swift.String)
+
+        [Optional<Any.Type>] String.self
+        => Optional(Swift.String)
+        [Optional<String.Type>] s as? String.Type
+        => nil
+
+
+        """
+      )
+    }
+  }
+
   func testAsyncExpression1() async {
     await captureConsoleOutput(execute: {
       let status = "OK"

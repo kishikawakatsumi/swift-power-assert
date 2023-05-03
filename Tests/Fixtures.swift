@@ -135,8 +135,13 @@ class SomeObjCClass: NSObject {
 }
 
 infix operator ====
-func ====(lhs: String.Type, rhs: String.Type) -> Bool {
+func ====<T, U>(lhs: T.Type, rhs: U.Type) -> Bool {
   lhs == rhs
+}
+
+infix operator !===
+func !===<T, U>(lhs: T.Type, rhs: U.Type) -> Bool {
+  lhs != rhs
 }
 
 infix operator ×: MultiplicationPrecedence
