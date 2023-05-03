@@ -249,6 +249,51 @@ final class ExprSyntaxTests: XCTestCase {
 
   }
 
+  func testTypeExprSyntax() {
+    captureConsoleOutput {
+      let metatype: String.Type = String.self
+      #assert(metatype as String.Type == String.self, verbose: true)
+      #assert(metatype as String.Type != Int.self, verbose: true)
+      #assert(metatype as String.Type ==== String.self, verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(metatype as String.Type == String.self)
+                │        │              │  │      │
+                String   │              │  │      Optional(Swift.String)
+                         │              │  Optional(Swift.String)
+                         │              true
+                         Optional(Swift.String)
+
+        [Optional<Any.Type>] metatype as String.Type
+        => Optional(Swift.String)
+        [Optional<Any.Type>] String.self
+        => Optional(Swift.String)
+
+        #assert(metatype as String.Type != Int.self)
+                │        │              │  │   │
+                String   │              │  │   Optional(Swift.Int)
+                         │              │  Optional(Swift.Int)
+                         │              true
+                         Optional(Swift.String)
+
+        [Optional<Any.Type>] metatype as String.Type
+        => Optional(Swift.String)
+        [Optional<Any.Type>] Int.self
+        => Optional(Swift.Int)
+
+        #assert(metatype as String.Type ==== String.self)
+                │                       │    │      │
+                String                  true String String
+
+
+        """
+      )
+    }
+  }
+
   func testUnresolvedAsExprSyntax() {
 
   }
