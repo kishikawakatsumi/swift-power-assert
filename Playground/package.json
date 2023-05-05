@@ -1,0 +1,40 @@
+{
+  "scripts": {
+    "build": "webpack --progress --config webpack.prod.js",
+    "dev": "webpack --progress --config webpack.dev.js"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "6.4.0",
+    "@fortawesome/free-brands-svg-icons": "6.4.0",
+    "@fortawesome/pro-duotone-svg-icons": "6.0.0",
+    "@fortawesome/pro-light-svg-icons": "6.0.0",
+    "@fortawesome/pro-regular-svg-icons": "6.0.0",
+    "@fortawesome/pro-solid-svg-icons": "6.0.0",
+    "@popperjs/core": "2.11.7",
+    "bootstrap": "5.2.3",
+    "monaco-editor": "0.38.0",
+    "plausible-tracker": "0.3.8",
+    "reconnecting-websocket": "4.4.0",
+    "xterm": "5.1.0",
+    "xterm-addon-fit": "0.7.0",
+    "xterm-addon-web-links": "0.8.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.14",
+    "copy-webpack-plugin": "11.0.0",
+    "css-loader": "6.7.3",
+    "html-webpack-plugin": "5.5.1",
+    "mini-css-extract-plugin": "2.7.5",
+    "monaco-editor-webpack-plugin": "7.0.1",
+    "postcss": "8.4.23",
+    "postcss-loader": "7.3.0",
+    "sass": "1.62.1",
+    "sass-loader": "13.2.2",
+    "style-loader": "3.3.2",
+    "webpack": "5.82.0",
+    "webpack-bundle-analyzer": "4.8.0",
+    "webpack-cli": "5.0.2",
+    "webpack-merge": "5.8.0",
+    "worker-loader": "3.0.8"
+  }
+}

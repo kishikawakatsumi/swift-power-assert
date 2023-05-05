@@ -21,9 +21,12 @@ class PowerAssertRewriter: SyntaxRewriter {
 
     self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
 
-    let startLocation = macro.startLocation(converter: SourceLocationConverter(file: "", tree: macro))
-    let endLocation = macro.macro.endLocation(converter: SourceLocationConverter(file: "", tree: macro))
-    startColumn = endLocation.column - startLocation.column
+    startColumn = {
+      let converter = SourceLocationConverter(file: "", tree: macro.detach())
+      let startLocation = macro.startLocation(converter: converter)
+      let endLocation = macro.macro.endLocation(converter: converter)
+      return endLocation.column - startLocation.column
+    }()
 
     let tokens = expression.tokens(viewMode: .fixedUp).map { $0 }
     isTryPresent = tokens.contains { $0.tokenKind == .keyword(.try) }
@@ -31,7 +34,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   func rewrite() -> String {
-    "\(isTryPresent ? "try " : "")\(visit(expression.cast(SourceFileSyntax.self)))"
+    "\(isTryPresent ? "try " : "")\(rewrite(Syntax(expression)))"
   }
 
   func comparisons() -> String {

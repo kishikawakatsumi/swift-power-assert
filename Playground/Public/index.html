@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Swift Power Assert Playground</title>
+</head>
+
+<body>
+  <!-- Main Content -->
+  <div class="container-fluid g-0 d-flex flex-column min-vh-100">
+    <header class="row m-0 g-0 justify-content-start bg-light">
+      <div class="col-md-auto m-2">
+        <a class="text-decoration-none" href="#" data-bs-toggle="offcanvas" data-bs-target="#service-list-offcanvas"
+          aria-label="Service List" aria-controls="service-list-offcanvas">
+          <span class="fab fa-swift fa-2x text-primary d-inline-block align-middle"
+            style="min-width: 2rem; min-height: 2rem;"></span>
+          <span class="h4 text-dark d-inline-block align-middle m-0">Swift Power Assert Playground</span>
+        </a>
+      </div>
+      <div class="col-md-auto m-2">
+        <button type="button" id="run-button" class="btn btn-primary btn-sm rounded-pill disabled">
+          <span id="run-button-icon" class="fa-solid fa-play fa-fw ms-2"
+            style="display: inline-block; min-width: 1em; min-height: 1em;"></span>
+          <span id="run-button-spinner" class="fad fa-spinner-third fa-spin fa-fw ms-2 d-none"></span>
+          <span class="mx-2">Run</span>
+        </button>
+        <button type="button" id="clear-console-button"
+          class="btn btn-outline-primary btn-sm rounded-circle p-0 ms-1 disabled" data-bs-toggle="tooltip"
+          data-bs-placement="bottom" data-bs-container="#clear-console-button" title="Clear Console"
+          aria-label="Clear Console" style="min-width: 2rem; min-height: 2rem;">
+          <span class="fa-solid fa-eraser fa-fw"></span>
+        </button>
+        <button type="button" id="format-button" class="btn btn-outline-primary btn-sm rounded-circle p-0 ms-1 disabled"
+          data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-container="#format-button" title="Format"
+          aria-label="Format" style="min-width: 2rem; min-height: 2rem;">
+          <span class="fa-solid fa-align-left fa-fw"></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="row bg-light flex-fill fill d-flex g-0">
+      <div class="col-md-6">
+        <div id="editor-container" class="h-100"></div>
+      </div>
+      <div class="col-md-6">
+        <div id="terminal-container" class="h-100"></div>
+      </div>
+    </main>
+
+    <footer class="row p-1 mb-1 bg-light">
+      <div class="row">
+        <div class="col-md-12 mx-1 text-center text-dark">
+          <a class="text-reset text-decoration-none small ms-1" href="https://status.swiftfiddle.com" target="_blank"
+            rel="nofollow noopener noreferrer">
+            <span class="fa-light fa-monitor-heart-rate me-1 d-inline-block"
+              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>System Status</a>
+          <a class="text-reset text-decoration-none small ms-4 d-inline-block"
+            href="https://github.com/swiftfiddle/swiftfiddle-web/issues/new" target="_blank"
+            rel="nofollow noopener noreferrer">
+            <span class="fa-regular fa-comment-alt-smile me-1"
+              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Feedback</a>
+          <a class="text-reset text-decoration-none small ms-4 d-inline-block"
+            href="https://github.com/swiftfiddle/swiftfiddle-web" target="_blank" rel="nofollow noopener noreferrer">
+            <span class="fab fa-github me-1"
+              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Source Code</a>
+          <a class="text-reset text-decoration-none small ms-4 me-1 d-inline-block" href="https://twitter.com/k_katsumi"
+            target="_blank" rel="nofollow noopener noreferrer">
+            <span class="fa-regular fa-at me-1"
+              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Creator</a>
+          <a class="text-reset text-decoration-none small ms-4 me-1 d-inline-block"
+            href="https://github.com/sponsors/kishikawakatsumi" target="_blank" rel="nofollow noopener noreferrer">
+            <span class="fa-regular fa-heart me-1"
+              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Donate</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Service List Offcanvas -->
+  <div class="offcanvas offcanvas-start text-dark" tabindex="-1" id="service-list-offcanvas"
+    aria-labelledby="service-list-offcanvas-label">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="service-list-offcanvas-label">
+        <span class="fa-regular fa-toolbox fa-fw me-2"></span>Swift Web Tools
+      </h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close">
+      </button>
+    </div>
+    <div class="offcanvas-body py-1">
+      <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col">
+            <a href="https://swiftfiddle.com" class="text-reset text-decoration-none" target="_blank"
+              rel="nofollow noopener noreferrer">
+              <div class="card-body">
+                <img src="/images/icon-swiftfiddle.com.svg" class="float-start me-2 rounded-3"
+                  style="width: 54px; height: 54px">
+                <h5 class="card-title">SwiftFiddle</h5>
+                <h6 class="text-muted">Swift Online Playground</h6>
+                <p class="card-text">SwiftFiddle is an online playground for creating, sharing and embedding Swift
+                  fiddles
+                  (little Swift programs that run directly in your browser).</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col">
+            <a href="https://swift-ast-explorer.com" class="text-reset text-decoration-none" target="_blank"
+              rel="nofollow noopener noreferrer">
+              <div class="card-body">
+                <img src="/images/icon_swift-ast-explorer.com.svg" class="float-start me-2 rounded-3"
+                  style="width: 54px; height: 54px">
+                <h5 class="card-title">Swift AST Explorer</h5>
+                <h6 class="text-muted">AST visualizer for Swift source code</h6>
+                <p class="card-text">Visualize Swift AST and select nodes within the editor, a great way to learn about
+                  the structure of
+                  Swift syntax trees.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col">
+            <a href="https://swift-format.com" class="text-reset text-decoration-none" target="_blank"
+              rel="nofollow noopener noreferrer">
+              <div class="card-body">
+                <img src="/images/icon_swift-format.com.svg" class="float-start me-2 rounded-3"
+                  style="width: 54px; height: 54px">
+                <h5 class="card-title text-dark">Swift Formatter</h5>
+                <h6 class="text-muted">Online Swift code formatter</h6>
+                <p class="card-text text-dark">Format a Swift code, making it readable and pretty, with the proper
+                  indentation.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
