@@ -74,10 +74,8 @@ module.exports = {
     }),
     new CopyWebbackPlugin({
       patterns: [
-        // { from: "./Public/images", to: "images" },
-        // { from: "./Public/favicons", to: "favicons" },
-        // { from: "./Public/apple-touch-icon.png", to: "apple-touch-icon.png" },
-        // { from: "./Public/favicon.ico", to: "favicon.ico" },
+        { from: "./Public/images/*.*", to: "images/[name][ext]" },
+        { from: "./Public/favicons/*.*", to: "[name][ext]" },
         { from: "./Public/error.html", to: "error.leaf" },
         { from: "./Public/robots.txt", to: "robots.txt" },
       ],
