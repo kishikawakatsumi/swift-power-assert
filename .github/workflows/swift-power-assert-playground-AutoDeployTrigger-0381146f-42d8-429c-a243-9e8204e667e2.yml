@@ -41,7 +41,7 @@ jobs:
 
           IMAGE_TAG=swiftfiddle.azurecr.io/swift-power-assert-playground:latest
 
-          tar -czh . | docker build - --build-arg FONTAWESOME_TOKEN=${{ env.FONTAWESOME_TOKEN }} --rm --tag ${IMAGE_TAG} .
+          tar -czh . | docker build - --build-arg FONTAWESOME_TOKEN=${{ env.FONTAWESOME_TOKEN }} --rm --tag ${IMAGE_TAG}
           docker push ${IMAGE_TAG}
 
   deploy:
