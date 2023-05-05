@@ -6,20 +6,17 @@ import {
   faEraser,
   faAlignLeft,
   faCog,
-  faQuestion,
-  faCheckCircle as faCheckCircleSolid,
   faExclamationTriangle,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
-  faCheck,
+  faToolbox,
   faCommentAltSmile,
-  faCheckCircle,
   faAt,
   faDonate,
   faHeart,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faMonitorHeartRate } from "@fortawesome/pro-light-svg-icons";
-import { faSpinnerThird, faRobot } from "@fortawesome/pro-duotone-svg-icons";
+import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
 import { faSwift, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 config.searchPseudoElements = true;
@@ -28,13 +25,10 @@ library.add(
   faEraser,
   faAlignLeft,
   faCog,
-  faQuestion,
-  faCheckCircleSolid,
   faExclamationTriangle,
 
-  faCheck,
+  faToolbox,
   faCommentAltSmile,
-  faCheckCircle,
   faAt,
   faDonate,
   faHeart,
@@ -42,7 +36,6 @@ library.add(
   faMonitorHeartRate,
 
   faSpinnerThird,
-  faRobot,
 
   faSwift,
   faGithub
