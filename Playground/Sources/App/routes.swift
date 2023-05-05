@@ -23,11 +23,10 @@ func routes(_ app: Application) throws {
     let macros: [String: Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
-
     let sourceFile = Parser.parse(source: request.code)
 
-    let eraser = MacroEraser()
     do {
+      let eraser = MacroEraser()
       let (status, stdout, stderr) = try await runBuild(code: "\(eraser.rewrite(Syntax(sourceFile)))")
       guard status == 0 else {
         return MacroExpansionResponse(
@@ -58,7 +57,7 @@ func routes(_ app: Application) throws {
 private func runBuild(code: String) async throws -> (Int32, String, String) {
   try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
     try await runProcess(
-      "/usr/bin/swift", arguments: ["build", "--build-tests"], workingDirectory: temporaryDirectory
+      "/usr/bin/env", arguments: ["swift", "build", "--build-tests"], workingDirectory: temporaryDirectory
     )
   }
 }
@@ -66,7 +65,7 @@ private func runBuild(code: String) async throws -> (Int32, String, String) {
 private func runTest(code: String) async throws -> (Int32, String, String) {
   try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
     try await runProcess(
-      "/usr/bin/swift", arguments: ["test"], workingDirectory: temporaryDirectory
+      "/usr/bin/env", arguments: ["swift", "test"], workingDirectory: temporaryDirectory
     )
   }
 }
