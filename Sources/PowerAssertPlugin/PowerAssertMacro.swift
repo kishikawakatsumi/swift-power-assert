@@ -31,7 +31,7 @@ private struct CodeGenerator {
 
   private func expand(expression: SyntaxProtocol, parameters: Parameters) -> String {
     let assertion = StringLiteralExprSyntax(
-      content: "\(macro.poundToken.with(\.leadingTrivia, []).with(\.trailingTrivia, []))\(macro.macro)(\(expression))"
+      content: "\(macro.poundToken.trimmed)\(macro.macro)(\(expression))"
     )
     let message = parameters.message
     let file = parameters.file
