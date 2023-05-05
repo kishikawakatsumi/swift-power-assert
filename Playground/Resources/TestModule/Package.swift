@@ -5,14 +5,18 @@ import PackageDescription
 let package = Package(
   name: "TestModule",
   platforms: [
-    .iOS(.v16),
     .macOS(.v13),
   ],
   dependencies: [],
   targets: [
     .target(
-      name: "PowerAssert")
-    ,
+      name: "PowerAssert",
+      dependencies: ["StringWidth"]
+    ),
+    .target(
+      name: "StringWidth",
+      dependencies: []
+    ),
     .testTarget(
       name: "TestTarget",
       dependencies: ["PowerAssert"]

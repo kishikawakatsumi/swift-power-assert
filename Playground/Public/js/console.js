@@ -63,9 +63,9 @@ export class Console {
       throw new TypeError("The `x` argument is required");
     }
     if (typeof y !== "number") {
-      this.terminal.write(ESC + (x + 1) + "G");
+      this.terminal.write(`${ESC}${x + 1}G`);
     }
-    this.terminal.write(ESC + (y + 1) + ";" + (x + 1) + "H");
+    this.terminal.write(`${ESC}${y + 1};${x + 1}H`);
   }
 
   cursorUp(count = 1) {
