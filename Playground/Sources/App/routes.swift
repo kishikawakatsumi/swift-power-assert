@@ -54,54 +54,29 @@ func routes(_ app: Application) throws {
   }
 }
 
-private func runBuild(code: String) async throws -> ProcessOutput {
+private func runBuild(code: String) async throws -> CommandOutput {
   try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
-    try await runProcess(
-      "/usr/bin/env", arguments: ["swift", "build", "--build-tests"], workingDirectory: temporaryDirectory
+    try await Command(
+      launchPath: "/usr/bin/env",
+      arguments: ["swift", "build", "--build-tests"],
+      workingDirectory: temporaryDirectory
     )
+    .run()
   }
 }
 
-private func runTest(code: String) async throws -> ProcessOutput {
+private func runTest(code: String) async throws -> CommandOutput {
   try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
-    try await runProcess(
-      "/usr/bin/env", arguments: ["swift", "test"], workingDirectory: temporaryDirectory
+    try await Command(
+      launchPath: "/usr/bin/env",
+      arguments: ["swift", "build", "--build-tests"],
+      workingDirectory: temporaryDirectory
     )
+    .run()
   }
 }
 
-private func runProcess(_ launchPath: String, arguments: [String], workingDirectory: URL? = nil) async throws -> ProcessOutput {
-  let process = Process()
-  process.executableURL = URL(fileURLWithPath: launchPath)
-  process.arguments = arguments
-  process.currentDirectoryURL = workingDirectory
-
-  let output = Pipe()
-  let error = Pipe()
-  process.standardOutput = output
-  process.standardError = error
-  return try await withCheckedThrowingContinuation { (continuation) in
-    process.terminationHandler = { (process) in
-      let stdout = String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-      let stderr = String(decoding: error.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-      continuation.resume(
-        returning: ProcessOutput(
-          code: process.terminationStatus,
-          stdout: stdout,
-          stderr: stderr
-        )
-      )
-    }
-
-    do {
-      try process.run()
-    } catch {
-      continuation.resume(throwing: error)
-    }
-  }
-}
-
-private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> ProcessOutput) async throws -> ProcessOutput {
+private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> CommandOutput) async throws -> CommandOutput {
   let fileManager = FileManager()
   let templateDirectory = URL(
     fileURLWithPath: "\(DirectoryConfiguration.detect().resourcesDirectory)\(testModuleName)"
@@ -153,18 +128,4 @@ private struct MacroExpansionRequest: Codable {
 private struct MacroExpansionResponse: Content {
   let stdout: String
   let stderr: String
-}
-
-private struct ProcessOutput {
-  let code: Int32
-  let stdout: String
-  let stderr: String
-  let isSuccess: Bool
-
-  init(code: Int32, stdout: String, stderr: String) {
-    self.code = code
-    self.stdout = stdout
-    self.stderr = stderr
-    isSuccess = code == 0
-  }
 }
