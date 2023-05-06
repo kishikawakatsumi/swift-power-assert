@@ -27,11 +27,11 @@ func routes(_ app: Application) throws {
 
     do {
       let eraser = MacroEraser()
-      let (status, stdout, stderr) = try await runBuild(code: "\(eraser.rewrite(Syntax(sourceFile)))")
-      guard status == 0 else {
+      let output = try await runBuild(code: "\(eraser.rewrite(Syntax(sourceFile)))")
+      guard output.isSuccess else {
         return MacroExpansionResponse(
           stdout: "",
-          stderr: stdout + stderr
+          stderr: "\(output.stdout)\(output.stderr)"
         )
       }
     } catch {
@@ -42,10 +42,10 @@ func routes(_ app: Application) throws {
       let context = BasicMacroExpansionContext(
         sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
       )
-      let (_, stdout, stderr) = try await runTest(code: "\(sourceFile.expand(macros: macros, in: context))")
+      let output = try await runTest(code: "\(sourceFile.expand(macros: macros, in: context))")
       let response = MacroExpansionResponse(
-        stdout: stdout,
-        stderr: stderr
+        stdout: output.stdout,
+        stderr: output.stderr
       )
       return response
     } catch {
@@ -54,7 +54,7 @@ func routes(_ app: Application) throws {
   }
 }
 
-private func runBuild(code: String) async throws -> (Int32, String, String) {
+private func runBuild(code: String) async throws -> ProcessOutput {
   try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
     try await runProcess(
       "/usr/bin/env", arguments: ["swift", "build", "--build-tests"], workingDirectory: temporaryDirectory
@@ -62,7 +62,7 @@ private func runBuild(code: String) async throws -> (Int32, String, String) {
   }
 }
 
-private func runTest(code: String) async throws -> (Int32, String, String) {
+private func runTest(code: String) async throws -> ProcessOutput {
   try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
     try await runProcess(
       "/usr/bin/env", arguments: ["swift", "test"], workingDirectory: temporaryDirectory
@@ -70,24 +70,68 @@ private func runTest(code: String) async throws -> (Int32, String, String) {
   }
 }
 
-func runInTemporaryDirectory(code: String, execute: (URL) async throws -> (Int32, String, String)) async throws -> (Int32, String, String) {
+private func runProcess(_ launchPath: String, arguments: [String], workingDirectory: URL? = nil) async throws -> ProcessOutput {
+  let process = Process()
+  process.executableURL = URL(fileURLWithPath: launchPath)
+  process.arguments = arguments
+  process.currentDirectoryURL = workingDirectory
+
+  let output = Pipe()
+  let error = Pipe()
+  process.standardOutput = output
+  process.standardError = error
+  return try await withCheckedThrowingContinuation { (continuation) in
+    process.terminationHandler = { (process) in
+      let stdout = String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+      let stderr = String(decoding: error.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+      continuation.resume(
+        returning: ProcessOutput(
+          code: process.terminationStatus,
+          stdout: stdout,
+          stderr: stderr
+        )
+      )
+    }
+
+    do {
+      try process.run()
+    } catch {
+      continuation.resume(throwing: error)
+    }
+  }
+}
+
+private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> ProcessOutput) async throws -> ProcessOutput {
+  let fileManager = FileManager()
   let templateDirectory = URL(
     fileURLWithPath: "\(DirectoryConfiguration.detect().resourcesDirectory)\(testModuleName)"
   )
 
-  let fileManager = FileManager()
   let temporaryDirectory = fileManager.temporaryDirectory.appendingPathComponent(UUID().base64())
   try fileManager.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+  defer {
+    try? fileManager.removeItem(at: temporaryDirectory)
+  }
 
   let packageDirectory = temporaryDirectory.appendingPathComponent(templateDirectory.lastPathComponent)
-  try fileManager.copyItem(at: templateDirectory, to: packageDirectory)
+  try copyItem(at: templateDirectory, to: packageDirectory)
 
   let testFile = packageDirectory.appendingPathComponent("Tests/TestTarget/test.swift")
   try code.write(to: testFile, atomically: true, encoding: .utf8)
 
-  let response = try await execute(packageDirectory)
-  try fileManager.removeItem(at: temporaryDirectory)
-  return response
+  return try await execute(packageDirectory)
+}
+
+private func copyItem(at srcURL: URL, to dstURL: URL) throws {
+  let srcPath = srcURL.path(percentEncoded: false)
+  let dstPath = dstURL.path(percentEncoded: false)
+
+  let process = Process()
+  process.executableURL = URL(fileURLWithPath: "/bin/cp")
+  process.arguments = ["-R", "-L", srcPath, dstPath]
+
+  try process.run()
+  process.waitUntilExit()
 }
 
 private extension UUID {
@@ -102,32 +146,6 @@ private extension UUID {
   }
 }
 
-private func runProcess(_ launchPath: String, arguments: [String], workingDirectory: URL) async throws -> (status: Int32, stdout: String, stderr: String) {
-  let process = Process()
-  process.executableURL = URL(fileURLWithPath: launchPath)
-  process.arguments = arguments
-  process.currentDirectoryURL = workingDirectory
-
-  let output = Pipe()
-  let error = Pipe()
-  process.standardOutput = output
-  process.standardError = error
-
-  return try await withCheckedThrowingContinuation { (continuation) in
-    process.terminationHandler = {
-      let stdout = String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-      let stderr = String(decoding: error.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-      continuation.resume(returning: ($0.terminationStatus, stdout, stderr))
-    }
-
-    do {
-      try process.run()
-    } catch {
-      continuation.resume(throwing: error)
-    }
-  }
-}
-
 private struct MacroExpansionRequest: Codable {
   let code: String
 }
@@ -135,4 +153,18 @@ private struct MacroExpansionRequest: Codable {
 private struct MacroExpansionResponse: Content {
   let stdout: String
   let stderr: String
+}
+
+private struct ProcessOutput {
+  let code: Int32
+  let stdout: String
+  let stderr: String
+  let isSuccess: Bool
+
+  init(code: Int32, stdout: String, stderr: String) {
+    self.code = code
+    self.stdout = stdout
+    self.stderr = stderr
+    isSuccess = code == 0
+  }
 }
