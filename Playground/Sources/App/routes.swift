@@ -89,7 +89,7 @@ func routes(_ app: Application) throws {
       _ = ws.close()
       return
     }
-    NotificationCenter.default.addObserver(forName: notificationName, object: nil, queue: nil) { (notification) in
+    let cancelToken = NotificationCenter.default.addObserver(forName: notificationName, object: nil, queue: nil) { (notification) in
       guard let userInfo = notification.userInfo else {
         return
       }
@@ -106,6 +106,9 @@ func routes(_ app: Application) throws {
       if let data = try? JSONEncoder().encode(response) {
         ws.send(String(decoding: data, as: UTF8.self))
       }
+    }
+    _ = ws.onClose.always { _ in
+      NotificationCenter.default.removeObserver(cancelToken)
     }
   }
 }
