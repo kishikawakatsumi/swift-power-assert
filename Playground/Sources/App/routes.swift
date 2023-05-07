@@ -37,6 +37,7 @@ func routes(_ app: Application) throws {
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
           "/usr/bin/env", "swift", "build", "--build-tests",
+          "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update",
           workingDirectory: $0,
           onOutput: { (output) in
             notify(session: session, type: .build, message: output)
@@ -68,6 +69,7 @@ func routes(_ app: Application) throws {
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
           "/usr/bin/env", "swift", "test",
+          "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update",
           workingDirectory: $0,
           onOutput: { (output) in
             notify(session: session, type: .test, message: output)
