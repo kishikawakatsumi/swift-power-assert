@@ -7,7 +7,11 @@ actor Command {
   init(_ arguments: String..., workingDirectory: URL, onOutput: @escaping (String) -> Void, onError: @escaping (String) -> Void) {
     process = TSCBasic.Process(
       arguments: arguments,
-      environment: ["NSUnbufferedIO": "YES"],
+      environment: [
+        "NSUnbufferedIO": "YES",
+        "TERM": "xterm-256color",
+        "LD_PRELOAD": "./faketty.so",
+      ],
       workingDirectory: try! AbsolutePath.init(validating: workingDirectory.path),
       outputRedirection: .stream(
         stdout: { (byte) in

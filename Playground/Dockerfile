@@ -27,6 +27,10 @@ RUN swift package resolve
 COPY . .
 RUN swift build -c release
 
+RUN echo 'int isatty(int fd) { return 1; }' | \
+  clang -O2 -fpic -shared -ldl -o faketty.so -xc -
+RUN strip faketty.so && chmod 400 faketty.so && mv faketty.so ./Resources/TestModule/
+
 WORKDIR /staging
 RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Run" ./ \
     && mv /build/Public ./Public && chmod -R a-w ./Public \
