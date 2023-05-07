@@ -83,7 +83,11 @@ public enum PowerAssert {
         if comparison.isEmpty {
           message = diagram
         } else {
+#if PLAYGROUND
+          message = "\(diagram) \n\(comparison) \n"
+#else
           message = "\(diagram)\n\(comparison)\n"
+#endif
         }
 
         if !result {

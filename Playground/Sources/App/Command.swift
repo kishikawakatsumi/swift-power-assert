@@ -1,9 +1,11 @@
 import Foundation
 
-struct Command {
-  let launchPath: String
-  let arguments: [String]
-  let workingDirectory: URL?
+actor Command {
+  private let process = Process()
+  
+  private let launchPath: String
+  private let arguments: [String]
+  private let workingDirectory: URL?
 
   init(launchPath: String, arguments: [String], workingDirectory: URL? = nil) {
     self.launchPath = launchPath
@@ -11,8 +13,8 @@ struct Command {
     self.workingDirectory = workingDirectory
   }
 
-  func run() async throws -> CommandOutput {
-    let process = Process()
+  func run() throws -> CommandOutput {
+    process.environment = ["NSUnbufferedIO": "YES"]
     process.executableURL = URL(fileURLWithPath: launchPath)
     process.arguments = arguments
     process.currentDirectoryURL = workingDirectory
@@ -22,39 +24,46 @@ struct Command {
 
     process.standardOutput = standardOutput
     process.standardError = standardError
-    
-    return try await withCheckedThrowingContinuation { (continuation) in
-      process.terminationHandler = { (process) in
-        let stdout = String(decoding: standardOutput.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-        let stderr = String(decoding: standardError.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-        continuation.resume(
-          returning: CommandOutput(
-            code: process.terminationStatus,
-            stdout: stdout,
-            stderr: stderr
-          )
-        )
-      }
 
-      do {
-        try process.run()
-      } catch {
-        continuation.resume(throwing: error)
-      }
+    process.terminationHandler = { (process) in
+      standardOutput.fileHandleForReading.readabilityHandler = nil
+      standardError.fileHandleForReading.readabilityHandler = nil
     }
+
+    try process.run()
+
+    return CommandOutput(
+      stdout: standardOutput.fileHandleForReading.bytes.lines,
+      stderr: standardError.fileHandleForReading.bytes.lines
+    )
+  }
+
+  func waitUntilExit() -> Int {
+    process.waitUntilExit()
+    return Int(process.terminationStatus)
+  }
+}
+
+struct CommandStatus {
+  let code: Int
+  let isSuccess: Bool
+  let stdout: String
+  let stderr: String
+
+  init(code: Int, stdout: String, stderr: String) {
+    self.code = code
+    isSuccess = code == 0
+    self.stdout = stdout
+    self.stderr = stderr
   }
 }
 
 struct CommandOutput {
-  let code: Int32
-  let stdout: String
-  let stderr: String
-  let isSuccess: Bool
+  let stdout: AsyncLineSequence<FileHandle.AsyncBytes>
+  let stderr: AsyncLineSequence<FileHandle.AsyncBytes>
 
-  init(code: Int32, stdout: String, stderr: String) {
-    self.code = code
+  init(stdout: AsyncLineSequence<FileHandle.AsyncBytes>, stderr: AsyncLineSequence<FileHandle.AsyncBytes>) {
     self.stdout = stdout
     self.stderr = stderr
-    isSuccess = code == 0
   }
 }

@@ -6,12 +6,16 @@ let package = Package(
   name: "TestModule",
   platforms: [
     .macOS(.v13),
+    .iOS(.v16),
   ],
   dependencies: [],
   targets: [
     .target(
       name: "PowerAssert",
-      dependencies: ["StringWidth"]
+      dependencies: ["StringWidth"],
+      swiftSettings: [
+        .define("PLAYGROUND"),
+      ]
     ),
     .target(
       name: "StringWidth",
