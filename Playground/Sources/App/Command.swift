@@ -1,46 +1,41 @@
 import Foundation
+import TSCBasic
 
 actor Command {
-  private let process = Process()
-  
-  private let launchPath: String
-  private let arguments: [String]
-  private let workingDirectory: URL?
+  private let process: TSCBasic.Process
 
-  init(launchPath: String, arguments: [String], workingDirectory: URL? = nil) {
-    self.launchPath = launchPath
-    self.arguments = arguments
-    self.workingDirectory = workingDirectory
-  }
-
-  func run() throws -> CommandOutput {
-    process.environment = ["NSUnbufferedIO": "YES"]
-    process.executableURL = URL(fileURLWithPath: launchPath)
-    process.arguments = arguments
-    process.currentDirectoryURL = workingDirectory
-
-    let standardOutput = Pipe()
-    let standardError = Pipe()
-
-    process.standardOutput = standardOutput
-    process.standardError = standardError
-
-    process.terminationHandler = { (process) in
-      standardOutput.fileHandleForReading.readabilityHandler = nil
-      standardError.fileHandleForReading.readabilityHandler = nil
-    }
-
-    try process.run()
-
-    return CommandOutput(
-      stdout: standardOutput.fileHandleForReading.bytes.lines,
-      stderr: standardError.fileHandleForReading.bytes.lines
+  init(_ arguments: String..., workingDirectory: URL, onOutput: @escaping (String) -> Void, onError: @escaping (String) -> Void) {
+    process = TSCBasic.Process(
+      arguments: arguments,
+      environment: ["NSUnbufferedIO": "YES"],
+      workingDirectory: try! AbsolutePath.init(validating: workingDirectory.path),
+      outputRedirection: .stream(
+        stdout: { (byte) in
+          onOutput(String(decoding: byte, as: UTF8.self))
+        }, stderr: { (byte) in
+          onError(String(decoding: byte, as: UTF8.self))
+        }
+      )
     )
   }
 
-  func waitUntilExit() -> Int {
-    process.waitUntilExit()
-    return Int(process.terminationStatus)
+  func run(onOutput: @escaping (String) -> Void = { _ in }, onError: @escaping (String) -> Void = { _ in }) async throws -> CommandStatus {
+    try process.launch()
+    let processResult = try await process.waitUntilExit()
+    switch processResult.exitStatus {
+    case .terminated(code: let code):
+      return CommandStatus(
+        code: code,
+        stdout: (try? processResult.utf8Output()) ?? "",
+        stderr: (try? processResult.utf8stderrOutput()) ?? ""
+      )
+    case .signalled:
+      return CommandStatus(
+        code: -1,
+        stdout: (try? processResult.utf8Output()) ?? "",
+        stderr: (try? processResult.utf8stderrOutput()) ?? ""
+      )
+    }
   }
 }
 
@@ -50,19 +45,9 @@ struct CommandStatus {
   let stdout: String
   let stderr: String
 
-  init(code: Int, stdout: String, stderr: String) {
-    self.code = code
+  init(code: Int32, stdout: String, stderr: String) {
+    self.code = Int(code)
     isSuccess = code == 0
-    self.stdout = stdout
-    self.stderr = stderr
-  }
-}
-
-struct CommandOutput {
-  let stdout: AsyncLineSequence<FileHandle.AsyncBytes>
-  let stderr: AsyncLineSequence<FileHandle.AsyncBytes>
-
-  init(stdout: AsyncLineSequence<FileHandle.AsyncBytes>, stderr: AsyncLineSequence<FileHandle.AsyncBytes>) {
     self.stdout = stdout
     self.stderr = stderr
   }
