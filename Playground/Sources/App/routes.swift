@@ -135,12 +135,16 @@ private func runInTemporaryDirectory(code: String, execute: (URL) async throws -
 }
 
 private func copyItem(at srcURL: URL, to dstURL: URL) throws {
+#if os(Linux)
+  try FileManager().copyItem(at: srcURL, to: dstURL)
+#else
   let process = Process()
   process.executableURL = URL(fileURLWithPath: "/bin/cp")
   process.arguments = ["-R", "-L", srcURL.path, dstURL.path]
 
   try process.run()
   process.waitUntilExit()
+#endif
 }
 
 func notify(session: String, type: LogType, message: String) {
