@@ -36,25 +36,16 @@ func routes(_ app: Application) throws {
       let code = "\(eraser.rewrite(Syntax(sourceFile)))"
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
-          launchPath: "/usr/bin/env",
-          arguments: ["swift", "build", "--build-tests"],
-          workingDirectory: $0
+          "/usr/bin/env", "swift", "build", "--build-tests",
+          workingDirectory: $0,
+          onOutput: { (output) in
+            notify(session: session, type: .build, message: output)
+          },
+          onError: { (output) in
+            notify(session: session, type: .build, message: output)
+          }
         )
-        let output = try await command.run()
-
-        var stdout = ""
-        for try await message in output.stdout {
-          stdout += message
-          notify(session: session, type: .build, message: message)
-        }
-        var stderr = ""
-        for try await message in output.stderr {
-          stderr += message
-          notify(session: session, type: .build, message: message)
-        }
-
-        let code = await command.waitUntilExit()
-        return CommandStatus(code: code, stdout: stdout, stderr: stderr)
+        return try await command.run()
       }
       guard status.isSuccess else {
         return MacroExpansionResponse(
@@ -76,25 +67,16 @@ func routes(_ app: Application) throws {
       let code = "\(sourceFile.expand(macros: macros, in: context))"
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
-          launchPath: "/usr/bin/env",
-          arguments: ["swift", "test"],
-          workingDirectory: $0
+          "/usr/bin/env", "swift", "test",
+          workingDirectory: $0,
+          onOutput: { (output) in
+            notify(session: session, type: .test, message: output)
+          },
+          onError: { (output) in
+            notify(session: session, type: .build, message: output)
+          }
         )
-        let output = try await command.run()
-
-        var stderr = ""
-        for try await message in output.stderr {
-          stderr += message
-          notify(session: session, type: .build, message: message)
-        }
-        var stdout = ""
-        for try await message in output.stdout {
-          stdout += message
-          notify(session: session, type: .test, message: message)
-        }
-
-        let code = await command.waitUntilExit()
-        return CommandStatus(code: code, stdout: stdout, stderr: stderr)
+        return try await command.run()
       }
       return MacroExpansionResponse(stdout: status.stdout, stderr: status.stderr)
     } catch {

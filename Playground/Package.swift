@@ -10,6 +10,7 @@ let package = Package(
     .package(url: "https://github.com/vapor/vapor.git", from: "4.76.0"),
     .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
     .package(url: "https://github.com/apple/swift-syntax.git", branch: "main"),
+    .package(url: "https://github.com/apple/swift-tools-support-core", from: "0.5.2"),
   ],
   targets: [
     .target(
@@ -37,6 +38,7 @@ let package = Package(
         .product(name: "Leaf", package: "leaf"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
         .product(name: "SwiftParser", package: "swift-syntax"),
+        .product(name: "TSCBasic", package: "swift-tools-support-core"),
         "PowerAssertPlugin",
       ],
       swiftSettings: [

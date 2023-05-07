@@ -12,10 +12,7 @@ let package = Package(
   targets: [
     .target(
       name: "PowerAssert",
-      dependencies: ["StringWidth"],
-      swiftSettings: [
-        .define("PLAYGROUND"),
-      ]
+      dependencies: ["StringWidth"]
     ),
     .target(
       name: "StringWidth",
