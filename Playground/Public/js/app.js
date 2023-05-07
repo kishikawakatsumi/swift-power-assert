@@ -3,9 +3,10 @@
 import { Tooltip } from "bootstrap";
 import { Editor } from "./editor.js";
 import { Console } from "./console.js";
-import { SwiftFormat } from "./swift_format.js";
+import { WebSocketClient } from "./websocket.js";
 import { clearConsoleButton, formatButton, runButton } from "./ui_control.js";
 import { unescapeHTML } from "./unescape.js";
+import { uuidv4 } from "./uuid.js";
 
 export class App {
   constructor() {
@@ -47,6 +48,7 @@ final class MyLibraryTests: XCTestCase {
       theme: "vs-light",
       showFoldingControls: "mouseover",
     });
+
     this.terminal = new Console(document.getElementById("terminal-container"));
     this.terminal.writeln(
       `\x1b[37mWelcome to Swift Power Assert Playground.\x1b[0m`
@@ -57,6 +59,8 @@ final class MyLibraryTests: XCTestCase {
     this.terminal.writeln(
       `\x1b[32mhttps://github.com/sponsors/kishikawakatsumi/\x1b[0m`
     );
+
+    this.session = uuidv4();
 
     this.init();
   }
@@ -75,8 +79,30 @@ final class MyLibraryTests: XCTestCase {
     this.editor.focus();
     this.editor.scrollToBottm();
 
-    const formatterService = new SwiftFormat("wss://swift-format.com/api/ws");
-    formatterService.onresponse = (response) => {
+    const logStream = new WebSocketClient(
+      (() => {
+        const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+        const endpoint = `${protocol}//${location.host}/logs/${this.session}`;
+        return endpoint;
+      })()
+    );
+    logStream.onresponse = (response) => {
+      switch (response.type) {
+        case "build":
+          this.terminal.eraseLine();
+          this.terminal.writeln(`\x1b[2m${response.message}`);
+          break;
+        case "test":
+          this.terminal.eraseLine();
+          this.terminal.writeln(`${response.message}`);
+          break;
+        default:
+          break;
+      }
+    };
+
+    const formatter = new WebSocketClient("wss://swift-format.com/api/ws");
+    formatter.onresponse = (response) => {
       if (!response) {
         return;
       }
@@ -86,7 +112,7 @@ final class MyLibraryTests: XCTestCase {
     };
     formatButton.addEventListener("click", (event) => {
       event.preventDefault();
-      formatterService.format(this.editor.getValue());
+      formatter.send({ code: this.editor.getValue() });
     });
 
     runButton.addEventListener("click", (event) => {
@@ -117,6 +143,7 @@ final class MyLibraryTests: XCTestCase {
     this.terminal.hideCursor();
 
     const params = {
+      session: this.session,
       code: this.editor.getValue(),
     };
     const path = `/run`;
@@ -142,11 +169,6 @@ final class MyLibraryTests: XCTestCase {
         if (response.stderr) {
           const markers = this.parseErrorMessage(response.stderr);
           this.editor.updateMarkers(markers);
-
-          this.terminal.writeln(`\x1b[2m${response.stderr}\x1b[0m`);
-        }
-        if (response.stdout) {
-          this.terminal.writeln(`${response.stdout}\x1b[0m`);
         }
       })
       .catch((error) => {

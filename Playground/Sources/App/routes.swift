@@ -7,9 +7,17 @@ import PowerAssertPlugin
 private let testModuleName = "TestModule"
 private let testFileName = "test.swift"
 
+private let healthcheckResponse = ["status": "pass"]
+
+private let notificationName = Notification.Name("onOutput")
+enum LogType: String {
+  case build
+  case test
+}
+
 func routes(_ app: Application) throws {
-  app.get("health") { _ in ["status": "pass"] }
-  app.get("healthz") { _ in ["status": "pass"] }
+  app.get("health") { _ in healthcheckResponse }
+  app.get("healthz") { _ in healthcheckResponse }
 
   app.get { (req) in
     return req.view.render("index")
@@ -20,18 +28,38 @@ func routes(_ app: Application) throws {
       throw Abort(.badRequest)
     }
 
-    let macros: [String: Macro.Type] = [
-      "assert": PowerAssertMacro.self,
-    ]
+    let session = request.session
     let sourceFile = Parser.parse(source: request.code)
 
     do {
       let eraser = MacroEraser()
-      let output = try await runBuild(code: "\(eraser.rewrite(Syntax(sourceFile)))")
-      guard output.isSuccess else {
+      let code = "\(eraser.rewrite(Syntax(sourceFile)))"
+      let status = try await runInTemporaryDirectory(code: code) {
+        let command = Command(
+          launchPath: "/usr/bin/env",
+          arguments: ["swift", "build", "--build-tests"],
+          workingDirectory: $0
+        )
+        let output = try await command.run()
+
+        var stdout = ""
+        for try await message in output.stdout {
+          stdout += message
+          notify(session: session, type: .build, message: message)
+        }
+        var stderr = ""
+        for try await message in output.stderr {
+          stderr += message
+          notify(session: session, type: .build, message: message)
+        }
+
+        let code = await command.waitUntilExit()
+        return CommandStatus(code: code, stdout: stdout, stderr: stderr)
+      }
+      guard status.isSuccess else {
         return MacroExpansionResponse(
           stdout: "",
-          stderr: "\(output.stdout)\(output.stderr)"
+          stderr: "\(status.stdout)\(status.stderr)"
         )
       }
     } catch {
@@ -39,44 +67,68 @@ func routes(_ app: Application) throws {
     }
 
     do {
+      let macros: [String: Macro.Type] = [
+        "assert": PowerAssertMacro.self,
+      ]
       let context = BasicMacroExpansionContext(
         sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
       )
-      let output = try await runTest(code: "\(sourceFile.expand(macros: macros, in: context))")
-      let response = MacroExpansionResponse(
-        stdout: output.stdout,
-        stderr: output.stderr
-      )
-      return response
+      let code = "\(sourceFile.expand(macros: macros, in: context))"
+      let status = try await runInTemporaryDirectory(code: code) {
+        let command = Command(
+          launchPath: "/usr/bin/env",
+          arguments: ["swift", "test"],
+          workingDirectory: $0
+        )
+        let output = try await command.run()
+
+        var stderr = ""
+        for try await message in output.stderr {
+          stderr += message
+          notify(session: session, type: .build, message: message)
+        }
+        var stdout = ""
+        for try await message in output.stdout {
+          stdout += message
+          notify(session: session, type: .test, message: message)
+        }
+
+        let code = await command.waitUntilExit()
+        return CommandStatus(code: code, stdout: stdout, stderr: stderr)
+      }
+      return MacroExpansionResponse(stdout: status.stdout, stderr: status.stderr)
     } catch {
       throw Abort(.internalServerError)
     }
   }
-}
 
-private func runBuild(code: String) async throws -> CommandOutput {
-  try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
-    try await Command(
-      launchPath: "/usr/bin/env",
-      arguments: ["swift", "build", "--build-tests"],
-      workingDirectory: temporaryDirectory
-    )
-    .run()
+  app.webSocket("logs", ":session") { (req, ws) in
+    guard let session = req.parameters.get("session") else {
+      _ = ws.close()
+      return
+    }
+    NotificationCenter.default.addObserver(forName: notificationName, object: nil, queue: nil) { (notification) in
+      guard let userInfo = notification.userInfo else {
+        return
+      }
+      guard userInfo["session"] as? String == session else {
+        return
+      }
+      guard let type = userInfo["type"] as? String else {
+        return
+      }
+      guard let message = userInfo["message"] as? String else {
+        return
+      }
+      let response = StreamResponse(type: type, message: message)
+      if let data = try? JSONEncoder().encode(response) {
+        ws.send(String(decoding: data, as: UTF8.self))
+      }
+    }
   }
 }
 
-private func runTest(code: String) async throws -> CommandOutput {
-  try await runInTemporaryDirectory(code: code) { (temporaryDirectory) in
-    try await Command(
-      launchPath: "/usr/bin/env",
-      arguments: ["swift", "build", "--build-tests"],
-      workingDirectory: temporaryDirectory
-    )
-    .run()
-  }
-}
-
-private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> CommandOutput) async throws -> CommandOutput {
+private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> CommandStatus) async throws -> CommandStatus {
   let fileManager = FileManager()
   let templateDirectory = URL(
     fileURLWithPath: "\(DirectoryConfiguration.detect().resourcesDirectory)\(testModuleName)"
@@ -98,15 +150,20 @@ private func runInTemporaryDirectory(code: String, execute: (URL) async throws -
 }
 
 private func copyItem(at srcURL: URL, to dstURL: URL) throws {
-  let srcPath = srcURL.path(percentEncoded: false)
-  let dstPath = dstURL.path(percentEncoded: false)
-
   let process = Process()
   process.executableURL = URL(fileURLWithPath: "/bin/cp")
-  process.arguments = ["-R", "-L", srcPath, dstPath]
+  process.arguments = ["-R", "-L", srcURL.path, dstURL.path]
 
   try process.run()
   process.waitUntilExit()
+}
+
+func notify(session: String, type: LogType, message: String) {
+  NotificationCenter.default.post(
+    name: notificationName,
+    object: nil,
+    userInfo: ["session": session, "type": "\(type)", "message": message]
+  )
 }
 
 private extension UUID {
@@ -122,10 +179,16 @@ private extension UUID {
 }
 
 private struct MacroExpansionRequest: Codable {
+  let session: String
   let code: String
 }
 
 private struct MacroExpansionResponse: Content {
   let stdout: String
   let stderr: String
+}
+
+private struct StreamResponse: Codable {
+  let type: String
+  let message: String
 }

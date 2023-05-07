@@ -25,7 +25,11 @@ class PowerAssertRewriter: SyntaxRewriter {
       let converter = SourceLocationConverter(file: "", tree: macro.detach())
       let startLocation = macro.startLocation(converter: converter)
       let endLocation = macro.macro.endLocation(converter: converter)
+#if PLAYGROUND
+      return "\(macro.poundToken.trimmed)\(macro.macro.trimmed)".count
+#else
       return endLocation.column - startLocation.column
+#endif
     }()
 
     let tokens = expression.tokens(viewMode: .fixedUp).map { $0 }

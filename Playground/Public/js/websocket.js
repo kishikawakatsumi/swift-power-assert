@@ -2,7 +2,7 @@
 
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-export class SwiftFormat {
+export class WebSocketClient {
   constructor(endpoint) {
     this.connection = this.createConnection(endpoint);
 
@@ -14,9 +14,9 @@ export class SwiftFormat {
     return this.connection.readyState === 1;
   }
 
-  format(code) {
+  send(params) {
     const encoder = new TextEncoder();
-    this.connection.send(encoder.encode(JSON.stringify({ code: code })));
+    this.connection.send(encoder.encode(JSON.stringify(params)));
   }
 
   createConnection(endpoint) {
@@ -46,7 +46,9 @@ export class SwiftFormat {
     };
 
     connection.onmessage = (event) => {
-      this.onresponse(JSON.parse(event.data));
+      try {
+        this.onresponse(JSON.parse(event.data));
+      } catch (error) {}
     };
 
     return connection;

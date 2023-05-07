@@ -21,7 +21,10 @@ let package = Package(
         .product(name: "SwiftParser", package: "swift-syntax"),
         "StringWidth",
       ],
-      exclude: ["PowerAssertPlugin.swift"]
+      exclude: ["PowerAssertPlugin.swift"],
+      swiftSettings: [
+        .define("PLAYGROUND"),
+      ]
     ),
     .target(
       name: "StringWidth",
