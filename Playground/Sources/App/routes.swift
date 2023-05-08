@@ -85,7 +85,7 @@ func routes(_ app: Application) throws {
           ["/usr/bin/env", "swift", "test"] + commonOptions,
           workingDirectory: $0,
           onOutput: { (output) in
-            outputNotifier.send(output, session: session, type: .build)
+            outputNotifier.send(output, session: session, type: .test)
           },
           onError: { (output) in
             errorNotifier.send(output, session: session, type: .build)
@@ -208,7 +208,7 @@ private class BufferedNotifier {
     var message = storage
     for character in output {
       if character == "\n" {
-        notify(session: session, type: type, message: "\(message)")
+        notify(session: session, type: type, message: "\(message)\n")
         message = ""
       } else {
         message.append(character)

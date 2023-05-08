@@ -90,11 +90,11 @@ final class MyLibraryTests: XCTestCase {
       switch (response.type) {
         case "build":
           this.terminal.eraseLine();
-          this.terminal.writeln(`\x1b[2m${response.message}\x1b[0m`);
+          this.terminal.write(`\x1b[2m${response.message}\x1b[0m`);
           break;
         case "test":
           this.terminal.eraseLine();
-          this.terminal.writeln(`${response.message}`);
+          this.terminal.write(`${response.message}`);
           break;
         default:
           break;
