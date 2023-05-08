@@ -4473,44 +4473,54 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-  // FIXME: Temporarily disable tests due to Swift compiler bug
-  // https://github.com/apple/swift-syntax/issues/1593
-//  func testHigherOrderFunction() {
-//    captureConsoleOutput {
-//      func testA(_ i: Int) -> Int {
-//        return i + 1
-//      }
-//
-//      func testB(_ i: Int) -> Int {
-//        return i + 1
-//      }
-//
-//      let array = [0, 1, 2]
-//      #assert(array.map { testA($0) } == [1, 2, 3], verbose: true)
-//      #assert(array.map(testB) == [1, 2, 3], verbose: true)
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #assert(array.map { testA($0) } == [1, 2, 3])
-//                │     │                 │  ││  │  │
-//                │     [1, 2, 3]         │  │1  2  3
-//                [0, 1, 2]               │  [1, 2, 3]
-//                                        true
-//        #assert(array.map(testB) == [1, 2, 3])
-//                │     │   │      │  ││  │  │
-//                │     │   │      │  │1  2  3
-//                │     │   │      │  [1, 2, 3]
-//                │     │   │      true
-//                │     │   (Function)
-//                │     [1, 2, 3]
-//                [0, 1, 2]
-//
-//        """
-//      )
-//    }
-//  }
+  func testHigherOrderFunction() {
+    captureConsoleOutput {
+      func testA(_ i: Int) -> Int {
+        return i + 1
+      }
+
+      func testB(_ i: Int) -> Int {
+        return i + 1
+      }
+
+      let array = [0, 1, 2]
+      #assert(array.map { testA($0) } == [1, 2, 3], verbose: true)
+      #assert(array.map(testB) == [1, 2, 3], verbose: true)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(array.map { testA($0) } == [1, 2, 3])
+                │     │                 │  ││  │  │
+                │     [1, 2, 3]         │  │1  2  3
+                [0, 1, 2]               │  [1, 2, 3]
+                                        true
+
+        [Array<Int>] array.map { testA($0) }
+        => [1, 2, 3]
+        [Array<Int>] [1, 2, 3]
+        => [1, 2, 3]
+
+        #assert(array.map(testB) == [1, 2, 3])
+                │     │   │      │  ││  │  │
+                │     │   │      │  │1  2  3
+                │     │   │      │  [1, 2, 3]
+                │     │   │      true
+                │     │   (Function)
+                │     [1, 2, 3]
+                [0, 1, 2]
+
+        [Array<Int>] array.map(testB)
+        => [1, 2, 3]
+        [Array<Int>] [1, 2, 3]
+        => [1, 2, 3]
+
+
+        """
+      )
+    }
+  }
 
   func testStringInterpolation() {
     captureConsoleOutput {
