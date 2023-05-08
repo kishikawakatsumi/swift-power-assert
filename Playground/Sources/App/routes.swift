@@ -208,7 +208,7 @@ private class BufferedNotifier {
     var message = storage
     for character in output {
       if character == "\n" {
-        notify(session: session, type: type, message: "\(message)\n")
+        notify(session: session, type: type, message: "\(message)")
         message = ""
       } else {
         message.append(character)
