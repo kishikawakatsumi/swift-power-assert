@@ -38,6 +38,10 @@ Power asserts provide descriptive assertion messages for your tests, like the fo
 => false
 ```
 
+## Online Playground
+
+:sparkles: [**Experience the library in action with our online playground!**](https://power-assert.swiftfiddle.com/) :sparkles:
+
 ## Why Power Assert?
 
 When writing tests, we need to use different assertion functions. With Power Assert you only use the `#assert()` function. There are many
