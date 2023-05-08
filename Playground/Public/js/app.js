@@ -31,7 +31,7 @@ final class MyLibraryTests: XCTestCase {
     #assert(max(d, e) == f)
     #assert(d + e > f)
   }
-}      
+}
 `),
       fontSize: "14pt",
       lineHeight: 21,
