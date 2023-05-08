@@ -31,6 +31,9 @@ func routes(_ app: Application) throws {
     let session = request.session
     let sourceFile = Parser.parse(source: request.code)
 
+    let commonOptions = [
+      "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update"
+    ]
     do {
       let eraser = MacroEraser()
       let code = "\(eraser.rewrite(Syntax(sourceFile)))"
@@ -40,8 +43,7 @@ func routes(_ app: Application) throws {
 
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
-          "/usr/bin/env", "swift", "build", "--build-tests",
-          "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update",
+          ["/usr/bin/env", "swift", "build", "--build-tests"] + commonOptions,
           workingDirectory: $0,
           onOutput: { (output) in
             outputNotifier.send(output, session: session, type: .build)
@@ -80,8 +82,7 @@ func routes(_ app: Application) throws {
 
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
-          "/usr/bin/env", "swift", "test",
-          "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update",
+          ["/usr/bin/env", "swift", "test"] + commonOptions,
           workingDirectory: $0,
           onOutput: { (output) in
             outputNotifier.send(output, session: session, type: .build)

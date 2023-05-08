@@ -4,7 +4,7 @@ import TSCBasic
 actor Command {
   private let process: TSCBasic.Process
 
-  init(_ arguments: String..., workingDirectory: URL, onOutput: @escaping (String) -> Void, onError: @escaping (String) -> Void) {
+  init(_ arguments: [String], workingDirectory: URL, onOutput: @escaping (String) -> Void, onError: @escaping (String) -> Void) {
     process = TSCBasic.Process(
       arguments: arguments,
       environment: [
