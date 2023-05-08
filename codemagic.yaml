@@ -31,7 +31,7 @@ workflows:
           installer -pkg $file_name -target CurrentUserHomeDirectory
       - name: Test
         script: |
-          export TOOLCHAINS=org.swift.59202305021a
+          export TOOLCHAINS=org.swift.59202305071a
           swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions --enable-code-coverage
           xcrun llvm-cov report \
             $(swift build --show-bin-path)/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \
