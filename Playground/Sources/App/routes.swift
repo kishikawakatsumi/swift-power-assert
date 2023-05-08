@@ -34,20 +34,28 @@ func routes(_ app: Application) throws {
     do {
       let eraser = MacroEraser()
       let code = "\(eraser.rewrite(Syntax(sourceFile)))"
+
+      let outputNotifier = BufferedNotifier()
+      let errorNotifier = BufferedNotifier()
+
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
           "/usr/bin/env", "swift", "build", "--build-tests",
           "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update",
           workingDirectory: $0,
           onOutput: { (output) in
-            notify(session: session, type: .build, message: output)
+            outputNotifier.send(output, session: session, type: .build)
           },
           onError: { (output) in
-            notify(session: session, type: .build, message: output)
+            errorNotifier.send(output, session: session, type: .build)
           }
         )
         return try await command.run()
       }
+
+      notify(session: session, type: .build, message: outputNotifier.storage)
+      notify(session: session, type: .build, message: errorNotifier.storage)
+
       guard status.isSuccess else {
         return MacroExpansionResponse(
           stdout: "",
@@ -66,20 +74,28 @@ func routes(_ app: Application) throws {
         sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
       )
       let code = "\(sourceFile.expand(macros: macros, in: context))"
+
+      let outputNotifier = BufferedNotifier()
+      let errorNotifier = BufferedNotifier()
+
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
           "/usr/bin/env", "swift", "test",
           "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update",
           workingDirectory: $0,
           onOutput: { (output) in
-            notify(session: session, type: .test, message: output)
+            outputNotifier.send(output, session: session, type: .build)
           },
           onError: { (output) in
-            notify(session: session, type: .build, message: output)
+            errorNotifier.send(output, session: session, type: .build)
           }
         )
         return try await command.run()
       }
+
+      notify(session: session, type: .test, message: outputNotifier.storage)
+      notify(session: session, type: .build, message: errorNotifier.storage)
+
       return MacroExpansionResponse(stdout: status.stdout, stderr: status.stderr)
     } catch {
       throw Abort(.internalServerError)
@@ -149,7 +165,7 @@ private func copyItem(at srcURL: URL, to dstURL: URL) throws {
 #endif
 }
 
-func notify(session: String, type: LogType, message: String) {
+private func notify(session: String, type: LogType, message: String) {
   NotificationCenter.default.post(
     name: notificationName,
     object: nil,
@@ -182,4 +198,21 @@ private struct MacroExpansionResponse: Content {
 private struct StreamResponse: Codable {
   let type: String
   let message: String
+}
+
+private class BufferedNotifier {
+  var storage = ""
+
+  func send(_ output: String, session: String, type: LogType) {
+    var message = storage
+    for character in output {
+      if character == "\n" {
+        notify(session: session, type: type, message: "\(message)\n")
+        message = ""
+      } else {
+        message.append(character)
+      }
+    }
+    storage = message
+  }
 }
