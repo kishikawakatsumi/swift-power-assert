@@ -355,6 +355,9 @@ final class PowerAssertTests: XCTestCase {
 
   func testEqualityExpression1() {
     setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+    defer {
+      unsetenv("SWIFTPOWERASSERT_NOXCTEST")
+    }
 
     captureConsoleOutput {
       let input1 = "apple"
@@ -386,12 +389,13 @@ final class PowerAssertTests: XCTestCase {
         """
       )
     }
-
-    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
   }
 
   func testEqualityExpression2() {
     setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+    defer {
+      unsetenv("SWIFTPOWERASSERT_NOXCTEST")
+    }
 
     captureConsoleOutput {
       let input1 = "The quick brown fox"
@@ -423,12 +427,13 @@ final class PowerAssertTests: XCTestCase {
         """
       )
     }
-
-    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
   }
 
   func testIdenticalExpression() {
     setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+    defer {
+      unsetenv("SWIFTPOWERASSERT_NOXCTEST")
+    }
 
     captureConsoleOutput {
       let number1 = IntegerRef(100)
@@ -461,8 +466,6 @@ final class PowerAssertTests: XCTestCase {
         """
       )
     }
-
-    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
   }
 
   func testMultilineExpression1() {
