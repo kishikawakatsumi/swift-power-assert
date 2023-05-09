@@ -25,7 +25,7 @@ class PowerAssertRewriter: SyntaxRewriter {
       let converter = SourceLocationConverter(file: "", tree: macro.detach())
       let startLocation = macro.startLocation(converter: converter)
       let endLocation = macro.macro.endLocation(converter: converter)
-#if PLAYGROUND
+#if SWIFTPOWERASSERT_PLAYGROUND
       return "\(macro.poundToken.trimmed)\(macro.macro.trimmed)".count
 #else
       return endLocation.column - startLocation.column
@@ -41,9 +41,103 @@ class PowerAssertRewriter: SyntaxRewriter {
     "\(isTryPresent ? "try " : "")\(rewrite(Syntax(expression)))"
   }
 
-  func comparisons() -> String {
+  func equalityExpressions() -> String {
     expressionStore
-      .expressions(of: .comparison)
+      .filter {
+        switch $0.type {
+        case .equalityExpression:
+          return true
+        case .identicalExpression:
+          return false
+        case .comparisonOperand:
+          return false
+        }
+      }
+      .reduce(into: [Syntax: (Int?, Int?, Int?)]()) {
+        switch $1.type {
+        case .equalityExpression(expression: let expression?, lhs: _, rhs: _):
+          if let operands = $0[$1.node] {
+            $0[$1.node] = (expression, operands.1, operands.2)
+          } else {
+            $0[$1.node] = (expression, nil, nil)
+          }
+        case .equalityExpression(expression: _, lhs: let lhs?, rhs: _):
+          if let operands = $0[$1.node] {
+            $0[$1.node] = (operands.0, lhs, operands.2)
+          } else {
+            $0[$1.node] = (nil, lhs, nil)
+          }
+        case .equalityExpression(expression: _, lhs: _, rhs: let rhs?):
+          if let operands = $0[$1.node] {
+            $0[$1.node] = (operands.0, operands.1, rhs)
+          } else {
+            $0[$1.node] = (nil, nil, rhs)
+          }
+        case .equalityExpression(expression: .none, lhs: .none, rhs: .none):
+          break
+        case .identicalExpression:
+          break
+        case .comparisonOperand:
+          break
+        }
+      }
+      .compactMap { (key: Syntax, value: (Int?, Int?, Int?)) -> (Int, Int, Int)? in
+        guard let expression = value.0, let lhs = value.1, let rhs = value.2 else { return nil }
+        return (expression, lhs, rhs)
+      }
+      .description
+  }
+
+  func identicalExpressions() -> String {
+    expressionStore
+      .filter {
+        switch $0.type {
+        case .equalityExpression:
+          return false
+        case .identicalExpression:
+          return true
+        case .comparisonOperand:
+          return false
+        }
+      }
+      .reduce(into: [Syntax: (Int?, Int?, Int?)]()) {
+        switch $1.type {
+        case .equalityExpression:
+          break
+        case .identicalExpression(expression: let expression?, lhs: _, rhs: _):
+          if let operands = $0[$1.node] {
+            $0[$1.node] = (expression, operands.1, operands.2)
+          } else {
+            $0[$1.node] = (expression, nil, nil)
+          }
+        case .identicalExpression(expression: _, lhs: let lhs?, rhs: _):
+          if let operands = $0[$1.node] {
+            $0[$1.node] = (operands.0, lhs, operands.2)
+          } else {
+            $0[$1.node] = (nil, lhs, nil)
+          }
+        case .identicalExpression(expression: _, lhs: _, rhs: let rhs?):
+          if let operands = $0[$1.node] {
+            $0[$1.node] = (operands.0, operands.1, rhs)
+          } else {
+            $0[$1.node] = (nil, nil, rhs)
+          }
+        case .identicalExpression(expression: .none, lhs: .none, rhs: .none):
+          break
+        case .comparisonOperand:
+          break
+        }
+      }
+      .compactMap { (key: Syntax, value: (Int?, Int?, Int?)) -> (Int, Int, Int)? in
+        guard let expression = value.0, let lhs = value.1, let rhs = value.2 else { return nil }
+        return (expression, lhs, rhs)
+      }
+      .description
+  }
+
+  func comparisonOperands() -> String {
+    expressionStore
+      .expressions(of: .comparisonOperand)
       .reduce(into: [Int: String]()) {
         $0[$1.id] = "\($1.node.trimmed)"
       }
@@ -300,11 +394,39 @@ class PowerAssertRewriter: SyntaxRewriter {
       let id = index
       index += 1
 
-      if let parent = expr.parent,
-         let _ = parent.as(InfixOperatorExprSyntax.self),
-         node.syntaxNodeType != BinaryOperatorExprSyntax.self
-      {
-        expressionStore.append(node, id: id, type: .comparison)
+      if let infixOperator = node.as(InfixOperatorExprSyntax.self),
+         let binaryOperator = infixOperator.operatorOperand.as(BinaryOperatorExprSyntax.self) {
+        if binaryOperator.operatorToken.tokenKind == .binaryOperator("==") {
+          expressionStore.append(Syntax(infixOperator), id: id, type: .equalityExpression(expression: id, lhs: nil, rhs: nil))
+        }
+        if binaryOperator.operatorToken.tokenKind == .binaryOperator("===") {
+          expressionStore.append(Syntax(infixOperator), id: id, type: .identicalExpression(expression: id, lhs: nil, rhs: nil))
+        }
+      }
+
+      if let parent = expr.parent {
+        if let infixOperator = parent.as(InfixOperatorExprSyntax.self), node.syntaxNodeType != BinaryOperatorExprSyntax.self {
+          if let binaryOperator = infixOperator.operatorOperand.as(BinaryOperatorExprSyntax.self) {
+            let tokenKind = binaryOperator.operatorToken.tokenKind
+            if tokenKind == .binaryOperator("==") {
+              if infixOperator.leftOperand == expr {
+                expressionStore.append(Syntax(infixOperator), id: id, type: .equalityExpression(expression: nil, lhs: id, rhs: nil))
+              }
+              if infixOperator.rightOperand == expr {
+                expressionStore.append(Syntax(infixOperator), id: id, type: .equalityExpression(expression: nil, lhs: nil, rhs: id))
+              }
+            }
+            if tokenKind == .binaryOperator("===") {
+              if infixOperator.leftOperand == expr {
+                expressionStore.append(Syntax(infixOperator), id: id, type: .identicalExpression(expression: nil, lhs: id, rhs: nil))
+              }
+              if infixOperator.rightOperand == expr {
+                expressionStore.append(Syntax(infixOperator), id: id, type: .identicalExpression(expression: nil, lhs: nil, rhs: id))
+              }
+            }
+          }
+          expressionStore.append(node, id: id, type: .comparisonOperand)
+        }
       }
     }
   }
@@ -443,17 +565,24 @@ private class ExpressionStore {
     expressions.append(Expression(node: node, id: id, type: type))
   }
 
+  func filter(_ isIncluded: (Expression) -> Bool) -> [Expression] {
+    return expressions.filter { isIncluded($0) }
+  }
+
   func expressions(of type: Expression.ExpressionType) -> [Expression] {
     return expressions.filter { $0.type == type }
   }
 }
 
 private struct Expression {
-  enum ExpressionType {
-    case comparison
+  enum ExpressionType: Equatable {
+    case equalityExpression(expression: Int?, lhs: Int?, rhs: Int?)
+    case identicalExpression(expression: Int?, lhs: Int?, rhs: Int?)
+    case comparisonOperand
   }
 
   let node: Syntax
   let id: Int
   let type: ExpressionType
 }
+

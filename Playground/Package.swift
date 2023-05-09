@@ -24,7 +24,7 @@ let package = Package(
       ],
       exclude: ["PowerAssertPlugin.swift"],
       swiftSettings: [
-        .define("PLAYGROUND"),
+        .define("SWIFTPOWERASSERT_PLAYGROUND"),
       ]
     ),
     .target(

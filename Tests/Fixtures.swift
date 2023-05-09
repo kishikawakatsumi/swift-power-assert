@@ -169,3 +169,14 @@ extension HTTPURLResponse {
     return "Status Code: \(statusCode) (\(statusCodeDescription)), URL: \(url?.absoluteString ?? "nil")"
   }
 }
+
+class IntegerRef: Equatable {
+  let value: Int
+  init(_ value: Int) {
+    self.value = value
+  }
+}
+
+func == (lhs: IntegerRef, rhs: IntegerRef) -> Bool {
+  return lhs.value == rhs.value
+}

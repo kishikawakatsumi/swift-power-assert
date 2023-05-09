@@ -10,6 +10,10 @@ final class PowerAssertTests: XCTestCase {
     let xs = [1, 2, 3]
     #assert(xs.contains(4))
 
+    let input1 = "The quick brown fox"
+    let input2 = "The slow brown fox"
+    #assert(input1 == input2)
+
     #assert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
 
     let d = 4

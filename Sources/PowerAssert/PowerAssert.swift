@@ -10,12 +10,16 @@ public enum PowerAssert {
     private let filePath: StaticString
     private let lineNumber: UInt
     private let verbose: Bool
-    private let comparisons: [Int: String]
+    private let equalityExpressions: [(Int, Int, Int)]
+    private let identicalExpressions: [(Int, Int, Int)]
+    private let comparisonOperands: [Int: String]
 
     private var result: Bool = true
     private var values = [Value]()
-    private var errors = [Swift.Error]()
+    private var equalityExpressionValues = [EqualityExpressionValue]()
+    private var identicalExpressionValues = [IdenticalExpressionValue]()
     private var comparisonValues = [ComparisonValue]()
+    private var errors = [Swift.Error]()
 
     public init(
       _ assertion: String,
@@ -23,7 +27,9 @@ public enum PowerAssert {
       file: StaticString,
       line: UInt,
       verbose: Bool = false,
-      comparisons: [Int: String],
+      equalityExpressions: [(Int, Int, Int)],
+      identicalExpressions: [(Int, Int, Int)],
+      comparisonOperands: [Int: String],
       evaluateSync: (Assertion) throws -> Bool = { _ in true }
     ) {
       self.assertion = assertion
@@ -31,7 +37,9 @@ public enum PowerAssert {
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
-      self.comparisons = comparisons
+      self.equalityExpressions = equalityExpressions
+      self.identicalExpressions = identicalExpressions
+      self.comparisonOperands = comparisonOperands
       do {
         self.result = try evaluateSync(self)
       } catch {
@@ -45,7 +53,9 @@ public enum PowerAssert {
       file: StaticString,
       line: UInt,
       verbose: Bool = false,
-      comparisons: [Int: String],
+      equalityExpressions: [(Int, Int, Int)],
+      identicalExpressions: [(Int, Int, Int)],
+      comparisonOperands: [Int: String],
       evaluateAsync: (Assertion) async throws -> Bool = { _ in true }
     ) async {
       self.assertion = assertion
@@ -53,7 +63,9 @@ public enum PowerAssert {
       self.filePath = file
       self.lineNumber = line
       self.verbose = verbose
-      self.comparisons = comparisons
+      self.equalityExpressions = equalityExpressions
+      self.identicalExpressions = identicalExpressions
+      self.comparisonOperands = comparisonOperands
       do {
         self.result = try await evaluateAsync(self)
       } catch {
@@ -76,7 +88,7 @@ public enum PowerAssert {
     public func render() {
       if !result || verbose {
         let diagram = renderDiagram()
-        let comparison = [renderComparison(), renderSkipped()]
+        let comparison = [renderEqualityExpressions(), renderIdenticalExpressions(), renderComparisonOperands(), renderSkipped()]
           .filter { !$0.isEmpty }
           .joined(separator: "\n")
         let message: String
@@ -88,7 +100,11 @@ public enum PowerAssert {
 
         if !result {
 #if canImport(XCTest)
-          XCTFail("\(originalMessage)\n\(Console.apply([.color(.red)], to: message))", file: filePath, line: lineNumber)
+          if ProcessInfo.processInfo.environment["SWIFTPOWERASSERT_NOXCTEST"] != "1" {
+            XCTFail("\(originalMessage)\n\(Console.apply([.color(.red)], to: message))", file: filePath, line: lineNumber)
+          } else {
+            Console.output(message, .color(.red))
+          }
 #else
           Console.output(message, .color(.red))
 #endif
@@ -100,7 +116,13 @@ public enum PowerAssert {
 
     private func store<T>(value: T, column: Int, id: Int) {
       values.append(Value(stringify(value), column: column))
-      if let expr = comparisons[id] {
+      if equalityExpressions.contains(where: { $0.0 == id }) {
+        equalityExpressionValues.append(EqualityExpressionValue(id: id, value: value))
+      }
+      if identicalExpressions.contains(where: { $0.0 == id }) {
+        identicalExpressionValues.append(IdenticalExpressionValue(id: id, value: value))
+      }
+      if let expr = comparisonOperands[id] {
         comparisonValues.append(
           ComparisonValue(id: id, value: value, expression: expr)
         )
@@ -144,7 +166,75 @@ public enum PowerAssert {
       return message
     }
 
-    private func renderComparison() -> String {
+    private func renderEqualityExpressions() -> String {
+      var message = ""
+      if !equalityExpressions.isEmpty {
+        message += equalityExpressions.reversed()
+          .compactMap { (ex) -> String? in
+            guard let equalityExpressionValue = equalityExpressionValues.first(where: { $0.id == ex.0 }) else {
+              return nil
+            }
+            guard let condition = equalityExpressionValue.value as? Bool, !condition else {
+              return nil
+            }
+            guard let lhs = comparisonValues.first(where: { $0.id == ex.1 }), let rhs = comparisonValues.first(where: { $0.id == ex.2 }) else {
+              return nil
+            }
+
+            let diff: String
+            switch (lhs.value, rhs.value) {
+            case (let lvalue as String, let rvalue as String):
+              diff = "\(wordDiff(lvalue, rvalue))\n"
+            case (let lvalue, let rvalue):
+              diff = lineDiff(stringify(lvalue), stringify(rvalue))
+            }
+            return """
+              \(Console.apply([.color(.green)], to: "--- [\(type(of: lhs.value))] \(lhs.expression)"))
+              \(Console.apply([.color(.red)], to: "+++ [\(type(of: rhs.value))] \(rhs.expression)"))
+              \(diff)
+              """
+          }
+          .joined(separator: "\n")
+        if !message.isEmpty {
+          message = "\(Console.apply([.color(.green)], to: "- expected")) \(Console.apply([.color(.red)], to: "+ actual"))\n\n\(message)"
+        }
+      }
+      return message
+    }
+
+    private func renderIdenticalExpressions() -> String {
+      var message = ""
+      if !identicalExpressions.isEmpty {
+        message += identicalExpressions.reversed()
+          .compactMap { (ex) -> String? in
+            guard let identicalExpressionValue = identicalExpressionValues.first(where: { $0.id == ex.0 }) else {
+              return nil
+            }
+            guard let condition = identicalExpressionValue.value as? Bool, !condition else {
+              return nil
+            }
+            guard let lhs = comparisonValues.first(where: { $0.id == ex.1 }), let rhs = comparisonValues.first(where: { $0.id == ex.2 }) else {
+              return nil
+            }
+
+            let lvalue = "<\(ObjectIdentifier(lhs.value as AnyObject))>"
+            let rvalue = "<\(ObjectIdentifier(rhs.value as AnyObject))>"
+
+            return """
+              \(Console.apply([.color(.green)], to: "--- [\(type(of: lhs.value))] \(lhs.expression)"))
+              \(Console.apply([.color(.red)], to: "+++ [\(type(of: rhs.value))] \(rhs.expression)"))
+              \(lineDiff(lvalue, rvalue))
+              """
+          }
+          .joined(separator: "\n")
+        if !message.isEmpty {
+          message = "\(Console.apply([.color(.green)], to: "- expected")) \(Console.apply([.color(.red)], to: "+ actual"))\n\n\(message)"
+        }
+      }
+      return message
+    }
+
+    private func renderComparisonOperands() -> String {
       var message = ""
       if !comparisonValues.isEmpty {
         message += comparisonValues
@@ -156,7 +246,7 @@ public enum PowerAssert {
 
     private func renderSkipped() -> String {
       var message = ""
-      let skipped = comparisons
+      let skipped = comparisonOperands
         .filter { !comparisonValues.map { $0.id }.contains($0.key) }
         .sorted { $0.key < $1.key }
         .map { $0.value }
@@ -208,6 +298,16 @@ public enum PowerAssert {
     static func ==(lhs: Value, rhs: Value) -> Bool {
       return lhs.column == rhs.column
     }
+  }
+
+  private struct EqualityExpressionValue {
+    let id: Int
+    let value: Any
+  }
+
+  private struct IdenticalExpressionValue {
+    let id: Int
+    let value: Any
   }
 
   private struct ComparisonValue {

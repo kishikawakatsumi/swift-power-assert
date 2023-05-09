@@ -48,7 +48,9 @@ private struct CodeGenerator {
         file: \(file),
         line: \(line),
         verbose: \(verbose),
-        comparisons: \(rewriter.comparisons())
+        equalityExpressions: \(rewriter.equalityExpressions()),
+        identicalExpressions: \(rewriter.identicalExpressions()),
+        comparisonOperands: \(rewriter.comparisonOperands())
       ) {
         \(captures)
       }
