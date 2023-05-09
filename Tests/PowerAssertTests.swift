@@ -6,6 +6,10 @@ final class PowerAssertTests: XCTestCase {
     setenv("NO_COLOR", "1", 1)
   }
 
+  override func tearDown() {
+    unsetenv("NO_COLOR")
+  }
+
   func testBinaryExpression1() {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
@@ -383,7 +387,7 @@ final class PowerAssertTests: XCTestCase {
       )
     }
 
-    setenv(nil, "1", 1)
+    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
   }
 
   func testEqualityExpression2() {
@@ -420,10 +424,12 @@ final class PowerAssertTests: XCTestCase {
       )
     }
 
-    setenv(nil, "1", 1)
+    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
   }
 
   func testIdenticalExpression() {
+    setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+
     captureConsoleOutput {
       let number1 = IntegerRef(100)
       let number2 = IntegerRef(200)
@@ -455,6 +461,8 @@ final class PowerAssertTests: XCTestCase {
         """
       )
     }
+
+    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
   }
 
   func testMultilineExpression1() {
@@ -4187,13 +4195,13 @@ final class PowerAssertTests: XCTestCase {
   func testStringContainsEscapeSequences5() {
     captureConsoleOutput {
       let wiseWords = "\"Imagination is more important than knowledge\" - Einstein"
-      let dollarSign = "\u{24}"        // $,  Unicode scalar U+0024
-      let blackHeart = "\u{2665}"      // ♥,  Unicode scalar U+2665
-      let sparklingHeart = "\u{1F496}" // 💖, Unicode scalar U+1F496
+      let dollarSign = "\u{0024}"        // $,  Unicode scalar U+0024
+      let blackHeart = "\u{2665}"        // ♥,  Unicode scalar U+2665
+      let sparklingHeart = "\u{1f496}"   // 💖, Unicode scalar U+1F496
       #assert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein", verbose: true)
-      #assert(dollarSign == "\u{24}", verbose: true)
+      #assert(dollarSign == "\u{0024}", verbose: true)
       #assert(blackHeart == "\u{2665}", verbose: true)
-      #assert(sparklingHeart == "\u{1F496}", verbose: true)
+      #assert(sparklingHeart == "\u{1f496}", verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
@@ -4210,14 +4218,14 @@ final class PowerAssertTests: XCTestCase {
         [String] "\"Imagination is more important than knowledge\" - Einstein"
         => "\"Imagination is more important than knowledge\" - Einstein"
 
-        #assert(dollarSign == "\u{24}")
+        #assert(dollarSign == "\u{0024}")
                 │          │  │
                 "$"        │  "$"
                            true
 
         [String] dollarSign
         => "$"
-        [String] "\u{24}"
+        [String] "\u{0024}"
         => "$"
 
         #assert(blackHeart == "\u{2665}")
@@ -4231,7 +4239,7 @@ final class PowerAssertTests: XCTestCase {
         [String] "\u{2665}"
         => "♥"
 
-        #assert(sparklingHeart == "\u{1F496}")
+        #assert(sparklingHeart == "\u{1f496}")
                 │              │  │
                 │              │  "💖"
                 │              true
@@ -4239,7 +4247,7 @@ final class PowerAssertTests: XCTestCase {
 
         [String] sparklingHeart
         => "💖"
-        [String] "\u{1F496}"
+        [String] "\u{1f496}"
         => "💖"
 
 

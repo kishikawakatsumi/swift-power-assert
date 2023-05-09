@@ -27,13 +27,13 @@ class Console {
     for style in styles {
       switch style {
       case .bold:
-        result = "\u{001B}[1m\(result)\u{001B}[22m"
+        result = "\u{001b}[1m\(result)\u{001b}[22m"
       case .italic:
-        result = "\u{001B}[3m\(result)\u{001B}[23m"
+        result = "\u{001b}[3m\(result)\u{001b}[23m"
       case .underline:
-        result = "\u{001B}[4m\(result)\u{001B}[24m"
+        result = "\u{001b}[4m\(result)\u{001b}[24m"
       case .color(let color):
-        result = "\u{001B}[\(color.rawValue)m\(result)\u{001B}[0m"
+        result = "\u{001b}[\(color.rawValue)m\(result)\u{001b}[0m"
       }
     }
     return result
