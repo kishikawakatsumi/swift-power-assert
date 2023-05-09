@@ -88,7 +88,12 @@ public enum PowerAssert {
     public func render() {
       if !result || verbose {
         let diagram = renderDiagram()
-        let comparison = [renderEqualityExpressions(), renderIdenticalExpressions(), renderComparisonOperands(), renderSkipped()]
+        let comparison = [
+          renderEqualityExpressions(),
+          renderIdenticalExpressions(),
+          renderComparisonOperands(),
+          renderSkipped()
+        ]
           .filter { !$0.isEmpty }
           .joined(separator: "\n")
         let message: String

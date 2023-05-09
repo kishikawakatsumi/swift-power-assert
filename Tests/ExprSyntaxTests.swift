@@ -5,6 +5,10 @@ final class ExprSyntaxTests: XCTestCase {
   override func setUp() {
     setenv("NO_COLOR", "1", 1)
   }
+
+  override func tearDown() {
+    unsetenv("NO_COLOR")
+  }
   
   func testArrayExprSyntax() {
 
