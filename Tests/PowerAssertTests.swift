@@ -422,7 +422,7 @@ final class PowerAssertTests: XCTestCase {
         => "The quick brown fox"
         [String] input2
         => "The slow brown fox"
-        
+
 
         """
       )
@@ -944,6 +944,89 @@ final class PowerAssertTests: XCTestCase {
         => 116
         [Int] 0
         => 0
+
+
+        """#
+      )
+    }
+  }
+
+  func testThrowError() {
+    setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+    defer {
+      unsetenv("SWIFTPOWERASSERT_NOXCTEST")
+    }
+    
+    try captureConsoleOutput {
+      #assert(
+        try throwRecoverableError() == "recoverable error",
+        verbose: true
+      )
+      #assert(try throwUnrecoverableError(), verbose: true)
+      let input1 = "test"
+      let input2 = "test"
+      #assert(
+        try input1 == input2 && throwRecoverableError() == "recoverable error",
+        verbose: true
+      )
+      #assert(
+        try input1 == input2 && throwUnrecoverableError(),
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        #"""
+        #assert(try throwRecoverableError() == "recoverable error")
+                    │                       │
+                    │                       recoverableError("Recoverable error")
+                    recoverableError("Recoverable error")
+
+        [Error] recoverableError("Recoverable error")
+        [MyError] throwRecoverableError()
+        => recoverableError("Recoverable error")
+        [Not Evaluated] "recoverable error"
+
+        #assert(try throwUnrecoverableError())
+                    │
+                    unrecoverableError("Unrecoverable error")
+
+        [Error] unrecoverableError("Unrecoverable error")
+
+        #assert(try input1 == input2 && throwRecoverableError() == "recoverable error")
+                    │      │  │      │  │                       │
+                    "test" │  "test" │  │                       recoverableError("Recoverable error")
+                           true      │  recoverableError("Recoverable error")
+                                     recoverableError("Recoverable error")
+
+        [Error] recoverableError("Recoverable error")
+        [String] input1
+        => "test"
+        [String] input2
+        => "test"
+        [Bool] input1 == input2
+        => true
+        [MyError] throwRecoverableError()
+        => recoverableError("Recoverable error")
+        [MyError] throwRecoverableError() == "recoverable error"
+        => recoverableError("Recoverable error")
+        [Not Evaluated] "recoverable error"
+
+        #assert(try input1 == input2 && throwUnrecoverableError())
+                    │      │  │      │  │
+                    "test" │  "test" │  unrecoverableError("Unrecoverable error")
+                           true      unrecoverableError("Unrecoverable error")
+
+        [Error] unrecoverableError("Unrecoverable error")
+        [String] input1
+        => "test"
+        [String] input2
+        => "test"
+        [Bool] input1 == input2
+        => true
+        [MyError] throwUnrecoverableError()
+        => unrecoverableError("Unrecoverable error")
 
 
         """#
