@@ -289,6 +289,13 @@ final class PowerAssertTests: XCTestCase {
                 [1, 2, 3]                        false   │  [1, 2, 3]                            true
                                                          true
 
+        - expected + actual
+
+        --- [Bool] array.description.hasPrefix("]")
+        +++ [Bool] true
+        –false
+        +true
+
         [Bool] array.description.hasPrefix("]")
         => false
         [Bool] true
@@ -335,6 +342,114 @@ final class PowerAssertTests: XCTestCase {
         [Not Evaluated] array.description.hasPrefix("Hello")
         [Not Evaluated] false
         [Not Evaluated] array.description.hasPrefix("Hello") == false
+
+
+        """
+      )
+    }
+  }
+
+  func testEqualityExpression1() {
+    setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+
+    captureConsoleOutput {
+      let input1 = "apple"
+      let input2 = "orange"
+      #assert(input1 == input2)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(input1 == input2)
+                │      │  │
+                │      │  "orange"
+                │      false
+                "apple"
+
+        - expected + actual
+
+        --- [String] input1
+        +++ [String] input2
+        {+or+}a[-ppl-]{+ng+}e
+
+        [String] input1
+        => "apple"
+        [String] input2
+        => "orange"
+
+
+        """
+      )
+    }
+
+    setenv(nil, "1", 1)
+  }
+
+  func testEqualityExpression2() {
+    setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+
+    captureConsoleOutput {
+      let input1 = "The quick brown fox"
+      let input2 = "The slow brown fox"
+      #assert(input1 == input2)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(input1 == input2)
+                │      │  │
+                │      │  "The slow brown fox"
+                │      false
+                "The quick brown fox"
+
+        - expected + actual
+
+        --- [String] input1
+        +++ [String] input2
+        The [-quick-]{+slow+} brown fox
+
+        [String] input1
+        => "The quick brown fox"
+        [String] input2
+        => "The slow brown fox"
+        
+
+        """
+      )
+    }
+
+    setenv(nil, "1", 1)
+  }
+
+  func testIdenticalExpression() {
+    captureConsoleOutput {
+      let number1 = IntegerRef(100)
+      let number2 = IntegerRef(200)
+      #assert(number1 === number2)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output.replacing(#/<ObjectIdentifier\S+>/#, with: "<ObjectIdentifier(0x0000000000000000)>"),
+        """
+        #assert(number1 === number2)
+                │       │   │
+                │       │   Optional(PowerAssertTests.IntegerRef)
+                │       false
+                Optional(PowerAssertTests.IntegerRef)
+
+        - expected + actual
+
+        --- [Optional<AnyObject>] number1
+        +++ [Optional<AnyObject>] number2
+        –<ObjectIdentifier(0x0000000000000000)>
+        +<ObjectIdentifier(0x0000000000000000)>
+
+        [Optional<AnyObject>] number1
+        => Optional(PowerAssertTests.IntegerRef)
+        [Optional<AnyObject>] number2
+        => Optional(PowerAssertTests.IntegerRef)
 
 
         """
@@ -819,7 +934,7 @@ final class PowerAssertTests: XCTestCase {
         [Int] 0
         => 0
 
-        
+
         """#
       )
     }
@@ -916,6 +1031,13 @@ final class PowerAssertTests: XCTestCase {
                 ││"hello"                 "hello"
                 │Optional(1234)
                 "hello"
+
+        - expected + actual
+
+        --- [Optional<Int>] number
+        +++ [Optional<Int>] nil
+        –Optional(1234)
+        +nil
 
         [Optional<Int>] number
         => Optional(1234)
@@ -1019,7 +1141,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  9     │  1 │  345     │  2 │  │         │  "function"
+                │     │  "*.swift" │  11    │  1 │  345     │  2 │  │         │  "function"
                 │     true         true     true true       true │  │         true
                 │                                                │  "testMagicLiteralExpression1()"
                 │                                                true
@@ -1032,7 +1154,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift"
         => true
         [Int] #line
-        => 9
+        => 11
         [Int] 1
         => 1
         [Bool] #line != 1
@@ -1061,7 +1183,7 @@ final class PowerAssertTests: XCTestCase {
         """
         #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
                 │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  9     │  1 │  345     │  2 │  │         │  "function"
+                │     │  "*.swift" │  11    │  1 │  345     │  2 │  │         │  "function"
                 │     true         true     true true       true │  │         true
                 │                                                │  "testMagicLiteralExpression1()"
                 │                                                true
@@ -1074,7 +1196,7 @@ final class PowerAssertTests: XCTestCase {
         [Bool] #file != "*.swift"
         => true
         [Int] #line
-        => 9
+        => 11
         [Int] 1
         => 1
         [Bool] #line != 1
@@ -2972,7 +3094,7 @@ final class PowerAssertTests: XCTestCase {
         [Optional<Bool>] nil
         => nil
 
-        
+
         """
       )
     }
