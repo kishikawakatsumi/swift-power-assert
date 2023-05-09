@@ -106,15 +106,15 @@ public enum PowerAssert {
         if !result {
 #if canImport(XCTest)
           if ProcessInfo.processInfo.environment["SWIFTPOWERASSERT_NOXCTEST"] != "1" {
-            XCTFail("\(originalMessage)\n\(Console.apply([.color(.red)], to: message))", file: filePath, line: lineNumber)
+            XCTFail("\(originalMessage)\n\(message)", file: filePath, line: lineNumber)
           } else {
-            Console.output(message, .color(.red))
+            print(message)
           }
 #else
-          Console.output(message, .color(.red))
+          print(message)
 #endif
         } else if verbose {
-          Console.output(message, .color(.red))
+          print(message)
         }
       }
     }
@@ -140,12 +140,11 @@ public enum PowerAssert {
           message += " "
           current += 1
         }
-        message += string
+        message += Console.apply([.color(.red)], to: string)
         current += stringWidth(string)
       }
 
-      var message = ""
-      message += "\(assertion)\n"
+      var message = "\(Console.apply([.color(.red)], to: assertion))\n"
       values.sort()
       var current = 0
       for value in values {
@@ -243,7 +242,7 @@ public enum PowerAssert {
       var message = ""
       if !comparisonValues.isEmpty {
         message += comparisonValues
-          .map { "[\(type(of: $0.value))] \($0.expression)\n=> \(stringify($0.value))" }
+          .map { Console.apply([.color(.red)], to: "[\(type(of: $0.value))] \($0.expression)\n=> \(stringify($0.value))") }
           .joined(separator: "\n")
       }
       return message
