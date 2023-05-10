@@ -29,3 +29,9 @@ jobs:
             -instr-profile=$(swift build --show-bin-path)/codecov/default.profdata \
             -ignore-filename-regex=".build|Tests" \
             -use-color
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v4.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        coverageLocations: |
+          ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
