@@ -6,36 +6,52 @@
 
 ![test workflow](https://github.com/kishikawakatsumi/swift-power-assert/actions/workflows/test.yml/badge.svg)
 [![Build Status](https://app.bitrise.io/app/4018c2f1-9f94-4913-8a4c-deb1a8e1410a/status.svg?token=weITzhYlOhv2XfaNU41GkQ&branch=main)](https://app.bitrise.io/app/4018c2f1-9f94-4913-8a4c-deb1a8e1410a)
+[![codecov](https://codecov.io/gh/kishikawakatsumi/swift-power-assert/branch/main/graph/badge.svg?token=rPTZiZLsmo)](https://codecov.io/gh/kishikawakatsumi/swift-power-assert)
 
 Power asserts (also known as diagrammed assertions) augment your assertion failures with information about the values produced during evaluation of a condition, and present it in an easily digestible form. Power asserts are a popular feature of [Spock](https://github.com/spockframework/spock) (and later the entire [Groovy](https://github.com/apache/groovy) language independent of Spock), [ScalaTest](http://www.scalatest.org/) and [Expecty](https://github.com/pniederw/expecty).
 
 Power asserts provide descriptive assertion messages for your tests, like the following examples:
 
 ```
-#assert(max(d, e) == f)
-        │   │  │  │  │
-        7   4  7  │  12
-                  false
+#assert(numbers[2] == 4)
+        │       ││ │  │
+        │       │3 │  4
+        │       2  false
+        [1, 2, 3, 4, 5]
 
-[Int] max(d, e)
-=> 7
-[Int] f
-=> 12
+- expected + actual
 
-#assert(xs.contains(4))
-        │  │        │
-        │  false    4
-        [1, 2, 3]
+--- [Int] numbers[2]
++++ [Int] 4
+–3
++4
 
-#assert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
-        │       │         │    │  │         │         │
-        "hello" true      "h"  │  "goodbye" false     "y"
-                               false
+[Int] numbers[2]
+=> 3
+[Int] 4
+=> 4
 
-[Bool] "hello".hasPrefix("h")
-=> true
-[Bool] "goodbye".hasSuffix("y")
-=> false
+#assert(numbers.contains(6))
+        │       │        │
+        │       false    6
+        [1, 2, 3, 4, 5]
+
+#assert(string1 == string2)
+        │       │  │
+        │       │  "Hello, Swift!"
+        │       false
+        "Hello, world!"
+
+- expected + actual
+
+--- [String] string1
++++ [String] string2
+Hello, {+S+}w[-orld-]{+ift+}!
+
+[String] string1
+=> "Hello, world!"
+[String] string2
+=> "Hello, Swift!"
 ```
 
 ## Online Playground
