@@ -44,7 +44,9 @@ func routes(_ app: Application) throws {
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
           ["/usr/bin/env", "swift", "build", "--build-tests"] + commonOptions,
-          workingDirectory: $0,
+          workingDirectory: $0
+        )
+        return try await command.run(
           onOutput: { (output) in
             outputNotifier.send(output, session: session, type: .build)
           },
@@ -52,7 +54,6 @@ func routes(_ app: Application) throws {
             errorNotifier.send(output, session: session, type: .build)
           }
         )
-        return try await command.run()
       }
 
       notify(session: session, type: .build, message: outputNotifier.storage)
@@ -83,7 +84,9 @@ func routes(_ app: Application) throws {
       let status = try await runInTemporaryDirectory(code: code) {
         let command = Command(
           ["/usr/bin/env", "swift", "test"] + commonOptions,
-          workingDirectory: $0,
+          workingDirectory: $0
+        )
+        return try await command.run(
           onOutput: { (output) in
             outputNotifier.send(output, session: session, type: .test)
           },
@@ -91,13 +94,16 @@ func routes(_ app: Application) throws {
             errorNotifier.send(output, session: session, type: .build)
           }
         )
-        return try await command.run()
       }
 
       notify(session: session, type: .test, message: outputNotifier.storage)
       notify(session: session, type: .build, message: errorNotifier.storage)
 
-      return MacroExpansionResponse(stdout: status.stdout, stderr: status.stderr)
+      if !status.stdout.isEmpty && !status.stderr.isEmpty {
+        return MacroExpansionResponse(stdout: status.stdout, stderr: "")
+      } else {
+        return MacroExpansionResponse(stdout: status.stdout, stderr: status.stderr)
+      }
     } catch {
       throw Abort(.internalServerError)
     }
@@ -208,7 +214,7 @@ private class BufferedNotifier {
     var message = storage
     for character in output {
       if character == "\n" {
-        notify(session: session, type: type, message: "\(message)\n")
+        notify(session: session, type: type, message: message)
         message = ""
       } else {
         message.append(character)
