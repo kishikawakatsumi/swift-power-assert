@@ -68,7 +68,7 @@ private struct Parameters {
   init(macro: FreestandingMacroExpansionSyntax, context: MacroExpansionContext) {
     let sourceLoccation: AbstractSourceLocation? = context.location(of: macro)
 
-    let file = StringLiteralExprSyntax(content: "\(sourceLoccation!.file)")
+    let file = "\(sourceLoccation!.file)"
     self.file = "\(file)"
     self.line = "\(sourceLoccation!.line)"
 
@@ -79,8 +79,7 @@ private struct Parameters {
       }
 
       if argument.label?.text == "file" {
-        let file = "\(argument.expression)"
-        self.file = "\(StringLiteralExprSyntax(content: file))"
+        self.file = "\(argument.expression)"
       }
       if argument.label?.text == "line" {
         self.line = "\(argument.expression)"

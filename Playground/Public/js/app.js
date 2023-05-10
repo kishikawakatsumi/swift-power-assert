@@ -164,6 +164,18 @@ final class MyLibraryTests: XCTestCase {
       .then((response) => {
         this.terminal.hideSpinner(cancelToken);
 
+        const now = new Date();
+        const timestamp = now.toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        });
+        const padding = this.terminal.cols - timestamp.length;
+        this.terminal.writeln(
+          `${" ".repeat(padding)}\x1b[2m${timestamp}\x1b[0m`
+        );
+
         if (!response.ok) {
           this.terminal.writeln(
             `\x1b[37m❌  ${response.status} ${response.statusText}\x1b[0m`
@@ -178,7 +190,7 @@ final class MyLibraryTests: XCTestCase {
           this.terminal.write(`${stripDirectoryPath(response.stderr)}`);
         }
         if (response.stdout) {
-          this.terminal.write(`${response.stdout}\x1b[0m`);
+          this.terminal.write(`${stripDirectoryPath(response.stdout)}\x1b[0m`);
         }
       })
       .catch((error) => {
@@ -255,10 +267,7 @@ function parseErrorMessage(message) {
 }
 
 function stripDirectoryPath(message) {
-  return message.replace(
-    /(.*\/)(test.swift:\d+:\d+:)/g,
-    (match, p1, p2, p3, p4) => {
-      return `/${p2}`;
-    }
-  );
+  return message.replace(/(.*\/)([^/]+:)/g, (match, p1, p2, p3, p4) => {
+    return `/${p2}`;
+  });
 }
