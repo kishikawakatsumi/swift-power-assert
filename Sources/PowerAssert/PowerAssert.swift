@@ -73,6 +73,7 @@ public enum PowerAssert {
       }
     }
 
+    @_disfavoredOverload
     public func captureSync<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
       do {
         let val = try expr()
@@ -84,6 +85,7 @@ public enum PowerAssert {
       }
     }
 
+    @_disfavoredOverload
     public func captureAsync<T>(_ expr: @autoclosure () async throws -> T, column: Int, id: Int) async rethrows -> T {
       do {
         let val = try await expr()
@@ -390,6 +392,7 @@ extension PowerAssert.Assertion {
     }
   }
 
+  @_disfavoredOverload
   public func captureSync<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
     do {
       let val = try expr()
@@ -458,6 +461,7 @@ extension PowerAssert.Assertion {
     }
   }
 
+  @_disfavoredOverload
   public func captureAsync<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
     do {
       let val = try await expr()

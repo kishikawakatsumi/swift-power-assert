@@ -5110,4 +5110,51 @@ final class PowerAssertTests: XCTestCase {
       )
     }
   }
+
+  func testTypecheckTimeoutDueToOvealoading() {
+    setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+    defer {
+      unsetenv("SWIFTPOWERASSERT_NOXCTEST")
+    }
+
+    captureConsoleOutput {
+      let a = 2
+      let b = 3
+      let c = 4
+      #assert((a + b) * c == 15)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert((a + b) * c == 15)
+                ││ │ │  │ │ │  │
+                │2 5 3  │ 4 │  15
+                5       20  false
+
+        - expected + actual
+
+        --- [Int] (a + b) * c
+        +++ [Int] 15
+        –20
+        +15
+
+        [Int] a
+        => 2
+        [Int] b
+        => 3
+        [Int] (a + b)
+        => 5
+        [Int] c
+        => 4
+        [Int] (a + b) * c
+        => 20
+        [Int] 15
+        => 15
+
+
+        """
+      )
+    }
+  }
 }
