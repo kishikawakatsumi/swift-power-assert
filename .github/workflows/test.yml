@@ -34,5 +34,5 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-        coverageLocations: |
-          ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
+          coverageLocations: |
+            ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
