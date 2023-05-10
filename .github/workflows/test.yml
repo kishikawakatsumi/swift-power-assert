@@ -24,11 +24,24 @@ jobs:
       - name: Run tests
         run: |
           swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions --enable-code-coverage
+      - name: Gather code coverage
+        run: |
+          BUILD_PATH=$(swift build --show-bin-path)
           xcrun llvm-cov report \
-            $(swift build --show-bin-path)/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \
-            -instr-profile=$(swift build --show-bin-path)/codecov/default.profdata \
-            -ignore-filename-regex=".build|Tests" \
-            -use-color
+            $BUILD_PATH/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \
+            -instr-profile=$BUILD_PATH/codecov/default.profdata \
+            -ignore-filename-regex=".build|Tests" -use-color
+          xcrun llvm-cov export -format="lcov" \
+            $BUILD_PATH/SwiftPowerAssertPackageTests.xctest/Contents/MacOS/SwiftPowerAssertPackageTests \
+            -instr-profile=$BUILD_PATH/codecov/default.profdata \
+            -ignore-filename-regex=".build|Tests" > coverage_report.lcov
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: fail
+          files: ./coverage_report.lcov
+          verbose: true
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v4.0.0
         env:
