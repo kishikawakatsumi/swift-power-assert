@@ -16,20 +16,15 @@ import XCTest
 
 final class MyLibraryTests: XCTestCase {
   func testExample() {
-    let a = 10
-    let b = 9
-    #assert(a * b == 91)
+    let numbers = [1, 2, 3, 4, 5]
 
-    let xs = [1, 2, 3]
-    #assert(xs.contains(4))
+    #assert(numbers[2] == 4)
+    #assert(numbers.contains(6))
 
-    #assert("hello".hasPrefix("h") && "goodbye".hasSuffix("y"))
+    let string1 = "Hello, world!"
+    let string2 = "Hello, Swift!"
 
-    let d = 4
-    let e = 7
-    let f = 12
-    #assert(max(d, e) == f)
-    #assert(d + e > f)
+    #assert(string1 == string2)
   }
 }
 `),
