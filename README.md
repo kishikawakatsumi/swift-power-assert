@@ -56,7 +56,7 @@ Hello, {+S+}w[-orld-]{+ift+}!
 
 ## Online Playground
 
-:sparkles: [**Experience the library in action with our online playground!**](https://power-assert.swiftfiddle.com/) :sparkles:
+<a target="_blank" href="https://power-assert.swiftfiddle.com/">:sparkles: **Experience the library in action with our online playground!** :sparkles: Click here to access the interactive demo.</a>
 
 ## Why Power Assert?
 
