@@ -81,15 +81,26 @@ final class MyLibraryTests: XCTestCase {
         return endpoint;
       })()
     );
+    let lastLine = "";
     logStream.onresponse = (response) => {
       switch (response.type) {
         case "build":
           this.terminal.eraseLine();
-          this.terminal.write(`\x1b[2m${response.message}\x1b[0m`);
+          if (lastLine.length) {
+            this.terminal.eraseLines(1);
+          }
+          const lines = response.message.split("\n").filter(Boolean);
+          if (lines.length) {
+            lastLine = `${lines[lines.length - 1]}\n`;
+            lastLine = stripDirectoryPath(lastLine);
+            if (lastLine.length) {
+              this.terminal.write(lastLine);
+            }
+          } else {
+            lastLine = "";
+          }
           break;
         case "test":
-          this.terminal.eraseLine();
-          this.terminal.write(`${response.message}`);
           break;
         default:
           break;
@@ -162,8 +173,12 @@ final class MyLibraryTests: XCTestCase {
       })
       .then((response) => {
         if (response.stderr) {
-          const markers = this.parseErrorMessage(response.stderr);
+          const markers = parseErrorMessage(response.stderr);
           this.editor.updateMarkers(markers);
+          this.terminal.write(`${stripDirectoryPath(response.stderr)}`);
+        }
+        if (response.stdout) {
+          this.terminal.write(`${response.stdout}\x1b[0m`);
         }
       })
       .catch((error) => {
@@ -179,62 +194,71 @@ final class MyLibraryTests: XCTestCase {
         this.editor.focus();
       });
   }
+}
 
-  parseErrorMessage(message) {
-    const matches = message
-      .replace(
-        // Remove all ANSI colors/styles from strings
-        // https://stackoverflow.com/a/29497680/1733883
-        // https://github.com/chalk/ansi-regex/blob/main/index.js#L3
-        /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
-        ""
-      )
-      .matchAll(
-        /\/test\.swift:(\d+):(\d+): (error|warning|note): ([\s\S]*?)\n*(?=(?:\/|$))/gi
-      );
-    return [...matches].map((match) => {
-      const row = +match[1];
-      let column = +match[2];
-      const text = match[4];
-      const type = match[3];
-      let severity;
-      switch (type) {
-        case "warning":
-          severity = 4; // monaco.MarkerSeverity.Warning;
-          break;
-        case "error":
-          severity = 8; // monaco.MarkerSeverity.Error;
-          break;
-        default: // monaco.MarkerSeverity.Info;
-          severity = 2;
-          break;
-      }
+function parseErrorMessage(message) {
+  const matches = message
+    .replace(
+      // Remove all ANSI colors/styles from strings
+      // https://stackoverflow.com/a/29497680/1733883
+      // https://github.com/chalk/ansi-regex/blob/main/index.js#L3
+      /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+      ""
+    )
+    .matchAll(
+      /\/test\.swift:(\d+):(\d+): (error|warning|note): ([\s\S]*?)\n*(?=(?:\/|$))/gi
+    );
+  return [...matches].map((match) => {
+    const row = +match[1];
+    let column = +match[2];
+    const text = match[4];
+    const type = match[3];
+    let severity;
+    switch (type) {
+      case "warning":
+        severity = 4; // monaco.MarkerSeverity.Warning;
+        break;
+      case "error":
+        severity = 8; // monaco.MarkerSeverity.Error;
+        break;
+      default: // monaco.MarkerSeverity.Info;
+        severity = 2;
+        break;
+    }
 
-      let length;
-      if (text.match(/~+\^~+/)) {
-        // ~~~^~~~
-        length = text.match(/~+\^~+/)[0].length;
-        column -= text.match(/~+\^/)[0].length - 1;
-      } else if (text.match(/\^~+/)) {
-        // ^~~~
-        length = text.match(/\^~+/)[0].length;
-      } else if (text.match(/~+\^/)) {
-        // ~~~^
-        length = text.match(/~+\^/)[0].length;
-        column -= length - 1;
-      } else if (text.match(/\^/)) {
-        // ^
-        length = 1;
-      }
+    let length;
+    if (text.match(/~+\^~+/)) {
+      // ~~~^~~~
+      length = text.match(/~+\^~+/)[0].length;
+      column -= text.match(/~+\^/)[0].length - 1;
+    } else if (text.match(/\^~+/)) {
+      // ^~~~
+      length = text.match(/\^~+/)[0].length;
+    } else if (text.match(/~+\^/)) {
+      // ~~~^
+      length = text.match(/~+\^/)[0].length;
+      column -= length - 1;
+    } else if (text.match(/\^/)) {
+      // ^
+      length = 1;
+    }
 
-      return {
-        startLineNumber: row,
-        startColumn: column,
-        endLineNumber: row,
-        endColumn: column + length,
-        message: text,
-        severity: severity,
-      };
-    });
-  }
+    return {
+      startLineNumber: row,
+      startColumn: column,
+      endLineNumber: row,
+      endColumn: column + length,
+      message: text,
+      severity: severity,
+    };
+  });
+}
+
+function stripDirectoryPath(message) {
+  return message.replace(
+    /(.*\/)(test.swift:\d+:\d+:)/g,
+    (match, p1, p2, p3, p4) => {
+      return `/${p2}`;
+    }
+  );
 }
