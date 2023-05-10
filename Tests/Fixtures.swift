@@ -180,3 +180,16 @@ class IntegerRef: Equatable {
 func == (lhs: IntegerRef, rhs: IntegerRef) -> Bool {
   return lhs.value == rhs.value
 }
+
+enum MyError: Error {
+  case recoverableError(String)
+  case unrecoverableError(String)
+}
+
+func throwRecoverableError() throws -> String {
+  throw MyError.recoverableError("Recoverable error")
+}
+
+func throwUnrecoverableError() throws -> Bool {
+  throw MyError.unrecoverableError("Unrecoverable error")
+}

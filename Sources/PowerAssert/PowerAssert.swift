@@ -14,12 +14,12 @@ public enum PowerAssert {
     private let identicalExpressions: [(Int, Int, Int)]
     private let comparisonOperands: [Int: String]
 
-    private var result: Bool = true
+    private var result: Bool = false
     private var values = [Value]()
     private var equalityExpressionValues = [EqualityExpressionValue]()
     private var identicalExpressionValues = [IdenticalExpressionValue]()
     private var comparisonValues = [ComparisonValue]()
-    private var errors = [Swift.Error]()
+    private var errors = [Error]()
 
     public init(
       _ assertion: String,
@@ -74,25 +74,36 @@ public enum PowerAssert {
     }
 
     public func captureSync<T>(_ expr: @autoclosure () throws -> T, column: Int, id: Int) rethrows -> T {
-      let val = try expr()
-      store(value: val, column: column, id: id)
-      return val
+      do {
+        let val = try expr()
+        store(value: val, column: column, id: id)
+        return val
+      } catch {
+        store(value: error, column: column, id: id)
+        throw error
+      }
     }
 
     public func captureAsync<T>(_ expr: @autoclosure () async throws -> T, column: Int, id: Int) async rethrows -> T {
-      let val = try await expr()
-      store(value: val, column: column, id: id)
-      return val
+      do {
+        let val = try await expr()
+        store(value: val, column: column, id: id)
+        return val
+      } catch {
+        store(value: error, column: column, id: id)
+        throw error
+      }
     }
 
     public func render() {
       if !result || verbose {
         let diagram = renderDiagram()
         let comparison = [
+          renderErrors(),
           renderEqualityExpressions(),
           renderIdenticalExpressions(),
           renderComparisonOperands(),
-          renderSkipped()
+          renderSkipped(),
         ]
           .filter { !$0.isEmpty }
           .joined(separator: "\n")
@@ -168,6 +179,13 @@ public enum PowerAssert {
       }
 
       return message
+    }
+
+    private func renderErrors() -> String {
+      errors.map {
+        Console.apply([.color(.red)], to: "[Error] \($0)")
+      }
+      .joined(separator: "\n")
     }
 
     private func renderEqualityExpressions() -> String {
@@ -255,7 +273,9 @@ public enum PowerAssert {
         .sorted { $0.key < $1.key }
         .map { $0.value }
       if !skipped.isEmpty {
-        message += skipped.map { "[Not Evaluated] \($0)" }.joined(separator: "\n")
+        message += skipped
+          .map { Console.apply([.color(.red)], to: "[Not Evaluated] \($0)") }
+          .joined(separator: "\n")
       }
       return message
     }
@@ -273,14 +293,18 @@ public enum PowerAssert {
 
 #if os(macOS)
     switch value {
-    case .some(let v) where v is String || v is Selector: return "\"\(escapeString("\(v)"))\""
-    case .some(let v): return "\(v)".replacingOccurrences(of: "\n", with: " ")
+    case .some(let v) where v is String || v is Selector:
+      return "\"\(escapeString("\(v)"))\""
+    case .some(let v):
+      return "\(v)".replacingOccurrences(of: "\n", with: " ")
     case .none: return "nil"
     }
 #else
     switch value {
-    case .some(let v) where v is String: return "\"\(escapeString("\(v)"))\""
-    case .some(let v): return "\(v)".replacingOccurrences(of: "\n", with: " ")
+    case .some(let v) where v is String:
+      return "\"\(escapeString("\(v)"))\""
+    case .some(let v):
+      return "\(v)".replacingOccurrences(of: "\n", with: " ")
     case .none: return "nil"
     }
 #endif
@@ -323,76 +347,136 @@ public enum PowerAssert {
 
 extension PowerAssert.Assertion {
   public func captureSync(_ expr: @autoclosure () throws -> Int, column: Int, id: Int) rethrows -> Int {
-    let val = try expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureSync(_ expr: @autoclosure () throws -> Float, column: Int, id: Int) rethrows -> Float {
-    let val = try expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureSync(_ expr: @autoclosure () throws -> Double, column: Int, id: Int) rethrows -> Double {
-    let val = try expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureSync(_ expr: @autoclosure () throws -> String, column: Int, id: Int) rethrows -> String {
-    let val = try expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureSync<T>(_ expr: @autoclosure () throws -> T?, column: Int, id: Int) rethrows -> T? {
-    let val = try expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureSync<T>(_ expr: @autoclosure () throws -> [T], column: Int, id: Int) rethrows -> [T] {
-    let val = try expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 }
 
 extension PowerAssert.Assertion {
   public func captureAsync(_ expr: @autoclosure () async throws -> Int, column: Int, id: Int) async rethrows -> Int {
-    let val = try await expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureAsync(_ expr: @autoclosure () async throws -> Float, column: Int, id: Int) async rethrows -> Float {
-    let val = try await expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureAsync(_ expr: @autoclosure () async throws -> Double, column: Int, id: Int) async rethrows -> Double {
-    let val = try await expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureAsync(_ expr: @autoclosure () async throws -> String, column: Int, id: Int) async rethrows -> String {
-    let val = try await expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureAsync<T>(_ expr: @autoclosure () async throws -> T?, column: Int, id: Int) async rethrows -> T? {
-    let val = try await expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 
   public func captureAsync<T>(_ expr: @autoclosure () async throws -> [T], column: Int, id: Int) async rethrows -> [T] {
-    let val = try await expr()
-    store(value: val, column: column, id: id)
-    return val
+    do {
+      let val = try await expr()
+      store(value: val, column: column, id: id)
+      return val
+    } catch {
+      store(value: error, column: column, id: id)
+      throw error
+    }
   }
 }
