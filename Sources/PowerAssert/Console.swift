@@ -16,10 +16,6 @@ class Console {
     case white = "37"
   }
 
-  static func output(_ text: String = "", _ styles: Style...) {
-    print(apply(styles, to: text))
-  }
-
   static func apply(_ styles: [Style], to text: String) -> String {
     guard isTTY() else { return text }
 
