@@ -36,3 +36,5 @@ jobs:
         with:
           coverageLocations: |
             ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
+      - name: Lint code using SwiftLint
+        run: swiftlint lint --reporter github-actions-logging
