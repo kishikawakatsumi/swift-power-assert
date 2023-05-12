@@ -3,6 +3,7 @@ import XCTest
 
 class ConsoleTests: XCTestCase {
   override func setUp() {
+    unsetenv("NO_COLOR")
     setenv("TERM", "xterm-256color", 1)
   }
 
