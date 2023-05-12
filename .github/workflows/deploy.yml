@@ -20,7 +20,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: kishikawakatsumi/archive.swiftdevelopers.jp:latest
+        run: |
+          set -ex
+
+          cd ./Playground
+
+          IMAGE_TAG=kishikawakatsumi/power-assert.swiftfiddle.com:latest
+
+          tar -czh . | docker build - --build-arg FONTAWESOME_TOKEN=${{ env.FONTAWESOME_TOKEN }} --rm --tag ${IMAGE_TAG}
+          docker push ${IMAGE_TAG}
