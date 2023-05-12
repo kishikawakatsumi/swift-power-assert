@@ -9,7 +9,7 @@ final class ExprSyntaxTests: XCTestCase {
   override func tearDown() {
     unsetenv("NO_COLOR")
   }
-  
+
   func testArrayExprSyntax() {
 
   }
@@ -48,7 +48,7 @@ final class ExprSyntaxTests: XCTestCase {
         => Optional(0)
         [Int] 0
         => 0
-        
+
 
         """
       )
