@@ -162,7 +162,7 @@ public enum PowerAssert {
         current += stringWidth(string)
       }
 
-      var message = "\(Console.apply([.bold], to: assertion))\n"
+      var message = "\(assertion.bold)\n"
       values.sort()
       var current = 0
       for value in values {
@@ -185,7 +185,7 @@ public enum PowerAssert {
               &message,
               current: &current,
               column: values[index].column,
-              string: Console.apply([style], to: values[index].value)
+              string: values[index].value.decorated(with: style)
             )
             values.remove(at: index)
           } else {
@@ -200,10 +200,9 @@ public enum PowerAssert {
     }
 
     private func renderErrors() -> String {
-      errors.map {
-        Console.apply([.color(.red)], to: "[Error] \($0)")
-      }
-      .joined(separator: "\n")
+      errors
+        .map { "[Error] \($0)".red }
+        .joined(separator: "\n")
     }
 
     private func renderEqualityExpressions() -> String {
@@ -229,14 +228,14 @@ public enum PowerAssert {
               diff = lineDiff(stringify(lvalue), stringify(rvalue))
             }
             return """
-              \(Console.apply([.color(.green)], to: "--- [\(type(of: lhs.value))] \(lhs.expression)"))
-              \(Console.apply([.color(.red)], to: "+++ [\(type(of: rhs.value))] \(rhs.expression)"))
+              \("--- [\(type(of: lhs.value))] \(lhs.expression.green)")
+              \("+++ [\(type(of: rhs.value))] \(rhs.expression.red)")
               \(diff)
               """
           }
           .joined(separator: "\n")
         if !message.isEmpty {
-          message = "\(Console.apply([.color(.green)], to: "- expected")) \(Console.apply([.color(.red)], to: "+ actual"))\n\n\(message)"
+          message = "\("- expected".green) \("+ actual".red)\n\n\(message)"
         }
       }
       return message
@@ -261,14 +260,14 @@ public enum PowerAssert {
             let rvalue = "<\(ObjectIdentifier(rhs.value as AnyObject))>"
 
             return """
-              \(Console.apply([.color(.green)], to: "--- [\(type(of: lhs.value))] \(lhs.expression)"))
-              \(Console.apply([.color(.red)], to: "+++ [\(type(of: rhs.value))] \(rhs.expression)"))
+              \("--- [\(type(of: lhs.value))] \(lhs.expression)".green)
+              \("+++ [\(type(of: rhs.value))] \(rhs.expression)".red)
               \(lineDiff(lvalue, rvalue))
               """
           }
           .joined(separator: "\n")
         if !message.isEmpty {
-          message = "\(Console.apply([.color(.green)], to: "- expected")) \(Console.apply([.color(.red)], to: "+ actual"))\n\n\(message)"
+          message = "\("- expected".green) \("+ actual".red)\n\n\(message)"
         }
       }
       return message
@@ -279,7 +278,7 @@ public enum PowerAssert {
       if !comparisonValues.isEmpty {
         message += comparisonValues
           .map {
-            "\(Console.apply([.color($0.operand == .left ? .green : .red)], to: "[\(type(of: $0.value))]")) \($0.expression)\n=> \(Console.apply([.color($0.operand == .left ? .green : .red)], to: stringify($0.value)))"
+            "\(Console.decorate(.color($0.operand == .left ? .green : .red), on: "[\(type(of: $0.value))]")) \($0.expression)\n=> \(Console.decorate(.color($0.operand == .left ? .green : .red), on: stringify($0.value)))"
           }
           .joined(separator: "\n")
       }
@@ -294,7 +293,7 @@ public enum PowerAssert {
         .map { $0.value }
       if !skipped.isEmpty {
         message += skipped
-          .map { Console.apply([.color(.red)], to: "[Not Evaluated] \($0.0)") }
+          .map { "[Not Evaluated] \($0.0)".red }
           .joined(separator: "\n")
       }
       return message

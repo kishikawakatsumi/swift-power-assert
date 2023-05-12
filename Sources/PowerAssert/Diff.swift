@@ -124,9 +124,9 @@ private enum WordDiff: CustomStringConvertible {
   var description: String {
     switch self {
     case .insertion(let insertion):
-      return Console.apply([.color(.red)], to: "{+\(insertion)+}")
+      return "{+\(insertion)+}".red
     case .removal(let removal):
-      return Console.apply([.color(.green)], to: "[-\(removal)-]")
+      return "[-\(removal)-]".green
     case .unchanged(let unchanged):
       return unchanged
     }
