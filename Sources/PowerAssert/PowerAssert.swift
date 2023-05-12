@@ -12,7 +12,7 @@ public enum PowerAssert {
     private let verbose: Bool
     private let equalityExpressions: [(Int, Int, Int)]
     private let identicalExpressions: [(Int, Int, Int)]
-    private let comparisonOperands: [Int: String]
+    private let comparisonOperands: [Int: (String, Int)]
 
     private var result: Bool = false
     private var values = [Value]()
@@ -29,7 +29,7 @@ public enum PowerAssert {
       verbose: Bool = false,
       equalityExpressions: [(Int, Int, Int)],
       identicalExpressions: [(Int, Int, Int)],
-      comparisonOperands: [Int: String],
+      comparisonOperands: [Int: (String, Int)],
       evaluateSync: (Assertion) throws -> Bool = { _ in true }
     ) {
       self.assertion = assertion
@@ -55,7 +55,7 @@ public enum PowerAssert {
       verbose: Bool = false,
       equalityExpressions: [(Int, Int, Int)],
       identicalExpressions: [(Int, Int, Int)],
-      comparisonOperands: [Int: String],
+      comparisonOperands: [Int: (String, Int)],
       evaluateAsync: (Assertion) async throws -> Bool = { _ in true }
     ) async {
       self.assertion = assertion
@@ -133,16 +133,21 @@ public enum PowerAssert {
     }
 
     private func store<T>(value: T, column: Int, id: Int) {
-      values.append(Value(stringify(value), column: column))
+      values.append(Value(stringify(value), column: column, id: id))
       if equalityExpressions.contains(where: { $0.0 == id }) {
         equalityExpressionValues.append(EqualityExpressionValue(id: id, value: value))
       }
       if identicalExpressions.contains(where: { $0.0 == id }) {
         identicalExpressionValues.append(IdenticalExpressionValue(id: id, value: value))
       }
-      if let expr = comparisonOperands[id] {
+      if let (expr, operand) = comparisonOperands[id] {
         comparisonValues.append(
-          ComparisonValue(id: id, value: value, expression: expr)
+          ComparisonValue(
+            id: id,
+            value: value,
+            expression: expr,
+            operand: operand == 0 ? .left : .right
+          )
         )
       }
     }
@@ -153,11 +158,11 @@ public enum PowerAssert {
           message += " "
           current += 1
         }
-        message += Console.apply([.color(.red)], to: string)
+        message += string
         current += stringWidth(string)
       }
 
-      var message = "\(Console.apply([.color(.red)], to: assertion))\n"
+      var message = "\(Console.apply([.bold], to: assertion))\n"
       values.sort()
       var current = 0
       for value in values {
@@ -170,7 +175,18 @@ public enum PowerAssert {
         var index = 0
         while index < values.count {
           if index == values.count - 1 || ((values[index].column + values[index].value.count < values[index + 1].column) && values[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty) {
-            align(&message, current: &current, column: values[index].column, string: values[index].value)
+            let style: Console.Style
+            if let (_, operand) = comparisonOperands[values[index].id] {
+              style = operand == 0 ? .color(.green) : .color(.red)
+            } else {
+              style = .color(.red)
+            }
+            align(
+              &message,
+              current: &current,
+              column: values[index].column,
+              string: Console.apply([style], to: values[index].value)
+            )
             values.remove(at: index)
           } else {
             align(&message, current: &current, column: values[index].column, string: "│")
@@ -262,7 +278,9 @@ public enum PowerAssert {
       var message = ""
       if !comparisonValues.isEmpty {
         message += comparisonValues
-          .map { Console.apply([.color(.red)], to: "[\(type(of: $0.value))] \($0.expression)\n=> \(stringify($0.value))") }
+          .map {
+            "\(Console.apply([.color($0.operand == .left ? .green : .red)], to: "[\(type(of: $0.value))]")) \($0.expression)\n=> \(Console.apply([.color($0.operand == .left ? .green : .red)], to: stringify($0.value)))"
+          }
           .joined(separator: "\n")
       }
       return message
@@ -276,7 +294,7 @@ public enum PowerAssert {
         .map { $0.value }
       if !skipped.isEmpty {
         message += skipped
-          .map { Console.apply([.color(.red)], to: "[Not Evaluated] \($0)") }
+          .map { Console.apply([.color(.red)], to: "[Not Evaluated] \($0.0)") }
           .joined(separator: "\n")
       }
       return message
@@ -315,10 +333,12 @@ public enum PowerAssert {
   struct Value: Comparable {
     let value: String
     let column: Int
+    let id: Int
 
-    init(_ value: String, column: Int) {
+    init(_ value: String, column: Int, id: Int) {
       self.value = value
       self.column = column
+      self.id = id
     }
 
     static func <(lhs: Value, rhs: Value) -> Bool {
@@ -341,9 +361,14 @@ public enum PowerAssert {
   }
 
   private struct ComparisonValue {
+    enum Operand {
+      case left
+      case right
+    }
     let id: Int
     let value: Any
     let expression: String
+    let operand: Operand
   }
 }
 

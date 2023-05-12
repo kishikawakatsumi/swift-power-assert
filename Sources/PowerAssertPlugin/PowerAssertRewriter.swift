@@ -137,9 +137,25 @@ class PowerAssertRewriter: SyntaxRewriter {
 
   func comparisonOperands() -> String {
     expressionStore
-      .expressions(of: .comparisonOperand)
-      .reduce(into: [Int: String]()) {
-        $0[$1.id] = "\($1.node.trimmed)"
+      .filter {
+        switch $0.type {
+        case .equalityExpression:
+          return false
+        case .identicalExpression:
+          return false
+        case .comparisonOperand:
+          return true
+        }
+      }
+      .reduce(into: [Int: (String, Int)]()) {
+        switch $1.type {
+        case .equalityExpression:
+          break
+        case .identicalExpression:
+          break
+        case .comparisonOperand(let operand):
+          $0[$1.id] = ("\($1.node.trimmed)", operand.rawValue)
+        }
       }
       .description
   }
@@ -425,7 +441,12 @@ class PowerAssertRewriter: SyntaxRewriter {
               }
             }
           }
-          expressionStore.append(node, id: id, type: .comparisonOperand)
+          if infixOperator.leftOperand == expr {
+            expressionStore.append(node, id: id, type: .comparisonOperand(.lhs))
+          }
+          if infixOperator.rightOperand == expr {
+            expressionStore.append(node, id: id, type: .comparisonOperand(.rhs))
+          }
         }
       }
     }
@@ -568,17 +589,18 @@ private class ExpressionStore {
   func filter(_ isIncluded: (Expression) -> Bool) -> [Expression] {
     return expressions.filter { isIncluded($0) }
   }
-
-  func expressions(of type: Expression.ExpressionType) -> [Expression] {
-    return expressions.filter { $0.type == type }
-  }
 }
 
 private struct Expression {
   enum ExpressionType: Equatable {
     case equalityExpression(expression: Int?, lhs: Int?, rhs: Int?)
     case identicalExpression(expression: Int?, lhs: Int?, rhs: Int?)
-    case comparisonOperand
+    case comparisonOperand(Operand)
+  }
+
+  enum Operand: Int {
+    case lhs = 0
+    case rhs = 1
   }
 
   let node: Syntax
