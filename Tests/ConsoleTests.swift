@@ -2,6 +2,14 @@ import XCTest
 @testable import PowerAssert
 
 class ConsoleTests: XCTestCase {
+  override func setUp() {
+    setenv("TERM", "xterm-256color", 1)
+  }
+
+  override func tearDown() {
+    unsetenv("TERM")
+  }
+
   func testApply() {
     // Test bold
     #assert(
