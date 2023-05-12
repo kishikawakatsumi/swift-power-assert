@@ -224,7 +224,7 @@ public enum PowerAssert {
             let diff: String
             switch (lhs.value, rhs.value) {
             case (let lvalue as String, let rvalue as String):
-              diff = "\(wordDiff(lvalue, rvalue))\n"
+              diff = "\(wordDiff(lvalue.escaped, rvalue.escaped))\n"
             case (let lvalue, let rvalue):
               diff = lineDiff(stringify(lvalue), stringify(rvalue))
             }
@@ -302,17 +302,10 @@ public enum PowerAssert {
   }
 
   static private func stringify<T>(_ value: T?) -> String {
-    func escapeString(_ string: String) -> String {
-      string
-        .unicodeScalars
-        .map { $0.escaped(asASCII: false) }
-        .joined()
-    }
-
 #if os(macOS)
     switch value {
     case .some(let v) where v is String || v is Selector:
-      return "\"\(escapeString("\(v)"))\""
+      return "\"\("\(v)".escaped)\""
     case .some(let v):
       return "\(v)".replacingOccurrences(of: "\n", with: " ")
     case .none: return "nil"
@@ -320,7 +313,7 @@ public enum PowerAssert {
 #else
     switch value {
     case .some(let v) where v is String:
-      return "\"\(escapeString("\(v)"))\""
+      return "\"\("\(v)".escaped)\""
     case .some(let v):
       return "\(v)".replacingOccurrences(of: "\n", with: " ")
     case .none: return "nil"
@@ -367,6 +360,15 @@ public enum PowerAssert {
     let value: Any
     let expression: String
     let operand: Operand
+  }
+}
+
+private extension String {
+  var escaped: String {
+    self
+      .unicodeScalars
+      .map { $0.escaped(asASCII: false) }
+      .joined()
   }
 }
 
