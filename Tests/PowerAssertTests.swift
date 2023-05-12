@@ -4072,47 +4072,47 @@ final class PowerAssertTests: XCTestCase {
         #"""
         #assert(lyric1 == "Feet, don't fail me now.")
                 │      │  │
-                │      │  "Feet, don't fail me now."
+                │      │  "Feet, don\'t fail me now."
                 │      true
-                "Feet, don't fail me now."
+                "Feet, don\'t fail me now."
 
         [String] lyric1
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
         [String] "Feet, don't fail me now."
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
 
         #assert(lyric1 == "Feet, don\'t fail me now.")
                 │      │  │
-                │      │  "Feet, don't fail me now."
+                │      │  "Feet, don\'t fail me now."
                 │      true
-                "Feet, don't fail me now."
+                "Feet, don\'t fail me now."
 
         [String] lyric1
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
         [String] "Feet, don\'t fail me now."
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
 
         #assert(lyric2 == "Feet, don't fail me now.")
                 │      │  │
-                │      │  "Feet, don't fail me now."
+                │      │  "Feet, don\'t fail me now."
                 │      true
-                "Feet, don't fail me now."
+                "Feet, don\'t fail me now."
 
         [String] lyric2
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
         [String] "Feet, don't fail me now."
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
 
         #assert(lyric2 == "Feet, don\'t fail me now.")
                 │      │  │
-                │      │  "Feet, don't fail me now."
+                │      │  "Feet, don\'t fail me now."
                 │      true
-                "Feet, don't fail me now."
+                "Feet, don\'t fail me now."
 
         [String] lyric2
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
         [String] "Feet, don\'t fail me now."
-        => "Feet, don't fail me now."
+        => "Feet, don\'t fail me now."
 
 
         """#
@@ -4136,47 +4136,47 @@ final class PowerAssertTests: XCTestCase {
         #"""
         #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 │            │  │
-                │            │  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
                 │            true
-                "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote1
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
         [String] "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 │            │  │
-                │            │  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
                 │            true
-                "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote1
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
         [String] "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 │            │  │
-                │            │  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
                 │            true
-                "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote2
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
         [String] "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 │            │  │
-                │            │  "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
                 │            true
-                "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+                "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote2
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
         [String] "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-        => "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
+        => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
 
         """#
@@ -4263,14 +4263,14 @@ final class PowerAssertTests: XCTestCase {
 
         #assert(backslash == "Backslash\\Backslash")
                 │         │  │
-                │         │  "Backslash\Backslash"
+                │         │  "Backslash\\Backslash"
                 │         true
-                "Backslash\Backslash"
+                "Backslash\\Backslash"
 
         [String] backslash
-        => "Backslash\Backslash"
+        => "Backslash\\Backslash"
         [String] "Backslash\\Backslash"
-        => "Backslash\Backslash"
+        => "Backslash\\Backslash"
 
 
         """#
@@ -4456,14 +4456,14 @@ final class PowerAssertTests: XCTestCase {
         ##"""
         #assert(multilineLiteral != #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#)
                 │                │  │
-                │                │  "Escaping the first quotation mark \\"\"\"\nEscaping all three quotation marks \\"\\"\\""
+                │                │  "Escaping the first quotation mark \\\"\"\"\nEscaping all three quotation marks \\\"\\\"\\\""
                 │                true
                 "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
 
         [String] multilineLiteral
         => "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
         [String] #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#
-        => "Escaping the first quotation mark \\"\"\"\nEscaping all three quotation marks \\"\\"\\""
+        => "Escaping the first quotation mark \\\"\"\"\nEscaping all three quotation marks \\\"\\\"\\\""
 
 
         """##

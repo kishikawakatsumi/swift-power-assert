@@ -304,11 +304,9 @@ public enum PowerAssert {
   static private func stringify<T>(_ value: T?) -> String {
     func escapeString(_ string: String) -> String {
       string
-        .replacingOccurrences(of: "\"", with: "\\\"")
-        .replacingOccurrences(of: "\t", with: "\\t")
-        .replacingOccurrences(of: "\r", with: "\\r")
-        .replacingOccurrences(of: "\n", with: "\\n")
-        .replacingOccurrences(of: "\0", with: "\\0")
+        .unicodeScalars
+        .map { $0.escaped(asASCII: false) }
+        .joined()
     }
 
 #if os(macOS)
