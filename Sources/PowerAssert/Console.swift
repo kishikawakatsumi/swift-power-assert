@@ -15,24 +15,26 @@ class Console {
     case cyan = "36"
     case white = "37"
   }
+  
+  static func decorate(_ style: Style, on text: String) -> String {
+    return decorate([style], on: text)
+  }
 
-  static func apply(_ styles: [Style], to text: String) -> String {
+  static func decorate(_ styles: [Style], on text: String) -> String {
     guard isTTY() else { return text }
 
-    var result = text
-    for style in styles {
+    return styles.reduce(text) { (result, style) in
       switch style {
       case .bold:
-        result = "\u{001b}[1m\(result)\u{001b}[22m"
+        return "\u{001b}[1m\(result)\u{001b}[22m"
       case .italic:
-        result = "\u{001b}[3m\(result)\u{001b}[23m"
+        return "\u{001b}[3m\(result)\u{001b}[23m"
       case .underline:
-        result = "\u{001b}[4m\(result)\u{001b}[24m"
+        return "\u{001b}[4m\(result)\u{001b}[24m"
       case .color(let color):
-        result = "\u{001b}[\(color.rawValue)m\(result)\u{001b}[0m"
+        return "\u{001b}[\(color.rawValue)m\(result)\u{001b}[0m"
       }
     }
-    return result
   }
 
   private static func isTTY() -> Bool {
@@ -43,5 +45,27 @@ class Console {
     // https://github.com/apple/swift-package-manager/issues/6081
 //    guard isatty(fileno(stdout)) != 0 else { return false }
     return true
+  }
+}
+
+extension String {
+  var bold: String {
+    decorated(with: .bold)
+  }
+
+  var red: String {
+    decorated(with: .color(.red))
+  }
+
+  var green: String {
+    decorated(with: .color(.green))
+  }
+  
+  func decorated(with style: Console.Style) -> String {
+    self.decorated(with: [style])
+  }
+
+  func decorated(with styles: [Console.Style]) -> String {
+    Console.decorate(styles, on: self)
   }
 }
