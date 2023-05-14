@@ -147,14 +147,14 @@ class PowerAssertRewriter: SyntaxRewriter {
           return true
         }
       }
-      .reduce(into: [Int: (String, Int)]()) {
+      .reduce(into: [Int: String]()) {
         switch $1.type {
         case .equalityExpression:
           break
         case .identicalExpression:
           break
-        case .comparisonOperand(let operand):
-          $0[$1.id] = ("\($1.node.trimmed)", operand.rawValue)
+        case .comparisonOperand:
+          $0[$1.id] = "\($1.node.trimmed)"
         }
       }
       .description
@@ -413,10 +413,14 @@ class PowerAssertRewriter: SyntaxRewriter {
       if let infixOperator = node.as(InfixOperatorExprSyntax.self),
          let binaryOperator = infixOperator.operatorOperand.as(BinaryOperatorExprSyntax.self) {
         if binaryOperator.operatorToken.tokenKind == .binaryOperator("==") {
-          expressionStore.append(Syntax(infixOperator), id: id, type: .equalityExpression(expression: id, lhs: nil, rhs: nil))
+          expressionStore.append(
+            Syntax(infixOperator), id: id, type: .equalityExpression(expression: id, lhs: nil, rhs: nil)
+          )
         }
         if binaryOperator.operatorToken.tokenKind == .binaryOperator("===") {
-          expressionStore.append(Syntax(infixOperator), id: id, type: .identicalExpression(expression: id, lhs: nil, rhs: nil))
+          expressionStore.append(
+            Syntax(infixOperator), id: id, type: .identicalExpression(expression: id, lhs: nil, rhs: nil)
+          )
         }
       }
 
@@ -426,27 +430,30 @@ class PowerAssertRewriter: SyntaxRewriter {
             let tokenKind = binaryOperator.operatorToken.tokenKind
             if tokenKind == .binaryOperator("==") {
               if infixOperator.leftOperand == expr {
-                expressionStore.append(Syntax(infixOperator), id: id, type: .equalityExpression(expression: nil, lhs: id, rhs: nil))
+                expressionStore.append(
+                  Syntax(infixOperator), id: id, type: .equalityExpression(expression: nil, lhs: id, rhs: nil)
+                )
               }
               if infixOperator.rightOperand == expr {
-                expressionStore.append(Syntax(infixOperator), id: id, type: .equalityExpression(expression: nil, lhs: nil, rhs: id))
+                expressionStore.append(
+                  Syntax(infixOperator), id: id, type: .equalityExpression(expression: nil, lhs: nil, rhs: id)
+                )
               }
             }
             if tokenKind == .binaryOperator("===") {
               if infixOperator.leftOperand == expr {
-                expressionStore.append(Syntax(infixOperator), id: id, type: .identicalExpression(expression: nil, lhs: id, rhs: nil))
+                expressionStore.append(
+                  Syntax(infixOperator), id: id, type: .identicalExpression(expression: nil, lhs: id, rhs: nil)
+                )
               }
               if infixOperator.rightOperand == expr {
-                expressionStore.append(Syntax(infixOperator), id: id, type: .identicalExpression(expression: nil, lhs: nil, rhs: id))
+                expressionStore.append(
+                  Syntax(infixOperator), id: id, type: .identicalExpression(expression: nil, lhs: nil, rhs: id)
+                )
               }
             }
           }
-          if infixOperator.leftOperand == expr {
-            expressionStore.append(node, id: id, type: .comparisonOperand(.lhs))
-          }
-          if infixOperator.rightOperand == expr {
-            expressionStore.append(node, id: id, type: .comparisonOperand(.rhs))
-          }
+          expressionStore.append(node, id: id, type: .comparisonOperand)
         }
       }
     }
@@ -595,12 +602,7 @@ private struct Expression {
   enum ExpressionType: Equatable {
     case equalityExpression(expression: Int?, lhs: Int?, rhs: Int?)
     case identicalExpression(expression: Int?, lhs: Int?, rhs: Int?)
-    case comparisonOperand(Operand)
-  }
-
-  enum Operand: Int {
-    case lhs = 0
-    case rhs = 1
+    case comparisonOperand
   }
 
   let node: Syntax

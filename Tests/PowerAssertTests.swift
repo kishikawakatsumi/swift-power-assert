@@ -293,8 +293,6 @@ final class PowerAssertTests: XCTestCase {
                 [1, 2, 3]                        false   │  [1, 2, 3]                            true
                                                          true
 
-        - expected + actual
-
         --- [Bool] array.description.hasPrefix("]")
         +++ [Bool] true
         –false
@@ -374,8 +372,6 @@ final class PowerAssertTests: XCTestCase {
                 │      false
                 "apple"
 
-        - expected + actual
-
         --- [String] input1
         +++ [String] input2
         {+or+}a[-ppl-]{+ng+}e
@@ -412,8 +408,6 @@ final class PowerAssertTests: XCTestCase {
                 │      false
                 "The quick brown fox"
 
-        - expected + actual
-
         --- [String] input1
         +++ [String] input2
         The [-quick-]{+slow+} brown fox
@@ -449,8 +443,6 @@ final class PowerAssertTests: XCTestCase {
                 │       │   Optional(PowerAssertTests.IntegerRef)
                 │       false
                 Optional(PowerAssertTests.IntegerRef)
-
-        - expected + actual
 
         --- [Optional<AnyObject>] number1
         +++ [Optional<AnyObject>] number2
@@ -1125,8 +1117,6 @@ final class PowerAssertTests: XCTestCase {
                 ││"hello"                 "hello"
                 │Optional(1234)
                 "hello"
-
-        - expected + actual
 
         --- [Optional<Int>] number
         +++ [Optional<Int>] nil
@@ -5131,8 +5121,6 @@ final class PowerAssertTests: XCTestCase {
                 ││ │ │  │ │ │  │
                 │2 5 3  │ 4 │  15
                 5       20  false
-
-        - expected + actual
 
         --- [Int] (a + b) * c
         +++ [Int] 15
