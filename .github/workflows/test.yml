@@ -42,10 +42,3 @@ jobs:
           fail_ci_if_error: fail
           files: ./coverage_report.lcov
           verbose: true
-      - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v4.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageLocations: |
-            ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json

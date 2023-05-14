@@ -119,7 +119,11 @@ public enum PowerAssert {
         if !result {
 #if canImport(XCTest)
           if ProcessInfo.processInfo.environment["SWIFTPOWERASSERT_NOXCTEST"] != "1" {
-            XCTFail("\(originalMessage)\n\(message)", file: filePath, line: lineNumber)
+            XCTFail(
+              "\(originalMessage.isEmpty ? "Assertion failed" : originalMessage)\n\(message)",
+              file: filePath,
+              line: lineNumber
+            )
           } else {
             print(message)
           }
@@ -133,7 +137,7 @@ public enum PowerAssert {
     }
 
     private func store<T>(value: T, column: Int, id: Int) {
-      values.append(Value(stringify(value), column: column))
+      values.append(Value(id: id, value: stringify(value), column: column))
       if equalityExpressions.contains(where: { $0.0 == id }) {
         equalityExpressionValues.append(EqualityExpressionValue(id: id, value: value))
       }
@@ -173,7 +177,18 @@ public enum PowerAssert {
               || ((values[index].column + stringWidth(values[index].value) < values[index + 1].column)
                   && values[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty)
           {
-            align(&message, current: &current, column: values[index].column, string: values[index].value)
+            let value: String
+            if equalityExpressions.contains(where: { $0.1 == values[index].id }) ||
+                identicalExpressions.contains(where: { $0.1 == values[index].id }) {
+              value = values[index].value.red
+            } else if equalityExpressions.contains(where: { $0.2 == values[index].id }) ||
+                        identicalExpressions.contains(where: { $0.2 == values[index].id }) {
+              value = values[index].value.green
+            } else {
+              value = values[index].value
+            }
+
+            align(&message, current: &current, column: values[index].column, string: value)
             values.remove(at: index)
           } else {
             align(&message, current: &current, column: values[index].column, string: "│")
@@ -203,7 +218,8 @@ public enum PowerAssert {
             guard let condition = equalityExpressionValue.value as? Bool, !condition else {
               return nil
             }
-            guard let lhs = comparisonValues.first(where: { $0.id == ex.1 }), let rhs = comparisonValues.first(where: { $0.id == ex.2 }) else {
+            guard let lhs = comparisonValues.first(where: { $0.id == ex.1 }),
+                    let rhs = comparisonValues.first(where: { $0.id == ex.2 }) else {
               return nil
             }
 
@@ -215,8 +231,8 @@ public enum PowerAssert {
               diff = lineDiff(stringify(lvalue), stringify(rvalue))
             }
             return """
-              \("--- [\(type(of: lhs.value))] \(lhs.expression.green)")
-              \("+++ [\(type(of: rhs.value))] \(rhs.expression.red)")
+              \("--- [\(type(of: lhs.value))] \(lhs.expression)".red)
+              \("+++ [\(type(of: rhs.value))] \(rhs.expression)".green)
               \(diff)
               """
           }
@@ -236,7 +252,8 @@ public enum PowerAssert {
             guard let condition = identicalExpressionValue.value as? Bool, !condition else {
               return nil
             }
-            guard let lhs = comparisonValues.first(where: { $0.id == ex.1 }), let rhs = comparisonValues.first(where: { $0.id == ex.2 }) else {
+            guard let lhs = comparisonValues.first(where: { $0.id == ex.1 }),
+                    let rhs = comparisonValues.first(where: { $0.id == ex.2 }) else {
               return nil
             }
 
@@ -258,7 +275,17 @@ public enum PowerAssert {
       var message = ""
       if !comparisonValues.isEmpty {
         message += comparisonValues
-          .map { "[\(type(of: $0.value))] \($0.expression)\n=> \(stringify($0.value))" }
+          .map { (comparison) in
+            if equalityExpressions.contains(where: { $0.1 == comparison.id }) ||
+                identicalExpressions.contains(where: { $0.1 == comparison.id }) {
+              return "[\(type(of: comparison.value))] \(comparison.expression)\n=> \(stringify(comparison.value))".red
+            } else if equalityExpressions.contains(where: { $0.2 == comparison.id }) ||
+                identicalExpressions.contains(where: { $0.2 == comparison.id }) {
+              return "[\(type(of: comparison.value))] \(comparison.expression)\n=> \(stringify(comparison.value))".green
+            } else {
+              return "[\(type(of: comparison.value))] \(comparison.expression)\n=> \(stringify(comparison.value))"
+            }
+          }
           .joined(separator: "\n")
       }
       return message
@@ -300,10 +327,12 @@ public enum PowerAssert {
   }
 
   struct Value: Comparable {
+    let id: Int
     let value: String
     let column: Int
 
-    init(_ value: String, column: Int) {
+    init(id: Int, value: String, column: Int) {
+      self.id = id
       self.value = value
       self.column = column
     }
