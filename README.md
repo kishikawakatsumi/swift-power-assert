@@ -19,8 +19,6 @@ Power asserts provide descriptive assertion messages for your tests, like the fo
         │       2  false
         [1, 2, 3, 4, 5]
 
-- expected + actual
-
 --- [Int] numbers[2]
 +++ [Int] 4
 –3
@@ -41,8 +39,6 @@ Power asserts provide descriptive assertion messages for your tests, like the fo
         │       │  "Hello, Swift!"
         │       false
         "Hello, world!"
-
-- expected + actual
 
 --- [String] string1
 +++ [String] string2

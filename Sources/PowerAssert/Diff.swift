@@ -25,10 +25,10 @@ func lineDiff(_ expected: String, _ actual: String) -> String {
 
   while expectedLine < expectedLines.count || actualLine < actualLines.count {
     if let removal = removals[expectedLine] {
-      result += "–\(removal)\n"
+      result += "\("–\(removal)".red)\n"
       expectedLine += 1
     } else if let insertion = insertions[actualLine] {
-      result += "+\(insertion)\n"
+      result += "\("+\(insertion)".green)\n"
       actualLine += 1
     } else {
       result += " \(expectedLines[expectedLine])\n"
@@ -123,10 +123,10 @@ private enum WordDiff: CustomStringConvertible {
 
   var description: String {
     switch self {
-    case .insertion(let insertion):
-      return "{+\(insertion)+}".red
     case .removal(let removal):
-      return "[-\(removal)-]".green
+      return "[-\(removal)-]".red
+    case .insertion(let insertion):
+      return "{+\(insertion)+}".green
     case .unchanged(let unchanged):
       return unchanged
     }

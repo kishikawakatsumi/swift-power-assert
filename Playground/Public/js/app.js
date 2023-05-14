@@ -91,11 +91,12 @@ final class MyLibraryTests: XCTestCase {
           }
           const lines = response.message.split("\n").filter(Boolean);
           if (lines.length) {
-            lastLine = `${lines[lines.length - 1]}\n`;
-            lastLine = stripDirectoryPath(lastLine);
-            if (lastLine.length) {
-              this.terminal.write(lastLine);
-            }
+            const line = truncateString(
+              lines[lines.length - 1],
+              this.terminal.cols
+            );
+            lastLine = stripDirectoryPath(`${line}\n`);
+            this.terminal.write(lastLine);
           } else {
             lastLine = "";
           }
@@ -163,18 +164,7 @@ final class MyLibraryTests: XCTestCase {
     })
       .then((response) => {
         this.terminal.hideSpinner(cancelToken);
-
-        const now = new Date();
-        const timestamp = now.toLocaleString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        });
-        const padding = this.terminal.cols - timestamp.length;
-        this.terminal.writeln(
-          `${" ".repeat(padding)}\x1b[2m${timestamp}\x1b[0m`
-        );
+        this.printTimestamp();
 
         if (!response.ok) {
           this.terminal.writeln(
@@ -205,6 +195,20 @@ final class MyLibraryTests: XCTestCase {
         this.terminal.showCursor();
         this.editor.focus();
       });
+  }
+
+  printTimestamp() {
+    const now = new Date();
+    const timestamp = now.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    const padding = this.terminal.cols - timestamp.length;
+    this.terminal.writeln(
+      `\x1b[2m\x1b[38;5;15;48;5;238m${" ".repeat(padding)}${timestamp}\x1b[0m`
+    );
   }
 }
 
@@ -270,4 +274,11 @@ function stripDirectoryPath(message) {
   return message.replace(/(.*\/)([^/]+:)/g, (match, p1, p2, p3, p4) => {
     return `/${p2}`;
   });
+}
+
+function truncateString(str, length) {
+  if (str.length <= length) {
+    return str;
+  }
+  return str.substring(str.length - length, str.length);
 }
