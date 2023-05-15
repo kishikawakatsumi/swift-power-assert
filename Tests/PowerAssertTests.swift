@@ -362,42 +362,8 @@ final class PowerAssertTests: XCTestCase {
       #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
     } completion: { (output) in
       print(output)
-      XCTAssertTrue(
-        output ==
-        """
-        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        false    │  [1, 2, 3]                            false
-                                                          false
-
-        --- [Bool] array.description.hasPrefix("Hello")
-        +++ [Bool] true
-        –false
-        +true
-
-        --- [Bool] array.description.hasPrefix("[")
-        +++ [Bool] false
-        –true
-        +false
-
-        [Bool] array.description.hasPrefix("[")
-        => true
-        [Bool] false
-        => false
-        [Bool] array.description.hasPrefix("[") == false
-        => false
-        [Bool] array.description.hasPrefix("Hello")
-        => false
-        [Bool] true
-        => true
-        [Bool] array.description.hasPrefix("Hello") == true
-        => false
-
-
-        """
-        ||
-        output ==
+      XCTAssertEqual(
+        output,
         """
         #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
                 │     │           │         │    │  │     │  │     │           │         │        │  │
@@ -1182,7 +1148,7 @@ final class PowerAssertTests: XCTestCase {
       let string = "1234"
       let number = Int(string)
       let hello = "hello"
-      
+
       #assert((number != nil ? string : "hello") == hello)
     } completion: { (output) in
       print(output)
