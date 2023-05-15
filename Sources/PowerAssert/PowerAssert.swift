@@ -118,7 +118,7 @@ public enum PowerAssert {
 
         if !result {
 #if canImport(XCTest)
-          if ProcessInfo.processInfo.environment["SWIFTPOWERASSERT_NOXCTEST"] != "1" {
+          if ProcessInfo.processInfo.environment["SWIFTPOWERASSERT_WITHOUT_XCTEST"] != "1" {
             XCTFail(
               "\(originalMessage.isEmpty ? "Assertion failed" : originalMessage)\n\(message)",
               file: filePath,

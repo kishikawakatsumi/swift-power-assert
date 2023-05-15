@@ -3,11 +3,11 @@ import XCTest
 
 final class OutputStyleTests: XCTestCase {
   override func setUp() {
-    setenv("SWIFTPOWERASSERT_NOXCTEST", "1", 1)
+    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
   }
 
   override func tearDown() {
-    unsetenv("SWIFTPOWERASSERT_NOXCTEST")
+    unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
   }
 
   func testIdenticalStrings() {
