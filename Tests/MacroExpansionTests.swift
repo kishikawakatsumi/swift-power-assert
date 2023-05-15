@@ -22,8 +22,8 @@ final class MacroExpansionTests: XCTestCase {
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
-    XCTAssertEqual(
-      expanded,
+    XCTAssertTrue(
+      expanded ==
       """
       let numbers = [1, 2, 3, 4, 5]
       PowerAssert.Assertion(
@@ -35,6 +35,24 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [(5, 2, 4)],
         identicalExpressions: [],
         comparisonOperands: [2: "numbers[2]", 4: "4"]
+      ) {
+        $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[$0.captureSync(2, column: 9, id: 1)], column: 10, id: 2) == $0.captureSync(4, column: 15, id: 4), column: 12, id: 5)
+      }
+      .render()
+      """
+      ||
+      expanded ==
+      """
+      let numbers = [1, 2, 3, 4, 5]
+      PowerAssert.Assertion(
+        "#assert(numbers[2] == 4)",
+        message: "",
+        file: "test.swift",
+        line: 2,
+        verbose: false,
+        equalityExpressions: [(5, 2, 4)],
+        identicalExpressions: [],
+        comparisonOperands: [4: "4", 2: "numbers[2]"]
       ) {
         $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[$0.captureSync(2, column: 9, id: 1)], column: 10, id: 2) == $0.captureSync(4, column: 15, id: 4), column: 12, id: 5)
       }
@@ -94,8 +112,8 @@ final class MacroExpansionTests: XCTestCase {
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
-    XCTAssertEqual(
-      expanded,
+    XCTAssertTrue(
+      expanded ==
       """
       let string1 = "Hello, world!"
       let string2 = "Hello, Swift!"
@@ -109,6 +127,26 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [(3, 0, 2)],
         identicalExpressions: [],
         comparisonOperands: [0: "string1", 2: "string2"]
+      ) {
+        $0.captureSync($0.captureSync(string1.self, column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
+      }
+      .render()
+      """
+      ||
+      expanded ==
+      """
+      let string1 = "Hello, world!"
+      let string2 = "Hello, Swift!"
+
+      PowerAssert.Assertion(
+        "#assert(string1 == string2)",
+        message: "",
+        file: "test.swift",
+        line: 4,
+        verbose: false,
+        equalityExpressions: [(3, 0, 2)],
+        identicalExpressions: [],
+        comparisonOperands: [2: "string2", 0: "string1"]
       ) {
         $0.captureSync($0.captureSync(string1.self, column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
       }
