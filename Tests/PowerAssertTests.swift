@@ -1170,10 +1170,15 @@ final class PowerAssertTests: XCTestCase {
         => Optional(1234)
         [Optional<Int>] nil
         => nil
+        [Bool] number != nil
+        => true
+        [String] string
+        => "1234"
         [String] (number != nil ? string : "hello")
         => "1234"
         [String] hello
         => "hello"
+        [Not Evaluated] "hello"
 
 
         """
@@ -1214,10 +1219,15 @@ final class PowerAssertTests: XCTestCase {
         => Optional(1234)
         [Optional<Int>] nil
         => nil
+        [Bool] number == nil
+        => false
+        [String] hello
+        => "hello"
         [String] (number == nil ? string : hello)
         => "hello"
         [String] string
         => "1234"
+        [Not Evaluated] string
 
 
         """
