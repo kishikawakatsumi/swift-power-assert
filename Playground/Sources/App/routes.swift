@@ -73,8 +73,8 @@ func routes(_ app: Application) throws {
       let macros: [String: Macro.Type] = [
         "assert": PowerAssertMacro.self,
       ]
-      let context = BasicMacroExpansionContext(
-        sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
+      let context = SimpleMacroExpansionContext(
+        moduleName: testModuleName, fullFilePath: testFileName, sourceFile: sourceFile
       )
       let code = "\(sourceFile.expand(macros: macros, in: context))"
 
