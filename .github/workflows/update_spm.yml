@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 22 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v3
+      - name: Update Swift Package
+        run: |
+          set -ex
+          swift package update --package-path ./
+          swift package update --package-path Example/
+          swift package update --package-path Playground/
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "Update Swift Packages"
+          title: "Update Swift Packages"
