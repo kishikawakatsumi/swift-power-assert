@@ -1405,6 +1405,11 @@ final class PowerAssertTests: XCTestCase {
 
   func testMagicLiteralExpression2() {
     captureConsoleOutput {
+      // FIXME: The compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+      // #assert(
+      //   #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue &&
+      //     .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+      // )
       #assert(
         #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
           .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
@@ -1447,24 +1452,26 @@ final class PowerAssertTests: XCTestCase {
 
   func testSelfExpression() {
     captureConsoleOutput {
-      #assert(
-        self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9,
-        verbose: true
-      )
+      #assert(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 0.1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 999.9)
+        #assert(self.stringValue == "string" && self.intValue == 100 && self.doubleValue == 0.1)
                 │    │           │  │        │  │    │        │  │   │  │    │           │  │
-                │    "string"    │  "string" │  │    100      │  100 │  │    999.9       │  999.9
-                │                true        │  │             true   │  │                true
+                │    "string"    │  "string" │  │    100      │  100 │  │    999.9       │  0.1
+                │                true        │  │             true   │  │                false
                 │                            │  │                    │  -[PowerAssertTests testSelfExpression]
-                │                            │  │                    true
+                │                            │  │                    false
                 │                            │  -[PowerAssertTests testSelfExpression]
                 │                            true
                 -[PowerAssertTests testSelfExpression]
+
+        --- [Double] self.doubleValue
+        +++ [Double] 0.1
+        –999.9
+        +0.1
 
         [String] self.stringValue
         => "string"
@@ -1482,10 +1489,10 @@ final class PowerAssertTests: XCTestCase {
         => true
         [Double] self.doubleValue
         => 999.9
-        [Double] 999.9
-        => 999.9
-        [Bool] self.doubleValue == 999.9
-        => true
+        [Double] 0.1
+        => 0.1
+        [Bool] self.doubleValue == 0.1
+        => false
 
 
         """
@@ -1495,22 +1502,27 @@ final class PowerAssertTests: XCTestCase {
 
   func testSuperExpression() {
     captureConsoleOutput {
-      #assert(super.continueAfterFailure == true, verbose: true)
+      #assert(super.continueAfterFailure == false)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(super.continueAfterFailure == true)
+        #assert(super.continueAfterFailure == false)
                 │     │                    │  │
-                │     true                 │  true
-                │                          true
+                │     true                 │  false
+                │                          false
                 -[PowerAssertTests testSuperExpression]
+
+        --- [Bool] super.continueAfterFailure
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] super.continueAfterFailure
         => true
-        [Bool] true
-        => true
+        [Bool] false
+        => false
 
 
         """
@@ -1520,48 +1532,46 @@ final class PowerAssertTests: XCTestCase {
 
   func testImplicitMemberExpression() {
     captureConsoleOutput {
-      let i = 64
-      #assert(i == .bitWidth && i == Double.Exponent.bitWidth, verbose: true)
+      let i = 16
+      #assert(i == .bitWidth && i == Double.Exponent.bitWidth)
 
       let mask: CAAutoresizingMask = [.layerMaxXMargin, .layerMaxYMargin]
-      #assert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
-
-      #assert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin], verbose: true)
-
-      #assert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin], verbose: true)
-
-      #assert(mask == [.layerMaxXMargin, .layerMaxYMargin], verbose: true)
+      #assert(mask != [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+      #assert(mask != [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
+      #assert(mask != [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+      #assert(mask != [.layerMaxXMargin, .layerMaxYMargin])
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
         #assert(i == .bitWidth && i == Double.Exponent.bitWidth)
-                │ │   │        │  │ │  │      │        │
-                │ │   64       │  │ │  Double Int      64
-                │ true         │  │ true
-                64             │  64
-                               true
+                │ │   │        │
+                │ │   64       false
+                │ false
+                16
+
+        --- [Int] i
+        +++ [Int] .bitWidth
+        –16
+        +64
 
         [Int] i
-        => 64
+        => 16
         [Int] .bitWidth
         => 64
         [Bool] i == .bitWidth
-        => true
-        [Int] i
-        => 64
-        [Int] Double.Exponent.bitWidth
-        => 64
-        [Bool] i == Double.Exponent.bitWidth
-        => true
+        => false
+        [Not Evaluated] i
+        [Not Evaluated] Double.Exponent.bitWidth
+        [Not Evaluated] i == Double.Exponent.bitWidth
 
-        #assert(mask == [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+        #assert(mask != [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
                 │    │  ││                  │                │                  │
                 │    │  │CAAutoresizingMask │                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
                 │    │  │                   CAAutoresizingMask(rawValue: 4)
                 │    │  CAAutoresizingMask(rawValue: 36)
-                │    true
+                │    false
                 CAAutoresizingMask(rawValue: 36)
 
         [CAAutoresizingMask] mask
@@ -1569,12 +1579,12 @@ final class PowerAssertTests: XCTestCase {
         [CAAutoresizingMask] [CAAutoresizingMask.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin]
         => CAAutoresizingMask(rawValue: 36)
 
-        #assert(mask == [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
+        #assert(mask != [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin])
                 │    │  ││                  │                 │
                 │    │  │CAAutoresizingMask │                 CAAutoresizingMask(rawValue: 32)
                 │    │  │                   CAAutoresizingMask(rawValue: 4)
                 │    │  CAAutoresizingMask(rawValue: 36)
-                │    true
+                │    false
                 CAAutoresizingMask(rawValue: 36)
 
         [CAAutoresizingMask] mask
@@ -1582,12 +1592,12 @@ final class PowerAssertTests: XCTestCase {
         [CAAutoresizingMask] [CAAutoresizingMask.layerMaxXMargin, .layerMaxYMargin]
         => CAAutoresizingMask(rawValue: 36)
 
-        #assert(mask == [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
+        #assert(mask != [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin])
                 │    │  │ │                │                  │
                 │    │  │ │                CAAutoresizingMask CAAutoresizingMask(rawValue: 32)
                 │    │  │ CAAutoresizingMask(rawValue: 4)
                 │    │  CAAutoresizingMask(rawValue: 36)
-                │    true
+                │    false
                 CAAutoresizingMask(rawValue: 36)
 
         [CAAutoresizingMask] mask
@@ -1595,12 +1605,12 @@ final class PowerAssertTests: XCTestCase {
         [CAAutoresizingMask] [.layerMaxXMargin, CAAutoresizingMask.layerMaxYMargin]
         => CAAutoresizingMask(rawValue: 36)
 
-        #assert(mask == [.layerMaxXMargin, .layerMaxYMargin])
+        #assert(mask != [.layerMaxXMargin, .layerMaxYMargin])
                 │    │  │ │                 │
                 │    │  │ │                 CAAutoresizingMask(rawValue: 32)
                 │    │  │ CAAutoresizingMask(rawValue: 4)
                 │    │  CAAutoresizingMask(rawValue: 36)
-                │    true
+                │    false
                 CAAutoresizingMask(rawValue: 36)
 
         [CAAutoresizingMask] mask
@@ -3830,60 +3840,60 @@ final class PowerAssertTests: XCTestCase {
   }
 
   // FIXME: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
-//  func testClosureExpression() {
-//    captureConsoleOutput {
-//      let arr = [1000, 1500, 2000]
-//      #assert(
-//        [10, 3, 20, 15, 4]
-//          .sorted()
-//          .filter { $0 > 5 }
-//          .map { $0 * 100 } == arr,
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//        #assert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
-//                ││   │  │   │   │   │         │                  │                │  │
-//                │10  3  20  15  4   │         [10, 15, 20]       │                │  [1000, 1500, 2000]
-//                [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           │                true
-//                                                                 [1000, 1500, 2000]
-//
-//        """
-//      )
-//    }
-//  }
+  // func testClosureExpression() {
+  //   captureConsoleOutput {
+  //     let arr = [1000, 1500, 2000]
+  //     #assert(
+  //       [10, 3, 20, 15, 4]
+  //         .sorted()
+  //         .filter { $0 > 5 }
+  //         .map { $0 * 100 } == arr,
+  //       verbose: true
+  //     )
+  //   } completion: { (output) in
+  //     print(output)
+  //     XCTAssertEqual(
+  //       output,
+  //       """
+  //       #assert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
+  //               ││   │  │   │   │   │         │                  │                │  │
+  //               │10  3  20  15  4   │         [10, 15, 20]       │                │  [1000, 1500, 2000]
+  //               [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           │                true
+  //                                                                [1000, 1500, 2000]
+  //
+  //       """
+  //     )
+  //   }
+  // }
 
   // FIXME: If closures that span multiple lines are formatted on a single line, such as consecutive variable definitions, the statements must be separated by a semicolon.
-//  func testMultipleStatementInClosure() {
-//    captureConsoleOutput {
-//      let a = 5
-//      let b = 10
-//
-//      #powerAssert(
-//        { (a: Int, b: Int) -> Bool in
-//          let c = a + b // error: consecutive statements on a line must be separated by ';'
-//          let d = a - b
-//          if c != d {
-//            _ = c.distance(to: d)
-//            _ = d.distance(to: c)
-//          }
-//          return c == d
-//        }(a, b),
-//        verbose: true
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//
-//        """
-//      )
-//    }
-//  }
+  // func testMultipleStatementInClosure() {
+  //   captureConsoleOutput {
+  //     let a = 5
+  //     let b = 10
+  //
+  //     #powerAssert(
+  //       { (a: Int, b: Int) -> Bool in
+  //         let c = a + b // error: consecutive statements on a line must be separated by ';'
+  //         let d = a - b
+  //         if c != d {
+  //           _ = c.distance(to: d)
+  //           _ = d.distance(to: c)
+  //         }
+  //         return c == d
+  //       }(a, b),
+  //       verbose: true
+  //     )
+  //   } completion: { (output) in
+  //     print(output)
+  //     XCTAssertEqual(
+  //       output,
+  //       """
+  //
+  //       """
+  //     )
+  //   }
+  // }
 
   func testMessageParameter() {
     captureConsoleOutput {

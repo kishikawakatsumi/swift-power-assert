@@ -457,7 +457,7 @@ class PowerAssertRewriter: SyntaxRewriter {
           }
           expressionStore.append(node, id: id, type: .comparisonOperand)
         }
-        if let infixOperator = parent.as(TernaryExprSyntax.self) {
+        if let _ = parent.as(TernaryExprSyntax.self) {
           expressionStore.append(node, id: id, type: .comparisonOperand)
         }
       }
