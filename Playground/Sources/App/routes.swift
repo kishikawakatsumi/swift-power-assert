@@ -23,8 +23,8 @@ func routes(_ app: Application) throws {
     return req.view.render("index")
   }
 
-  app.on(.POST, "run", body: .collect(maxSize: "10mb")) { (req) -> MacroExpansionResponse in
-    guard let request = try? req.content.decode(MacroExpansionRequest.self) else {
+  app.on(.POST, "run", body: .collect(maxSize: "10mb")) { (req) -> PlaygroundResponse in
+    guard let request = try? req.content.decode(PlaygroundRequest.self) else {
       throw Abort(.badRequest)
     }
 
@@ -60,7 +60,7 @@ func routes(_ app: Application) throws {
       notify(session: session, type: .build, message: errorNotifier.storage)
 
       guard status.isSuccess else {
-        return MacroExpansionResponse(
+        return PlaygroundResponse(
           stdout: "",
           stderr: "\(status.stdout)\(status.stderr)"
         )
@@ -99,10 +99,36 @@ func routes(_ app: Application) throws {
       notify(session: session, type: .test, message: outputNotifier.storage)
       notify(session: session, type: .build, message: errorNotifier.storage)
 
+      if status.stdout.isEmpty {
+        let parameters: [String: Any] = [
+          "title": "Build error from power-assert.swiftfiddle.com",
+          "body": """
+          ```swift
+          \(request.code)
+          ```
+          """,
+        ]
+        if let token = Environment.get("GH_PAT"),
+           let data = try? JSONSerialization.data(withJSONObject: parameters) {
+          _ = try? await req.client.send(
+            ClientRequest(
+              method: .POST,
+              url: "https://api.github.com/repos/kishikawakatsumi/swift-power-assert/issues",
+              headers: [
+                "Accept": "application/vnd.github.v3+json",
+                "Authorization": "token \(token)",
+                "User-Agent": "power-assert.swiftfiddle.com",
+              ],
+              body: ByteBuffer(data: data)
+            )
+          )
+        }
+      }
+
       if !status.stdout.isEmpty && !status.stderr.isEmpty {
-        return MacroExpansionResponse(stdout: status.stdout, stderr: "")
+        return PlaygroundResponse(stdout: status.stdout, stderr: "")
       } else {
-        return MacroExpansionResponse(stdout: status.stdout, stderr: status.stderr)
+        return PlaygroundResponse(stdout: status.stdout, stderr: status.stderr)
       }
     } catch {
       throw Abort(.internalServerError)
@@ -192,12 +218,12 @@ private extension UUID {
   }
 }
 
-private struct MacroExpansionRequest: Codable {
+private struct PlaygroundRequest: Codable {
   let session: String
   let code: String
 }
 
-private struct MacroExpansionResponse: Content {
+private struct PlaygroundResponse: Content {
   let stdout: String
   let stderr: String
 }
