@@ -299,7 +299,7 @@ public enum PowerAssert {
         .map { $0.value }
       if !skipped.isEmpty {
         message += skipped
-          .map { "[Not Evaluated] \($0)".red }
+          .map { "[Not Evaluated] \($0)" }
           .joined(separator: "\n")
       }
       return message
