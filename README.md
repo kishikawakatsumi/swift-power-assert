@@ -52,7 +52,7 @@ Hello, {+S+}w[-orld-]{+ift+}!
 
 ## Online Playground
 
-[:sparkles: **Experience the library in action with our online playground!** :sparkles: Click here to access the interactive demo.](https://power-assert.swiftfiddle.com/)
+[**Experience the library in action with our online playground!** :sparkles: Click here to access the interactive demo.](https://power-assert.swiftfiddle.com/)
 
 ## Why Power Assert?
 
