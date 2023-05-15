@@ -210,7 +210,7 @@ public enum PowerAssert {
     private func renderEqualityExpressions() -> String {
       var message = ""
       if !equalityExpressions.isEmpty {
-        message += equalityExpressions.reversed()
+        message += equalityExpressions
           .compactMap { (ex) -> String? in
             guard let equalityExpressionValue = equalityExpressionValues.first(where: { $0.id == ex.0 }) else {
               return nil
@@ -244,7 +244,7 @@ public enum PowerAssert {
     private func renderIdenticalExpressions() -> String {
       var message = ""
       if !identicalExpressions.isEmpty {
-        message += identicalExpressions.reversed()
+        message += identicalExpressions
           .compactMap { (ex) -> String? in
             guard let identicalExpressionValue = identicalExpressionValues.first(where: { $0.id == ex.0 }) else {
               return nil

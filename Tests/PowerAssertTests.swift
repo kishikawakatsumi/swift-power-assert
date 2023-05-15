@@ -362,42 +362,8 @@ final class PowerAssertTests: XCTestCase {
       #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
     } completion: { (output) in
       print(output)
-      XCTAssertTrue(
-        output ==
-        """
-        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        false    │  [1, 2, 3]                            false
-                                                          false
-
-        --- [Bool] array.description.hasPrefix("Hello")
-        +++ [Bool] true
-        –false
-        +true
-
-        --- [Bool] array.description.hasPrefix("[")
-        +++ [Bool] false
-        –true
-        +false
-
-        [Bool] array.description.hasPrefix("[")
-        => true
-        [Bool] false
-        => false
-        [Bool] array.description.hasPrefix("[") == false
-        => false
-        [Bool] array.description.hasPrefix("Hello")
-        => false
-        [Bool] true
-        => true
-        [Bool] array.description.hasPrefix("Hello") == true
-        => false
-
-
-        """
-        ||
-        output ==
+      XCTAssertEqual(
+        output,
         """
         #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
                 │     │           │         │    │  │     │  │     │           │         │        │  │
@@ -948,62 +914,74 @@ final class PowerAssertTests: XCTestCase {
       )
 
       #assert(
-        try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8),
-        verbose: true
+        try! JSONEncoder().encode(landmark) == #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8)
       )
       #assert(
-        try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8),
-        verbose: true
+        try! JSONEncoder().encode(landmark) == #"{ "name": "Tokyo Tower" }"#.data(using: .utf8)
       )
       #assert(
-        try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark),
-        verbose: true
+        try! #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8) == JSONEncoder().encode(landmark)
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(try! JSONEncoder().encode(landmark) != #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8))
-                     │             │      │         │  │                          │           │      │        │
-                     │             │      │         │  │                          │           String Encoding Unicode (UTF-8)
-                     │             │      │         │  │                          Optional(22 bytes)
-                     │             │      │         │  "{\"name\":\"Tokyo Tower\"}"
-                     │             │      │         true
+        #assert(try! JSONEncoder().encode(landmark) == #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8))
+                     │             │      │         │  │                             │           │      │        │
+                     │             │      │         │  │                             │           String Encoding Unicode (UTF-8)
+                     │             │      │         │  │                             Optional(25 bytes)
+                     │             │      │         │  "{ \"name\": \"Tokyo Tower\" }"
+                     │             │      │         false
                      │             │      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      │             Optional(116 bytes)
                      Foundation.JSONEncoder
 
+        --- [Optional<Data>] JSONEncoder().encode(landmark)
+        +++ [Optional<Data>] #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8)
+        –Optional(116 bytes)
+        +Optional(25 bytes)
+
         [Optional<Data>] JSONEncoder().encode(landmark)
         => Optional(116 bytes)
-        [Optional<Data>] #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8)
-        => Optional(22 bytes)
+        [Optional<Data>] #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8)
+        => Optional(25 bytes)
 
-        #assert(try! JSONEncoder().encode(landmark) == #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8))
-                     │             │      │         │  │                                                                                                                        │            │
-                     │             │      │         │  │                                                                                                                        │            Unicode (UTF-8)
-                     │             │      │         │  │                                                                                                                        Optional(116 bytes)
-                     │             │      │         │  "{\"name\":\"Tokyo Tower\",\"location\":{\"longitude\":139.74543800000001,\"latitude\":35.658580999999998},\"foundingYear\":1957}"
-                     │             │      │         true
+        #assert(try! JSONEncoder().encode(landmark) == #"{ "name": "Tokyo Tower" }"#.data(using: .utf8))
+                     │             │      │         │  │                             │            │
+                     │             │      │         │  │                             │            Unicode (UTF-8)
+                     │             │      │         │  │                             Optional(25 bytes)
+                     │             │      │         │  "{ \"name\": \"Tokyo Tower\" }"
+                     │             │      │         false
                      │             │      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                      │             Optional(116 bytes)
                      Foundation.JSONEncoder
 
+        --- [Optional<Data>] JSONEncoder().encode(landmark)
+        +++ [Optional<Data>] #"{ "name": "Tokyo Tower" }"#.data(using: .utf8)
+        –Optional(116 bytes)
+        +Optional(25 bytes)
+
         [Optional<Data>] JSONEncoder().encode(landmark)
         => Optional(116 bytes)
-        [Optional<Data>] #"{"name":"Tokyo Tower","location":{"longitude":139.74543800000001,"latitude":35.658580999999998},"foundingYear":1957}"#.data(using: .utf8)
-        => Optional(116 bytes)
+        [Optional<Data>] #"{ "name": "Tokyo Tower" }"#.data(using: .utf8)
+        => Optional(25 bytes)
 
-        #assert(try! #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8) != JSONEncoder().encode(landmark))
-                     │                          │           │      │        │     │  │             │      │
-                     │                          │           String Encoding │     │  │             │      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
-                     │                          Optional(22 bytes)          │     │  │             Optional(116 bytes)
-                     "{\"name\":\"Tokyo Tower\"}"                           │     │  Foundation.JSONEncoder
-                                                                            │     true
-                                                                            Unicode (UTF-8)
+        #assert(try! #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8) == JSONEncoder().encode(landmark))
+                     │                             │           │      │        │     │  │             │      │
+                     │                             │           String Encoding │     │  │             │      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
+                     │                             Optional(25 bytes)          │     │  │             Optional(116 bytes)
+                     "{ \"name\": \"Tokyo Tower\" }"                           │     │  Foundation.JSONEncoder
+                                                                               │     false
+                                                                               Unicode (UTF-8)
 
-        [Optional<Data>] #"{"name":"Tokyo Tower"}"#.data(using: String.Encoding.utf8)
-        => Optional(22 bytes)
+        --- [Optional<Data>] #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8)
+        +++ [Optional<Data>] JSONEncoder().encode(landmark)
+        –Optional(25 bytes)
+        +Optional(116 bytes)
+
+        [Optional<Data>] #"{ "name": "Tokyo Tower" }"#.data(using: String.Encoding.utf8)
+        => Optional(25 bytes)
         [Optional<Data>] JSONEncoder().encode(landmark)
         => Optional(116 bytes)
 
@@ -1021,27 +999,24 @@ final class PowerAssertTests: XCTestCase {
         location: Coordinate(latitude: 35.658581, longitude: 139.745438)
       )
 
-      #assert(
-        try JSONEncoder().encode(landmark).count > 0,
-        verbose: true
-      )
+      #assert(try JSONEncoder().encode(landmark).count > 200)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(try JSONEncoder().encode(landmark).count > 0)
+        #assert(try JSONEncoder().encode(landmark).count > 200)
                     │             │      │         │     │ │
-                    │             │      │         116   │ 0
-                    │             │      │               true
+                    │             │      │         116   │ 200
+                    │             │      │               false
                     │             │      Landmark(name: "Tokyo Tower", foundingYear: 1957, location: PowerAssertTests.Coordinate(latitude: 35.658581, longitude: 139.745438))
                     │             116 bytes
                     Foundation.JSONEncoder
 
         [Int] JSONEncoder().encode(landmark).count
         => 116
-        [Int] 0
-        => 0
+        [Int] 200
+        => 200
 
 
         """#
@@ -1050,26 +1025,19 @@ final class PowerAssertTests: XCTestCase {
   }
 
   func testThrowError() {
-    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
-    defer {
-      unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
-    }
-    
     try captureConsoleOutput {
       #assert(
-        try throwRecoverableError() == "recoverable error",
-        verbose: true
+        try throwRecoverableError() == "recoverable error"
       )
       #assert(try throwUnrecoverableError(), verbose: true)
+
       let input1 = "test"
       let input2 = "test"
       #assert(
-        try input1 == input2 && throwRecoverableError() == "recoverable error",
-        verbose: true
+        try input1 == input2 && throwRecoverableError() == "recoverable error"
       )
       #assert(
-        try input1 == input2 && throwUnrecoverableError(),
-        verbose: true
+        try input1 == input2 && throwUnrecoverableError()
       )
     } completion: { (output) in
       print(output)
@@ -1137,19 +1105,24 @@ final class PowerAssertTests: XCTestCase {
       let string = "1234"
       let number = Int(string)
 
-      #assert(number != nil && number == 1234, verbose: true)
+      #assert(number != nil && number == 1111)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(number != nil && number == 1234)
+        #assert(number != nil && number == 1111)
                 │      │  │   │  │      │  │
-                │      │  nil │  │      │  1234
-                │      true   │  │      true
+                │      │  nil │  │      │  1111
+                │      true   │  │      false
                 │             │  Optional(1234)
-                │             true
+                │             false
                 Optional(1234)
+
+        --- [Optional<Int>] number
+        +++ [Int] 1111
+        –Optional(1234)
+        +1111
 
         [Optional<Int>] number
         => Optional(1234)
@@ -1159,10 +1132,10 @@ final class PowerAssertTests: XCTestCase {
         => true
         [Optional<Int>] number
         => Optional(1234)
-        [Int] 1234
-        => 1234
-        [Bool] number == 1234
-        => true
+        [Int] 1111
+        => 1111
+        [Bool] number == 1111
+        => false
 
 
         """
@@ -1176,27 +1149,31 @@ final class PowerAssertTests: XCTestCase {
       let number = Int(string)
       let hello = "hello"
 
-      #assert((number != nil ? string : hello) == string, verbose: true)
+      #assert((number != nil ? string : "hello") == hello)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert((number != nil ? string : hello) == string)
-                │││     │  │     │               │  │
-                ││"1234"│  nil   "1234"          │  "1234"
-                ││      true                     true
+        #assert((number != nil ? string : "hello") == hello)
+                │││     │  │     │                 │  │
+                ││"1234"│  nil   "1234"            │  "hello"
+                ││      true                       false
                 │Optional(1234)
                 "1234"
+
+        --- [String] (number != nil ? string : "hello")
+        +++ [String] hello
+        [-1234-]{+hello+}
 
         [Optional<Int>] number
         => Optional(1234)
         [Optional<Int>] nil
         => nil
-        [String] (number != nil ? string : hello)
+        [String] (number != nil ? string : "hello")
         => "1234"
-        [String] string
-        => "1234"
+        [String] hello
+        => "hello"
 
 
         """
@@ -1210,16 +1187,16 @@ final class PowerAssertTests: XCTestCase {
       let number = Int(string)
       let hello = "hello"
 
-      #assert((number == nil ? string : hello) != string, verbose: true)
+      #assert((number == nil ? string : hello) == string)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert((number == nil ? string : hello) != string)
+        #assert((number == nil ? string : hello) == string)
                 │││     │  │              │      │  │
                 │││     │  nil            │      │  "1234"
-                │││     false             │      true
+                │││     false             │      false
                 ││"hello"                 "hello"
                 │Optional(1234)
                 "hello"
@@ -1228,6 +1205,10 @@ final class PowerAssertTests: XCTestCase {
         +++ [Optional<Int>] nil
         –Optional(1234)
         +nil
+
+        --- [String] (number == nil ? string : hello)
+        +++ [String] string
+        [-hello-]{+1234+}
 
         [Optional<Int>] number
         => Optional(1234)

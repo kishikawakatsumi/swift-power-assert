@@ -85,6 +85,7 @@ class PowerAssertRewriter: SyntaxRewriter {
         guard let expression = value.0, let lhs = value.1, let rhs = value.2 else { return nil }
         return (expression, lhs, rhs)
       }
+      .sorted { $0.0 < $1.0 }
       .description
   }
 
@@ -132,6 +133,7 @@ class PowerAssertRewriter: SyntaxRewriter {
         guard let expression = value.0, let lhs = value.1, let rhs = value.2 else { return nil }
         return (expression, lhs, rhs)
       }
+      .sorted { $0.0 < $1.0 }
       .description
   }
 
