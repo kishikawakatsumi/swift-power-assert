@@ -434,46 +434,7 @@ final class PowerAssertTests: XCTestCase {
     }
   }
 
-  func testBinaryExpression10() {
-    captureConsoleOutput {
-      let one = 1
-      let two = 2
-      let three = 3
-
-      let array = [one, two, three]
-      #assert(array.description.hasPrefix("]") == false || array.description.hasPrefix("Hello") == false, verbose: true)
-    } completion: { (output) in
-      print(output)
-      XCTAssertEqual(
-        output,
-        """
-        #assert(array.description.hasPrefix("]") == false || array.description.hasPrefix("Hello") == false)
-                │     │           │         │    │  │     │
-                │     "[1, 2, 3]" false     "]"  │  false true
-                [1, 2, 3]                        true
-
-        [Bool] array.description.hasPrefix("]")
-        => false
-        [Bool] false
-        => false
-        [Bool] array.description.hasPrefix("]") == false
-        => true
-        [Not Evaluated] array.description.hasPrefix("Hello")
-        [Not Evaluated] false
-        [Not Evaluated] array.description.hasPrefix("Hello") == false
-
-
-        """
-      )
-    }
-  }
-
   func testEqualityExpression1() {
-    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
-    defer {
-      unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
-    }
-
     captureConsoleOutput {
       let input1 = "apple"
       let input2 = "orange"
@@ -505,11 +466,6 @@ final class PowerAssertTests: XCTestCase {
   }
 
   func testEqualityExpression2() {
-    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
-    defer {
-      unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
-    }
-
     captureConsoleOutput {
       let input1 = "The quick brown fox"
       let input2 = "The slow brown fox"
@@ -541,11 +497,6 @@ final class PowerAssertTests: XCTestCase {
   }
 
   func testIdenticalExpression() {
-    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
-    defer {
-      unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
-    }
-
     captureConsoleOutput {
       let number1 = IntegerRef(100)
       let number2 = IntegerRef(200)
@@ -580,53 +531,67 @@ final class PowerAssertTests: XCTestCase {
   func testMultilineExpression1() {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
-
-      #assert(bar.val != bar.foo.val, verbose: true)
+      #assert(bar.val == bar.foo.val)
       #assert(bar
-        .val !=
-             bar.foo.val, verbose: true)
+        .val ==
+        bar.foo.val)
       #assert(bar
-        .val !=
-             bar
-        .foo        .val, verbose: true)
+        .val ==
+        bar
+          .foo        .val)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(bar.val != bar.foo.val)
+        #assert(bar.val == bar.foo.val)
                 │   │   │  │   │   │
                 │   3   │  │   │   2
                 │       │  │   Foo(val: 2)
                 │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                │       true
+                │       false
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        --- [Int] bar.val
+        +++ [Int] bar.foo.val
+        –3
+        +2
 
         [Int] bar.val
         => 3
         [Int] bar.foo.val
         => 2
 
-        #assert(bar .val != bar.foo.val)
+        #assert(bar .val == bar.foo.val)
                 │    │   │  │   │   │
                 │    3   │  │   │   2
                 │        │  │   Foo(val: 2)
                 │        │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                │        true
+                │        false
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        --- [Int] bar .val
+        +++ [Int] bar.foo.val
+        –3
+        +2
 
         [Int] bar .val
         => 3
         [Int] bar.foo.val
         => 2
 
-        #assert(bar .val != bar .foo .val)
+        #assert(bar .val == bar .foo .val)
                 │    │   │  │    │    │
                 │    3   │  │    │    2
                 │        │  │    Foo(val: 2)
                 │        │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                │        true
+                │        false
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        --- [Int] bar .val
+        +++ [Int] bar .foo .val
+        –3
+        +2
 
         [Int] bar .val
         => 3
@@ -649,58 +614,68 @@ final class PowerAssertTests: XCTestCase {
 
       #assert(array    .        firstIndex(
         of:    zero)
-             != two,
-                   verbose: true
+        == two
       )
 
       #assert(array
         .
-                   firstIndex(
+              firstIndex(
 
-              of:
-                zero)
-             != two
-
-                   ,     verbose: true
+          of:
+          zero)
+        == two
       )
 
       #assert(array
         .firstIndex(
           of:
-            zero)
-             != two,
-
-                   verbose: true
+          zero)
+        == two
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array . firstIndex( of: zero) != two)
+        #assert(array . firstIndex( of: zero) == two)
                 │       │               │     │  │
                 │       nil             0     │  2
-                [1, 2, 3]                     true
+                [1, 2, 3]                     false
+
+        --- [Optional<Int>] array . firstIndex( of: zero)
+        +++ [Int] two
+        –nil
+        +2
 
         [Optional<Int>] array . firstIndex( of: zero)
         => nil
         [Int] two
         => 2
 
-        #assert(array . firstIndex( of: zero) != two)
+        #assert(array . firstIndex( of: zero) == two)
                 │       │               │     │  │
                 │       nil             0     │  2
-                [1, 2, 3]                     true
+                [1, 2, 3]                     false
+
+        --- [Optional<Int>] array . firstIndex( of: zero)
+        +++ [Int] two
+        –nil
+        +2
 
         [Optional<Int>] array . firstIndex( of: zero)
         => nil
         [Int] two
         => 2
 
-        #assert(array .firstIndex( of: zero) != two)
+        #assert(array .firstIndex( of: zero) == two)
                 │      │               │     │  │
                 │      nil             0     │  2
-                [1, 2, 3]                    true
+                [1, 2, 3]                    false
+
+        --- [Optional<Int>] array .firstIndex( of: zero)
+        +++ [Int] two
+        –nil
+        +2
 
         [Optional<Int>] array .firstIndex( of: zero)
         => nil
@@ -723,35 +698,35 @@ final class PowerAssertTests: XCTestCase {
       #assert(array
         .description
         .hasPrefix(    "["
-                  )
-             == true && array
-        .description
-        .hasPrefix    ("Hello"    ) ==
-             false
-             , verbose: true)
+        )
+        == false && array
+          .description
+          .hasPrefix    ("Hello"    ) ==
+        true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array .description .hasPrefix( "[" ) == true && array .description .hasPrefix ("Hello" ) == false)
-                │      │            │          │     │  │    │  │      │            │          │         │  │
-                │      "[1, 2, 3]"  true       "["   │  true │  │      "[1, 2, 3]"  false      "Hello"   │  false
-                [1, 2, 3]                            true    │  [1, 2, 3]                                true
-                                                             true
+        #assert(array .description .hasPrefix( "[" ) == false && array .description .hasPrefix ("Hello" ) == true)
+                │      │            │          │     │  │     │
+                │      "[1, 2, 3]"  true       "["   │  false false
+                [1, 2, 3]                            false
+
+        --- [Bool] array .description .hasPrefix( "[" )
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array .description .hasPrefix( "[" )
         => true
-        [Bool] true
-        => true
-        [Bool] array .description .hasPrefix( "[" ) == true
-        => true
-        [Bool] array .description .hasPrefix ("Hello" )
-        => false
         [Bool] false
         => false
-        [Bool] array .description .hasPrefix ("Hello" ) == false
-        => true
+        [Bool] array .description .hasPrefix( "[" ) == false
+        => false
+        [Not Evaluated] array .description .hasPrefix ("Hello" )
+        [Not Evaluated] true
+        [Not Evaluated] array .description .hasPrefix ("Hello" ) == true
 
 
         """
@@ -774,42 +749,40 @@ final class PowerAssertTests: XCTestCase {
 
         array.firstIndex(
           of: zero
+          )
+          ==
+          two
+          &&
+          bar
+            .val
+          == bar
+            .foo
+            .val
         )
-        !=
-        two
-        &&
-        bar
-          .val
-        != bar
-          .foo
-          .val
-        , verbose: true)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array.firstIndex( of: zero ) != two && bar .val != bar .foo .val)
-                │     │               │      │  │   │  │    │   │  │    │    │
-                │     nil             0      │  2   │  │    3   │  │    │    2
-                [1, 2, 3]                    true   │  │        │  │    Foo(val: 2)
-                                                    │  │        │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                                                    │  │        true
-                                                    │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                                                    true
+        #assert(array.firstIndex( of: zero ) == two && bar .val == bar .foo .val)
+                │     │               │      │  │   │
+                │     nil             0      │  2   false
+                [1, 2, 3]                    false
+
+        --- [Optional<Int>] array.firstIndex( of: zero )
+        +++ [Int] two
+        –nil
+        +2
 
         [Optional<Int>] array.firstIndex( of: zero )
         => nil
         [Int] two
         => 2
-        [Bool] array.firstIndex( of: zero ) != two
-        => true
-        [Int] bar .val
-        => 3
-        [Int] bar .foo .val
-        => 2
-        [Bool] bar .val != bar .foo .val
-        => true
+        [Bool] array.firstIndex( of: zero ) == two
+        => false
+        [Not Evaluated] bar .val
+        [Not Evaluated] bar .foo .val
+        [Not Evaluated] bar .val == bar .foo .val
 
 
         """
@@ -830,17 +803,21 @@ final class PowerAssertTests: XCTestCase {
           .distance(
             from: 2,
             to: 3)
-        != 4
-        , verbose: true)
+          == 4)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array .distance( from: 2, to: 3) != 4)
+        #assert(array .distance( from: 2, to: 3) == 4)
                 │      │               │      │  │  │
                 │      1               2      3  │  4
-                [1, 2, 3]                        true
+                [1, 2, 3]                        false
+
+        --- [Int] array .distance( from: 2, to: 3)
+        +++ [Int] 4
+        –1
+        +4
 
         [Int] array .distance( from: 2, to: 3)
         => 1
@@ -860,20 +837,24 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       #assert([one,
-              two
-              , three]
+               two
+        , three]
         .count
-             != 10
-                   , verbose: true)
+        == 10)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert([one, two , three] .count != 10)
+        #assert([one, two , three] .count == 10)
                 ││    │     │       │     │  │
                 │1    2     3       3     │  10
-                [1, 2, 3]                 true
+                [1, 2, 3]                 false
+
+        --- [Int] [one, two , three] .count
+        +++ [Int] 10
+        –3
+        +10
 
         [Int] [one, two , three] .count
         => 3
@@ -896,17 +877,21 @@ final class PowerAssertTests: XCTestCase {
                two
                , three]  /* comment in expression*/
         .count
-              != 10
-              , verbose: true)
+              == 10)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert([one, two , three]  .count != 10)
+        #assert([one, two , three]  .count == 10)
                 ││    │     │        │     │  │
                 │1    2     3        3     │  10
-                [1, 2, 3]                  true
+                [1, 2, 3]                  false
+
+        --- [Int] [one, two , three]  .count
+        +++ [Int] 10
+        –3
+        +10
 
         [Int] [one, two , three]  .count
         => 3
@@ -926,18 +911,22 @@ final class PowerAssertTests: XCTestCase {
       let three = 3
 
       #assert(
-        [one, two, three]/* comment in assertion*/./* comment in assertion*/count/* comment in assertion*/!=/* comment in assertion*/10,
-        verbose: true
+        [one, two, three]/* comment in assertion*/./* comment in assertion*/count/* comment in assertion*/==/* comment in assertion*/10
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert([one, two, three] . count != 10)
+        #assert([one, two, three] . count == 10)
                 ││    │    │        │     │  │
                 │1    2    3        3     │  10
-                [1, 2, 3]                 true
+                [1, 2, 3]                 false
+
+        --- [Int] [one, two, three] . count
+        +++ [Int] 10
+        –3
+        +10
 
         [Int] [one, two, three] . count
         => 3
