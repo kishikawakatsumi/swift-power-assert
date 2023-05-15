@@ -1,6 +1,6 @@
 import Foundation
 
-extension PowerAssertTests {
+extension AssertTests {
   var stringValue: String { "string" }
   var intValue: Int { 100 }
   var doubleValue: Double { 999.9 }

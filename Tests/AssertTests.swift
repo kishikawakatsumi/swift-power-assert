@@ -1,7 +1,7 @@
 import XCTest
 @testable import PowerAssert
 
-final class PowerAssertTests: XCTestCase {
+final class AssertTests: XCTestCase {
   override func setUp() {
     setenv("NO_COLOR", "1", 1)
     setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
@@ -1336,14 +1336,14 @@ final class PowerAssertTests: XCTestCase {
                 │     │  │         │             │               │
                 │     │  "*.swift" false         false           false
                 │     false
-                "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
+                "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
 
         --- [String] #file
         +++ [String] "*.swift"
-        [-@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_-]{+*+}.swift
+        [-@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_-]{+*+}.swift
 
         [String] #file
-        => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
+        => "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
         [String] "*.swift"
         => "*.swift"
         [Bool] #file == "*.swift"
@@ -1371,14 +1371,14 @@ final class PowerAssertTests: XCTestCase {
                 │     │  │         │             │               │
                 │     │  "*.swift" false         false           false
                 │     false
-                "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
+                "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
 
         --- [String] #file
         +++ [String] "*.swift"
-        [-@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_-]{+*+}.swift
+        [-@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_-]{+*+}.swift
 
         [String] #file
-        => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
+        => "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
         [String] "*.swift"
         => "*.swift"
         [Bool] #file == "*.swift"
@@ -1462,11 +1462,11 @@ final class PowerAssertTests: XCTestCase {
                 │    │           │  │        │  │    │        │  │   │  │    │           │  │
                 │    "string"    │  "string" │  │    100      │  100 │  │    999.9       │  0.1
                 │                true        │  │             true   │  │                false
-                │                            │  │                    │  -[PowerAssertTests testSelfExpression]
+                │                            │  │                    │  -[AssertTests testSelfExpression]
                 │                            │  │                    false
-                │                            │  -[PowerAssertTests testSelfExpression]
+                │                            │  -[AssertTests testSelfExpression]
                 │                            true
-                -[PowerAssertTests testSelfExpression]
+                -[AssertTests testSelfExpression]
 
         --- [Double] self.doubleValue
         +++ [Double] 0.1
@@ -1512,7 +1512,7 @@ final class PowerAssertTests: XCTestCase {
                 │     │                    │  │
                 │     true                 │  false
                 │                          false
-                -[PowerAssertTests testSuperExpression]
+                -[AssertTests testSuperExpression]
 
         --- [Bool] super.continueAfterFailure
         +++ [Bool] false
