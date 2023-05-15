@@ -177,10 +177,6 @@ func testConcurrency() async {
 }
 ```
 
-## Testing assistance requested
-
-Swift Power Assert is still in the early stages of development. If you could help us with testing, we would greatly appreciate it! Please try different code patterns using this library and report any problems you encounter. We welcome your feedback and improvement suggestions. Thank you very much!
-
 ## Frequently Asked Questions
 
 **Q: I want to display the result even if the test is successful (i.e. the expression in the `#assert()` function evaluates to `true`).**
