@@ -1242,16 +1242,21 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #assert([one, two, three].firstIndex(of: zero) != two, verbose: true)
+      #assert([one, two, three].firstIndex(of: zero) == two)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert([one, two, three].firstIndex(of: zero) != two)
+        #assert([one, two, three].firstIndex(of: zero) == two)
                 ││    │    │      │              │     │  │
                 │1    2    3      nil            0     │  2
-                [1, 2, 3]                              true
+                [1, 2, 3]                              false
+
+        --- [Optional<Int>] [one, two, three].firstIndex(of: zero)
+        +++ [Int] two
+        –nil
+        +2
 
         [Optional<Int>] [one, two, three].firstIndex(of: zero)
         => nil
@@ -1271,17 +1276,22 @@ final class PowerAssertTests: XCTestCase {
       let two = 2
       let three = 3
 
-      #assert([zero: one, two: three].count != three, verbose: true)
+      #assert([zero: one, two: three].count == three)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertTrue(
         output ==
         """
-        #assert([zero: one, two: three].count != three)
+        #assert([zero: one, two: three].count == three)
                 ││     │    │    │      │     │  │
                 │0     1    2    3      2     │  3
-                [0: 1, 2: 3]                  true
+                [0: 1, 2: 3]                  false
+
+        --- [Int] [zero: one, two: three].count
+        +++ [Int] three
+        –2
+        +3
 
         [Int] [zero: one, two: three].count
         => 2
@@ -1293,10 +1303,15 @@ final class PowerAssertTests: XCTestCase {
         ||
         output ==
         """
-        #assert([zero: one, two: three].count != three)
+        #assert([zero: one, two: three].count == three)
                 ││     │    │    │      │     │  │
                 │0     1    2    3      2     │  3
-                [2: 3, 0: 1]                  true
+                [2: 3, 0: 1]                  false
+
+        --- [Int] [zero: one, two: three].count
+        +++ [Int] three
+        –2
+        +3
 
         [Int] [zero: one, two: three].count
         => 2
@@ -1311,93 +1326,76 @@ final class PowerAssertTests: XCTestCase {
 
   func testMagicLiteralExpression1() {
     captureConsoleOutput {
-      #assert(
-        #file != "*.swift" && #line != 1 && #column != 2 && #function != "function",
-        verbose: true
-      )
+      #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
     } completion: { (output) in
       print(output)
       XCTAssertTrue(
         output ==
         """
-        #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-                │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  11    │  1 │  345     │  2 │  │         │  "function"
-                │     true         true     true true       true │  │         true
-                │                                                │  "testMagicLiteralExpression1()"
-                │                                                true
+        #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
+                │     │  │         │             │               │
+                │     │  "*.swift" false         false           false
+                │     false
                 "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
+
+        --- [String] #file
+        +++ [String] "*.swift"
+        [-@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_-]{+*+}.swift
 
         [String] #file
         => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_6assertfMf_.swift"
         [String] "*.swift"
         => "*.swift"
-        [Bool] #file != "*.swift"
-        => true
-        [Int] #line
-        => 11
-        [Int] 1
-        => 1
-        [Bool] #line != 1
-        => true
-        [Bool] #file != "*.swift" && #line != 1
-        => true
-        [Int] #column
-        => 345
-        [Int] 2
-        => 2
-        [Bool] #column != 2
-        => true
-        [Bool] #file != "*.swift" && #line != 1 && #column != 2
-        => true
-        [String] #function
-        => "testMagicLiteralExpression1()"
-        [String] "function"
-        => "function"
-        [Bool] #function != "function"
-        => true
+        [Bool] #file == "*.swift"
+        => false
+        [Bool] #file == "*.swift" && #line == 1
+        => false
+        [Bool] #file == "*.swift" && #line == 1 && #column == 2
+        => false
+        [Not Evaluated] #line
+        [Not Evaluated] 1
+        [Not Evaluated] #line == 1
+        [Not Evaluated] #column
+        [Not Evaluated] 2
+        [Not Evaluated] #column == 2
+        [Not Evaluated] #function
+        [Not Evaluated] "function"
+        [Not Evaluated] #function == "function"
 
 
         """
         ||
         output ==
         """
-        #assert(#file != "*.swift" && #line != 1 && #column != 2 && #function != "function")
-                │     │  │         │  │     │  │ │  │       │  │ │  │         │  │
-                │     │  "*.swift" │  11    │  1 │  345     │  2 │  │         │  "function"
-                │     true         true     true true       true │  │         true
-                │                                                │  "testMagicLiteralExpression1()"
-                │                                                true
+        #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
+                │     │  │         │             │               │
+                │     │  "*.swift" false         false           false
+                │     false
                 "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
+
+        --- [String] #file
+        +++ [String] "*.swift"
+        [-@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_-]{+*+}.swift
 
         [String] #file
         => "@__swiftmacro_16PowerAssertTestsAAC27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
         [String] "*.swift"
         => "*.swift"
-        [Bool] #file != "*.swift"
-        => true
-        [Int] #line
-        => 11
-        [Int] 1
-        => 1
-        [Bool] #line != 1
-        => true
-        [Bool] #file != "*.swift" && #line != 1
-        => true
-        [Int] #column
-        => 345
-        [Int] 2
-        => 2
-        [Bool] #column != 2
-        => true
-        [Bool] #file != "*.swift" && #line != 1 && #column != 2
-        => true
-        [String] #function
-        => "testMagicLiteralExpression1()"
-        [String] "function"
-        => "function"
-        [Bool] #function != "function"
-        => true
+        [Bool] #file == "*.swift"
+        => false
+        [Bool] #file == "*.swift" && #line == 1
+        => false
+        [Bool] #file == "*.swift" && #line == 1 && #column == 2
+        => false
+        [Not Evaluated] #line
+        [Not Evaluated] 1
+        [Not Evaluated] #line == 1
+        [Not Evaluated] #column
+        [Not Evaluated] 2
+        [Not Evaluated] #column == 2
+        [Not Evaluated] #function
+        [Not Evaluated] "function"
+        [Not Evaluated] #function == "function"
 
 
         """
