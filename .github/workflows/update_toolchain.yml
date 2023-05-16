@@ -1,0 +1,35 @@
+name: Update Swift Toolchain
+
+on:
+  schedule:
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v3
+      - name: Update Swift Toolchain
+        run: |
+          set -ex
+
+          git clone https://github.com/apple/swift.git
+          tag=`(cd swift && git fetch --tags && git tag | grep '^swift-5.9' | sort -V | tail -1)`
+
+          version=$tag
+          file_name=$version-osx.pkg
+          branch=swift-5.9-branch
+          URL=https://download.swift.org/$branch/xcode/$version/$file_name
+          if curl --output /dev/null --silent --head --fail "$URL"; then
+            echo $tag > .swift-version
+          fi
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GH_PAT }}
+          base: "main"
+          commit-message: "Update Swift Toolchain"
+          title: "Update Swift Toolchain"
+          add-paths: .swift-version
