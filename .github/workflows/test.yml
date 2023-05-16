@@ -9,20 +9,26 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_14.3.app
 
 jobs:
-  build:
+  test:
     runs-on: macos-13
     steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v3
+      - name: Swift Version
+        id: swift-version
+        run: echo "SWIFT_VERSION=$(cat .swift-version)" >> "$GITHUB_OUTPUT"
       - name: Install Swift
         uses: slashmo/install-swift@v0.4.0
         with:
-          version: swift-5.9-DEVELOPMENT-SNAPSHOT-2023-05-07-a
-      - uses: actions/checkout@v3
+          version: ${{ steps.swift-version.outputs.SWIFT_VERSION }}
       - name: Build
         run: |
-          export TOOLCHAINS=org.swift.59202305071a
+          export TOOLCHAINS=swift
+          swift -version
           swift build
       - name: Run tests
         run: |
+          swift -version
           swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions --enable-code-coverage
       - name: Gather code coverage
         run: |
