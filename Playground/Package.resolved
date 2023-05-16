@@ -131,8 +131,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "546eaa261ec5028b9cc5c7fa883fba9dd5881a3b",
-        "version" : "2.52.0"
+        "revision" : "2d8e6ca36fe3e8ed74b0883f593757a45463c34d",
+        "version" : "2.53.0"
       }
     },
     {
@@ -186,7 +186,7 @@
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
         "branch" : "main",
-        "revision" : "cecb0340a95f00f8f2725c912b494266ed7b4a80"
+        "revision" : "94959f0693610c3f51fc8823c2f38bb00b064c26"
       }
     },
     {
@@ -221,8 +221,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/websocket-kit.git",
       "state" : {
-        "revision" : "2166cbe932b29b6419f9cd751e8b27c647e1238e",
-        "version" : "2.8.0"
+        "revision" : "17c0afbf24f4e288e183bc34317dc97b5cd084bd",
+        "version" : "2.9.0"
       }
     }
   ],
