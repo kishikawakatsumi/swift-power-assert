@@ -16,7 +16,7 @@ workflows:
             set -o pipefail
             set -x
 
-            version=(cat .swift-version)
+            version=$(cat .swift-version)
             file_name=$version-osx.pkg
             branch=swift-5.9-branch
             wget https://download.swift.org/$branch/xcode/$version/$file_name
