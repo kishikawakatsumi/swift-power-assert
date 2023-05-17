@@ -186,7 +186,7 @@
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
         "branch" : "main",
-        "revision" : "94959f0693610c3f51fc8823c2f38bb00b064c26"
+        "revision" : "1657efb5dcafe36a67bee988bf9a12ccfa7cc711"
       }
     },
     {
@@ -212,8 +212,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "f4b00a5350238fe896d865d96d64f12fcbbeda95",
-        "version" : "4.76.0"
+        "revision" : "b42287f2c3909930be6329922906a6a8092943d2",
+        "version" : "4.76.2"
       }
     },
     {
