@@ -27,7 +27,7 @@ jobs:
           branch=swift-5.9-branch
           URL=https://download.swift.org/$branch/xcode/$version/$file_name
           if curl --output /dev/null --silent --head --fail "$URL"; then
-            echo $tag > .swift-version
+            echo $dir > .swift-version
           fi
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
