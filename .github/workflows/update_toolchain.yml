@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v3
+      - name: Install yq
+        run: |
+          sudo add-apt-repository ppa:rmescandon/yq
+          sudo apt update
+          sudo apt install yq -y
       - name: Update Swift Toolchain
         run: |
           set -ex
