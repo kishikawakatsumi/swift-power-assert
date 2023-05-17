@@ -15,10 +15,9 @@ jobs:
         run: |
           set -ex
 
-          git clone https://github.com/apple/swift.git
-          tag=`(cd swift && git fetch --tags && git tag | grep '^swift-5.9' | sort -V | tail -1)`
+          dir=$(curl -s 'https://download.swift.org/swift-5.9-branch/xcode/latest-build.yml' | yq e '.dir' -)
 
-          version=$tag
+          version=$dir
           file_name=$version-osx.pkg
           branch=swift-5.9-branch
           URL=https://download.swift.org/$branch/xcode/$version/$file_name
