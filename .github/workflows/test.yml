@@ -26,6 +26,7 @@ jobs:
           export TOOLCHAINS=swift
           swift -version
           swift build
+          (cd Playground && tar -czh . | docker build - --rm --no-cache --build-arg FONTAWESOME_TOKEN=${{ env.FONTAWESOME_TOKEN }})
       - name: Run tests
         run: |
           swift -version
