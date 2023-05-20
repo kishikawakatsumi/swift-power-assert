@@ -15,7 +15,7 @@ class Console {
     case cyan = "36"
     case white = "37"
   }
-  
+
   static func decorate(_ style: Style, on text: String) -> String {
     return decorate([style], on: text)
   }
@@ -43,7 +43,7 @@ class Console {
     guard let term = environment["TERM"] else { return false }
     guard term.lowercased() != "dumb" else { return false }
     // https://github.com/apple/swift-package-manager/issues/6081
-//    guard isatty(fileno(stdout)) != 0 else { return false }
+    // guard isatty(fileno(stdout)) != 0 else { return false }
     return true
   }
 }
@@ -60,7 +60,7 @@ extension String {
   var green: String {
     decorated(with: .color(.green))
   }
-  
+
   func decorated(with style: Console.Style) -> String {
     self.decorated(with: [style])
   }
@@ -69,3 +69,4 @@ extension String {
     Console.decorate(styles, on: self)
   }
 }
+

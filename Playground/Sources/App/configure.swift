@@ -1,7 +1,7 @@
 import Vapor
 import Leaf
 
-public func configure(_ app: Application) throws {
+public func configure(_ app: Application) async throws {
   app.middleware = Middlewares()
   app.middleware.use(CommonErrorMiddleware())
   app.middleware.use(CustomHeaderMiddleware())
@@ -9,9 +9,10 @@ public func configure(_ app: Application) throws {
   let publicDirectory = "\(app.directory.publicDirectory)/dist"
   app.middleware.use(FileMiddleware(publicDirectory: publicDirectory))
 
-  app.http.server.configuration.supportPipelining = true
+  app.http.server.configuration.port = Environment.process.PORT.flatMap { Int($0) } ?? 8080
   app.http.server.configuration.requestDecompression = .enabled
   app.http.server.configuration.responseCompression = .enabled
+  app.http.server.configuration.supportPipelining = true
 
   app.caches.use(.memory)
 
