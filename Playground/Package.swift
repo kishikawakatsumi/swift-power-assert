@@ -31,7 +31,7 @@ let package = Package(
       name: "StringWidth",
       dependencies: []
     ),
-    .target(
+    .executableTarget(
       name: "App",
       dependencies: [
         .product(name: "Vapor", package: "vapor"),
@@ -43,11 +43,6 @@ let package = Package(
       ],
       swiftSettings: [
         .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)),
-      ]
-    ),
-    .executableTarget(
-      name: "Run", dependencies: [
-        .target(name: "App"),
       ]
     ),
   ]
