@@ -186,7 +186,7 @@
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
         "branch" : "main",
-        "revision" : "d3ce9913d065fddec5038c38b68dbb33515d95db"
+        "revision" : "6f782d9bf5a353fc2626b5d47fa8e97e7add2378"
       }
     },
     {
@@ -221,8 +221,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/websocket-kit.git",
       "state" : {
-        "revision" : "17c0afbf24f4e288e183bc34317dc97b5cd084bd",
-        "version" : "2.9.0"
+        "revision" : "c2e0aa4c31e2c25f160966f7b9d81206fe8ba822",
+        "version" : "2.10.0"
       }
     }
   ],
