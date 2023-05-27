@@ -186,7 +186,7 @@
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
         "branch" : "main",
-        "revision" : "239de6c5def29d13e7b9fc95f1fbc3f82150954b"
+        "revision" : "56ef324e094ad1e655ae7d8c8dabadc7e6bd64e9"
       }
     },
     {
