@@ -212,8 +212,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "8b79ff0bd264a33bd0b7471dcf50dd1be983f992",
-        "version" : "4.76.3"
+        "revision" : "f0aed184b8652565cfe42ea9f6d0f3fa1973372b",
+        "version" : "4.76.4"
       }
     },
     {
@@ -221,8 +221,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/websocket-kit.git",
       "state" : {
-        "revision" : "2ec14506d5f8199926906dc5a620ac22b147db86",
-        "version" : "2.13.0"
+        "revision" : "53fe0639a98903858d0196b699720decb42aee7b",
+        "version" : "2.14.0"
       }
     }
   ],
