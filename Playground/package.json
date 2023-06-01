@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "webpack --progress --config webpack.prod.js",
+    "prod": "webpack --progress --config webpack.prod.js",
     "dev": "webpack --progress --config webpack.dev.js"
   },
   "dependencies": {

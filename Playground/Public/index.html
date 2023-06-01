@@ -27,37 +27,39 @@
 </head>
 
 <body>
-  <div class="container-fluid g-0 d-flex flex-column min-vh-100">
-    <header class="row m-0 g-0 justify-content-start bg-light">
-      <div class="col-md-auto m-2">
-        <a class="text-decoration-none" href="/">
-          <span class="fab fa-swift fa-2x text-primary d-inline-block align-middle"
-            style="min-width: 2rem; min-height: 2rem;"></span>
-          <span class="h4 text-dark d-inline-block align-middle m-0">Swift Power Assert Playground</span>
-        </a>
-      </div>
-      <div class="col-md-auto m-2">
-        <button type="button" id="run-button" class="btn btn-primary btn-sm rounded-pill disabled">
-          <span id="run-button-icon" class="fa-solid fa-play fa-fw ms-2"
-            style="display: inline-block; min-width: 1em; min-height: 1em;"></span>
-          <span id="run-button-spinner" class="fad fa-spinner-third fa-spin fa-fw ms-2 d-none"></span>
-          <span class="mx-2">Run</span>
-        </button>
-        <button type="button" id="clear-console-button"
-          class="btn btn-outline-primary btn-sm rounded-circle p-0 ms-1 disabled" data-bs-toggle="tooltip"
-          data-bs-placement="bottom" data-bs-container="#clear-console-button" title="Clear Console"
-          aria-label="Clear Console" style="min-width: 2rem; min-height: 2rem;">
-          <span class="fa-solid fa-eraser fa-fw"></span>
-        </button>
-        <button type="button" id="format-button" class="btn btn-outline-primary btn-sm rounded-circle p-0 ms-1 disabled"
-          data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-container="#format-button" title="Format"
-          aria-label="Format" style="min-width: 2rem; min-height: 2rem;">
-          <span class="fa-solid fa-align-left fa-fw"></span>
-        </button>
+  <div class="container-fluid d-flex flex-column g-0 vh-100">
+    <header class="row row-cols-1 g-0" style="padding: 0.25rem 0 0.25rem 0">
+      <div class="col">
+        <div class="d-inline-block mx-1">
+          <a class="text-decoration-none" href="/">
+            <span class="fa-brands fa-swift fa-2x text-primary d-inline-block align-middle px-1 swift-logo"></span><span
+              class="h4 text-dark d-inline-block align-middle m-0">Swift Power Assert Playground</span>
+          </a>
+        </div>
+        <div class="d-inline-block px-1">
+          <button id="run-button" type="button" class="btn btn-primary btn-sm rounded-pill px-3 mx-1 disabled"
+            aria-label="Run">
+            <span id="run-button-icon" class="fa-solid fa-play fa-fw"></span>
+            <span id="run-button-spinner" class="fa-duotone fa-spinner-third fa-spin fa-fw d-none"></span>
+            <span class="px-1">Run</span>
+          </button>
+          <button id="clear-console-button" type="button"
+            class="btn btn-outline-primary btn-sm rounded-circle button-circle mx-1 disabled" data-bs-toggle="tooltip"
+            data-bs-placement="bottom" data-bs-container="#clear-console-button" title="Clear Console"
+            aria-label="Clear Console" style="width: 2rem; height: 2rem;">
+            <span class="fa-solid fa-eraser"></span>
+          </button>
+          <button id="format-button" type="button"
+            class="btn btn-outline-primary btn-sm rounded-circle button-circle mx-1 disabled" data-bs-toggle="tooltip"
+            data-bs-placement="bottom" data-bs-container="#format-button" title="Format" aria-label="Format"
+            style="width: 2rem; height: 2rem;">
+            <span class="fa-solid fa-align-left"></span>
+          </button>
+        </div>
       </div>
     </header>
 
-    <main class="row bg-light flex-fill fill d-flex g-0">
+    <main class="row flex-fill fill d-flex g-0">
       <div class="col-md-6">
         <div id="editor-container" class="h-100"></div>
       </div>
@@ -66,27 +68,29 @@
       </div>
     </main>
 
-    <footer class="row p-1 mb-1 bg-light">
-      <div class="row">
-        <div class="col-md-12 mx-1 text-center text-dark">
-          <a class="text-reset text-decoration-none small ms-4 d-inline-block"
+    <footer class="row row-cols-1 g-0">
+      <div class="col p-1 text-center">
+        <div class="d-inline-block mx-2">
+          <a class="text-reset text-decoration-none small"
             href="https://github.com/kishikawakatsumi/swift-power-assert/issues/new" target="_blank"
-            rel="nofollow noopener noreferrer">
-            <span class="fa-regular fa-comment-alt-smile me-1"
-              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Feedback</a>
-          <a class="text-reset text-decoration-none small ms-4 d-inline-block"
-            href="https://github.com/kishikawakatsumi/swift-power-assert" target="_blank"
-            rel="nofollow noopener noreferrer">
-            <span class="fab fa-github me-1"
-              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Source Code</a>
-          <a class="text-reset text-decoration-none small ms-4 me-1 d-inline-block"
-            href="https://hachyderm.io/@kishikawakatsumi" target="_blank" rel="nofollow noopener noreferrer">
-            <span class="fa-regular fa-at me-1"
-              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Creator</a>
-          <a class="text-reset text-decoration-none small ms-4 me-1 d-inline-block"
-            href="https://github.com/sponsors/kishikawakatsumi" target="_blank" rel="nofollow noopener noreferrer">
-            <span class="fa-regular fa-heart me-1"
-              style="display: inline-block; min-width: 1em; min-height: 1em;"></span>Donate</a>
+            rel="nofollow noopener noreferrer"><span class="fa-regular fa-comment-alt-smile"></span><span
+              class="mx-2">Feedback</span></a>
+        </div>
+        <div class="d-inline-block mx-2">
+          <a class="text-reset text-decoration-none small" href="https://github.com/kishikawakatsumi/swift-power-assert"
+            target="_blank" rel="nofollow noopener noreferrer"><span class="fa-brands fa-github"></span><span
+              class="mx-2">Source
+              Code</span></a>
+        </div>
+        <div class="d-inline-block mx-2">
+          <a class="text-reset text-decoration-none small" href="https://hachyderm.io/@kishikawakatsumi" target="_blank"
+            rel="nofollow noopener noreferrer"><span class="fa-regular fa-at"></span><span
+              class="mx-2">Creator</span></a>
+        </div>
+        <div class="d-inline-block mx-2">
+          <a class="text-reset text-decoration-none small" href="https://github.com/sponsors/kishikawakatsumi"
+            target="_blank" rel="nofollow noopener noreferrer">
+            <span class="fa-solid fa-heart" style="color: #bf3989;"></span></span><span class="mx-2">Donate</span></a>
         </div>
       </div>
     </footer>

@@ -7,15 +7,13 @@ import {
   faAlignLeft,
   faCog,
   faExclamationTriangle,
+  faHeart,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faToolbox,
   faCommentAltSmile,
   faAt,
-  faDonate,
-  faHeart,
 } from "@fortawesome/pro-regular-svg-icons";
-import { faMonitorHeartRate } from "@fortawesome/pro-light-svg-icons";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
 import { faSwift, faGithub } from "@fortawesome/free-brands-svg-icons";
 
@@ -26,14 +24,11 @@ library.add(
   faAlignLeft,
   faCog,
   faExclamationTriangle,
+  faHeart,
 
   faToolbox,
   faCommentAltSmile,
   faAt,
-  faDonate,
-  faHeart,
-
-  faMonitorHeartRate,
 
   faSpinnerThird,
 
