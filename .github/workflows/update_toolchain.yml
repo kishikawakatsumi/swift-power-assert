@@ -30,6 +30,7 @@ jobs:
             echo $dir > .swift-version
           fi
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_PAT }}
@@ -37,3 +38,8 @@ jobs:
           commit-message: "Update Swift Toolchain"
           title: "Update Swift Toolchain"
           add-paths: .swift-version
+      - name: Enable Pull Request Automerge
+        if: ${{ steps.cpr.outputs.pull-request-url }}
+        run: gh pr merge --merge --auto ${{ steps.cpr.outputs.pull-request-url }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
