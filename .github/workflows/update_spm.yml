@@ -27,6 +27,7 @@ jobs:
           swift package update --package-path Example/
           swift package update --package-path Playground/
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_PAT }}
@@ -36,3 +37,8 @@ jobs:
           add-paths: |
             Package.resolved
             **/Package.resolved
+      - name: Enable Pull Request Automerge
+        if: ${{ steps.cpr.outputs.pull-request-url }}
+        run: gh pr merge --merge --auto ${{ steps.cpr.outputs.pull-request-url }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
