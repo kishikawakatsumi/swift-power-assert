@@ -61,26 +61,31 @@ Assertion APIs, no need to remember them. Just create an expression that returns
 
 ## Getting Started
 
-Swift Power Assert is implemented using [macros](https://github.com/apple/swift-evolution/blob/main/proposals/0382-expression-macros.md), an experimental feature of Swift. Therefore, you must use the pre-release version of the Swift toolchain to use this library.
+Swift Power Assert is implemented using [macros](https://github.com/apple/swift-evolution/blob/main/proposals/0382-expression-macros.md), an experimental feature of Swift. Therefore, Xcode 15 beta must be installed to use this library.
 
-1. Download and install the toolchain from [the development snapshot on Swift.org](https://www.swift.org/download/) after May 7, 2023.
-2. Set the toolchain identifier in the `TOOLCHAINS` environment variable to use the pre-release toolchain.
-   For example:
+1. Download and extract Xcode 15 beta.
+   https://developer.apple.com/download/all/
+2. (Optional) To use this library from the command line, go to the Xcode menu and select Settings... > Locations > Locations > Command Line Tools and select "Xcode -beta-15.0".
 
-   ```shell
-   export TOOLCHAINS=org.swift.59202305071a
-   ```
+<img width="500px" src="https://github.com/kishikawakatsumi/swift-power-assert/assets/40610/9c98f098-16f8-49dc-b74b-8bc134f0ee1f" />
 
-   Note: To find out the toolchain identifier, check the Info.plist in the toolchain. Toolchains are usually installed in `/Library/Developer/Toolchains/'. Right-click on the toolchain icon and select "Show Package Contents" to find the Info.plist; the value of the Bundle Identifier key in the Info.plist is the toolchain identifier.
-   For more information, see Sarun's excellent article.
-   https://sarunw.com/posts/how-to-use-pre-release-swift-version-with-command-line-tools/
+### For Xcode Project
 
-## Check it out
+To see PowerAssert in action, go to the Examples directory and run `xcodebuild test ...`.
+
+```
+$ cd Examples/XcodeProject/
+$ xcodebuild test -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=17.0' -parallel-testing-enabled NO
+```
+
+The parameter `-parallel-testing-enabled NO` is required. Due to recent changes in Xcode, parallel testing is now turned on by default and test messages are no longer output to the console. Therefore, to see assertion messages in the console, disable parallel testing. When parallel testing is enabled, all console logs can be viewed from the result bundle.
+
+### For Swift Package Manager
 
 To see PowerAssert in action, go to the Examples directory and run `swift test`.
 
 ```
-$ cd Example
+$ cd Examples/SwiftPackage/
 $ swift test
 ```
 
@@ -119,7 +124,19 @@ Modify the code in `Example/Tests/ExampleTests.swift` to try different patterns 
 
 ## Usage
 
-To use Swift Power Assert in your library or application, first add SwiftPowerAssert to the Swift package manager.
+To use Swift Power Assert in your library or application, first add swift-power-assert to your project.
+
+For the Xcode project, add the swift-power-assert library as a package dependency.
+
+<img width="600" src="https://github.com/kishikawakatsumi/swift-power-assert/assets/40610/d66a14a6-2a23-4fee-8d9e-0f3c0908a00f">
+
+The dependency rule should (for now) specify the `main` branch.
+
+Select PowerAssert as the Package Product and specify the **Test Bundle** as the target to add.
+
+<img width="400" src="https://github.com/kishikawakatsumi/swift-power-assert/assets/40610/5075d2b9-0b32-4a16-9794-a38f7d4c9412">
+
+For the Swift package, configure Package.swift as follows:
 
 ```swift
 // swift-tools-version:5.8
