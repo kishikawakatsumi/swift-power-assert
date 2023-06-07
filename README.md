@@ -213,7 +213,7 @@ A: You can use the `-dump-macro-expansions` option to dump the macro expansion.
 For example:
 
 ```
-$ cd Example
+$ cd Examples/SwiftPackage/
 $ swift test -Xswiftc -Xfrontend -Xswiftc -dump-macro-expansions
 ```
 
