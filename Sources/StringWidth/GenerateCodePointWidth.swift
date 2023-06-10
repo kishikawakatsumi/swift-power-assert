@@ -1,5 +1,6 @@
 import Foundation
 
+@available(macOS 13.0, *)
 func generate() async throws {
   print("import Foundation")
   print("")

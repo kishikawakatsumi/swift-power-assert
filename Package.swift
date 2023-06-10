@@ -6,8 +6,11 @@ import PackageDescription
 let package = Package(
   name: "SwiftPowerAssert",
   platforms: [
-    .iOS(.v16),
-    .macOS(.v13),
+    .macOS(.v10_15),
+    .iOS(.v13),
+    .tvOS(.v13),
+    .watchOS(.v6),
+    .macCatalyst(.v13)
   ],
   products: [
     .library(
@@ -18,18 +21,14 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-syntax.git",
-      branch: "main"
+      from: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-04-25-b"
     ),
   ],
   targets: [
     .macro(
       name: "PowerAssertPlugin",
       dependencies: [
-        .product(name: "SwiftSyntax", package: "swift-syntax"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-        .product(name: "SwiftOperators", package: "swift-syntax"),
-        .product(name: "SwiftParser", package: "swift-syntax"),
-        .product(name: "SwiftParserDiagnostics", package: "swift-syntax"),
         .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
         "StringWidth",
       ]
@@ -47,7 +46,10 @@ let package = Package(
     ),
     .testTarget(
       name: "PowerAssertTests",
-      dependencies: ["PowerAssert"]
+      dependencies: [
+        "PowerAssert",
+        .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+      ]
     ),
   ]
 )

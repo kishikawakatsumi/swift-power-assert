@@ -9,17 +9,18 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/vapor/vapor.git", from: "4.77.0"),
     .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
-    .package(url: "https://github.com/apple/swift-syntax.git", branch: "main"),
+    .package(
+      url: "https://github.com/apple/swift-syntax.git",
+      from: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-04-25-b"
+    ),
     .package(url: "https://github.com/apple/swift-tools-support-core", from: "0.5.2"),
   ],
   targets: [
     .target(
       name: "PowerAssertPlugin",
       dependencies: [
-        .product(name: "SwiftSyntax", package: "swift-syntax"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-        .product(name: "SwiftOperators", package: "swift-syntax"),
-        .product(name: "SwiftParser", package: "swift-syntax"),
+        .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
         "StringWidth",
       ],
       exclude: ["PowerAssertPlugin.swift"],
