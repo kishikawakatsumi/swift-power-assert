@@ -42,7 +42,14 @@ let package = Package(
     ),
     .target(
       name: "StringWidth",
-      dependencies: []
+      dependencies: [],
+      exclude: [
+        "DerivedCoreProperties.swift",
+        "DerivedGeneralCategory.swift",
+        "EastAsianWidth.swift",
+        "GenerateCodePointWidth.swift",
+        "URLSession+Linux.swift",
+      ]
     ),
     .testTarget(
       name: "PowerAssertTests",
