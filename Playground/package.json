@@ -15,7 +15,7 @@
     "monaco-editor": "0.39.0",
     "plausible-tracker": "0.3.8",
     "reconnecting-websocket": "4.4.0",
-    "xterm": "5.2.0",
+    "xterm": "5.2.1",
     "xterm-addon-fit": "0.7.0",
     "xterm-addon-web-links": "0.8.0"
   },
