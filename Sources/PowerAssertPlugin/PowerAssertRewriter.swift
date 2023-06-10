@@ -12,7 +12,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   private var index = 0
   private let expressionStore = ExpressionStore()
 
-  init(_ expression: SyntaxProtocol, macro: FreestandingMacroExpansionSyntax) {
+  init(_ expression: SyntaxProtocol, macro node: FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
       self.expression = folded
     } else {
@@ -22,11 +22,11 @@ class PowerAssertRewriter: SyntaxRewriter {
     self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
 
     startColumn = {
-      let converter = SourceLocationConverter(file: "", tree: macro.detach())
-      let startLocation = macro.startLocation(converter: converter)
-      let endLocation = macro.macro.endLocation(converter: converter)
+      let converter = SourceLocationConverter(file: "", tree: node.detach())
+      let startLocation = node.startLocation(converter: converter)
+      let endLocation = node.macro.endLocation(converter: converter)
 #if SWIFTPOWERASSERT_PLAYGROUND
-      return "\(macro.poundToken.trimmed)\(macro.macro.trimmed)".count
+      return "\(node.poundToken.trimmed)\(node.macro.trimmed)".count
 #else
       return endLocation.column - startLocation.column
 #endif

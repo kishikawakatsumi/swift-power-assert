@@ -470,7 +470,11 @@ final class AssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
-        output.replacing(#/<ObjectIdentifier\S+>/#, with: "<ObjectIdentifier(0x0000000000000000)>"),
+        output.replacingOccurrences(
+          of: #"<ObjectIdentifier\S+>"#,
+          with: "<ObjectIdentifier(0x0000000000000000)>",
+          options: .regularExpression
+        ),
         """
         #assert(number1 === number2)
                 │       │   │
@@ -1919,7 +1923,11 @@ final class AssertTests: XCTestCase {
 
         """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
         #"""
         #assert(greetings[keyPath: \[String].[1]] == "hola")
                 │                  │          │ │ │  │
@@ -2297,7 +2305,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2314,7 +2326,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2331,7 +2347,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2348,7 +2368,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2365,7 +2389,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2382,7 +2410,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
                   │                           │                 │         │ │ │  │
@@ -2519,7 +2551,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2536,7 +2572,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2553,7 +2593,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2570,7 +2614,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2587,7 +2635,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2604,7 +2656,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
                   │                           │                 │                  │ │  │
@@ -2747,7 +2803,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2765,7 +2825,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2783,7 +2847,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2801,7 +2869,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2819,7 +2891,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -2837,7 +2913,11 @@ final class AssertTests: XCTestCase {
 
           """#
         ||
-        output.replacing(#/0x[:xdigit:]{16}/#, with: "0x0000000000000000") ==
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
           #"""
           #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
                   │                           │                 │                           │ │  │
@@ -4875,6 +4955,7 @@ final class AssertTests: XCTestCase {
     }
   }
 
+  @available(macOS 13.0, *)
   func testRegexLiteral() {
     captureConsoleOutput {
       do {
@@ -5144,7 +5225,11 @@ final class AssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
-        output.replacing(#/0x(?:[:xdigit:]{12}|[:xdigit:]{9})/#, with: "0x000000000"),
+        output.replacingOccurrences(
+          of: "0x(?:[:xdigit:]{12}|[:xdigit:]{9})",
+          with: "0x000000000",
+          options: .regularExpression
+        ),
         """
         #assert(bar.val != bar.foo.val)
                 │   │   │  │   │   │

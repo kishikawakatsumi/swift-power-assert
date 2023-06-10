@@ -13,23 +13,3 @@ public macro assert(
     line: UInt = #line,
     verbose: Bool = false
 ) = #externalMacro(module: "PowerAssertPlugin", type: "PowerAssertMacro")
-
-/// An alias for `assert`.
-@freestanding(expression)
-public macro expect(
-  _ expression: @autoclosure () throws -> Bool,
-  _ message: @autoclosure () -> String = "",
-  file: StaticString = #filePath,
-  line: UInt = #line,
-  verbose: Bool = false
-) = #externalMacro(module: "PowerAssertPlugin", type: "PowerAssertMacro")
-
-/// An alias for `assert`.
-@freestanding(expression)
-public macro powerAssert(
-  _ expression: @autoclosure () throws -> Bool,
-  _ message: @autoclosure () -> String = "",
-  file: StaticString = #filePath,
-  line: UInt = #line,
-  verbose: Bool = false
-) = #externalMacro(module: "PowerAssertPlugin", type: "PowerAssertMacro")

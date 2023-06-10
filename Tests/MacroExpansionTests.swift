@@ -17,8 +17,8 @@ final class MacroExpansionTests: XCTestCase {
     let macros: [String: Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
-    let context = SimpleMacroExpansionContext(
-      moduleName: testModuleName, fullFilePath: testFileName, sourceFile: sourceFile
+    let context = BasicMacroExpansionContext(
+      sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
@@ -29,7 +29,7 @@ final class MacroExpansionTests: XCTestCase {
       PowerAssert.Assertion(
         "#assert(numbers[2] == 4)",
         message: "",
-        file: "test.swift",
+        file: "TestModule/test.swift",
         line: 2,
         verbose: false,
         equalityExpressions: [(5, 2, 4)],
@@ -47,7 +47,7 @@ final class MacroExpansionTests: XCTestCase {
       PowerAssert.Assertion(
         "#assert(numbers[2] == 4)",
         message: "",
-        file: "test.swift",
+        file: "TestModule/test.swift",
         line: 2,
         verbose: false,
         equalityExpressions: [(5, 2, 4)],
@@ -70,8 +70,8 @@ final class MacroExpansionTests: XCTestCase {
     let macros: [String: Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
-    let context = SimpleMacroExpansionContext(
-      moduleName: testModuleName, fullFilePath: testFileName, sourceFile: sourceFile
+    let context = BasicMacroExpansionContext(
+      sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
@@ -81,7 +81,7 @@ final class MacroExpansionTests: XCTestCase {
       PowerAssert.Assertion(
         "#assert(numbers.contains(6))",
         message: "",
-        file: "test.swift",
+        file: "TestModule/test.swift",
         line: 1,
         verbose: false,
         equalityExpressions: [],
@@ -107,8 +107,8 @@ final class MacroExpansionTests: XCTestCase {
     let macros: [String: Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
-    let context = SimpleMacroExpansionContext(
-      moduleName: testModuleName, fullFilePath: testFileName, sourceFile: sourceFile
+    let context = BasicMacroExpansionContext(
+      sourceFiles: [sourceFile: .init(moduleName: testModuleName, fullFilePath: testFileName)]
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
@@ -121,7 +121,7 @@ final class MacroExpansionTests: XCTestCase {
       PowerAssert.Assertion(
         "#assert(string1 == string2)",
         message: "",
-        file: "test.swift",
+        file: "TestModule/test.swift",
         line: 4,
         verbose: false,
         equalityExpressions: [(3, 0, 2)],
@@ -141,7 +141,7 @@ final class MacroExpansionTests: XCTestCase {
       PowerAssert.Assertion(
         "#assert(string1 == string2)",
         message: "",
-        file: "test.swift",
+        file: "TestModule/test.swift",
         line: 4,
         verbose: false,
         equalityExpressions: [(3, 0, 2)],

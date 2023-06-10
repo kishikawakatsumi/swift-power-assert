@@ -3,6 +3,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
+@available(macOS 13.0, *)
 struct EastAsianWidth {
   struct Raw: Comparable {
     let start: String
