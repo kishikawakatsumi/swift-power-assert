@@ -200,6 +200,20 @@ func testConcurrency() async {
 
 ## Frequently Asked Questions
 
+**Q: Assert failure messages are not displayed.**
+
+If you are running your tests from the command line using the `xcodebuild test ...` command, disable parallel testing. Due to recent changes in Xcode, detailed test logs are not output to the console when parallel testing is enabled. Use the following options to disable parallel testing
+
+```
+-parallel-testing-enabled NO
+```
+
+Alternatively, set the following UserDefaults. This option enables detailed messages to be output to the console even parallel testing enabled.
+
+```
+defaults write com.apple.dt.xcodebuild ParallelTestRunnerStdoutMirroringEnabled -bool YES
+```
+
 **Q: I want to display the result even if the test is successful (i.e. the expression in the `#assert()` function evaluates to `true`).**
 
 A: By default, the `#assert()` function does not display the result if the expression evaluates to `true`, because the test was successful. To always print the result, set the `verbose` argument to true.
