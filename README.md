@@ -80,6 +80,12 @@ $ xcodebuild test -scheme MyApp -destination 'platform=iOS Simulator,name=iPhone
 
 The parameter `-parallel-testing-enabled NO` is required. Due to recent changes in Xcode, parallel testing is now turned on by default and test messages are no longer output to the console. Therefore, to see assertion messages in the console, disable parallel testing. When parallel testing is enabled, all console logs can be viewed from the result bundle.
 
+Or set the following UserDefaults. This option allows console output even if parallel testing is enabled.
+
+```shell
+defaults write com.apple.dt.xcodebuild ParallelTestRunnerStdoutMirroringEnabled -bool YES
+```
+
 ### For Swift Package Manager
 
 To see PowerAssert in action, go to the Examples directory and run `swift test`.
@@ -128,9 +134,7 @@ To use Swift Power Assert in your library or application, first add swift-power-
 
 For the Xcode project, add the swift-power-assert library as a package dependency.
 
-<img width="600" src="https://github.com/kishikawakatsumi/swift-power-assert/assets/40610/d66a14a6-2a23-4fee-8d9e-0f3c0908a00f">
-
-The dependency rule should (for now) specify the `main` branch.
+<img width="600" src="https://github.com/kishikawakatsumi/swift-power-assert/assets/40610/75e9698b-1cf1-4bdb-9670-c3e7a2ebe1b4">
 
 Select PowerAssert as the Package Product and specify the **Test Bundle** as the target to add.
 
@@ -147,8 +151,8 @@ let package = Package(
   dependencies: [
     ...,
     .package(
-        url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
-        branch: "main"
+      url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
+      from: "0.8.1"
     ),
   ],
   targets: [

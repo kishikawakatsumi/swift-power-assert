@@ -5,13 +5,13 @@ import PackageDescription
 let package = Package(
   name: "swift-power-assert-example",
   platforms: [
-    .iOS(.v16),
-    .macOS(.v13),
+    .iOS(.v13),
+    .macOS(.v10_15),
   ],
   dependencies: [
     .package(
       url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
-      branch: "0.7.2"
+      from: "0.8.1"
     ),
   ],
   targets: [
