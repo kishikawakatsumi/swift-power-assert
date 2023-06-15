@@ -66,11 +66,11 @@ private struct Parameters {
   var verbose = "false"
 
   init(macro: FreestandingMacroExpansionSyntax, context: MacroExpansionContext) {
-    let sourceLoccation: AbstractSourceLocation? = context.location(of: macro)
+    let sourceLocation: AbstractSourceLocation? = context.location(of: macro)
 
-    let file = "\(sourceLoccation!.file)"
+    let file = "\(sourceLocation!.file)"
     self.file = "\(file)"
-    self.line = "\(sourceLoccation!.line)"
+    self.line = "\(sourceLocation!.line)"
 
     for argument in macro.argumentList.dropFirst() {
       if argument.label == nil {
