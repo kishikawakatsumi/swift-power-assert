@@ -12,8 +12,8 @@ public struct PowerAssertMacro: ExpressionMacro {
 }
 
 private struct CodeGenerator {
-  let macro: FreestandingMacroExpansionSyntax
-  let context: MacroExpansionContext
+  let macro: any FreestandingMacroExpansionSyntax
+  let context: any MacroExpansionContext
 
   func generate() -> ExprSyntax {
     guard let assertion = macro.argumentList.first?.expression else {
@@ -29,7 +29,7 @@ private struct CodeGenerator {
     return syntax.with(\.leadingTrivia, macro.leadingTrivia)
   }
 
-  private func expand(expression: SyntaxProtocol, parameters: Parameters) -> String {
+  private func expand(expression: any SyntaxProtocol, parameters: Parameters) -> String {
     let assertion = StringLiteralExprSyntax(
       content: "\(macro.poundToken.trimmed)\(macro.macro)(\(expression))"
     )
@@ -65,7 +65,7 @@ private struct Parameters {
   var line: String
   var verbose = "false"
 
-  init(macro: FreestandingMacroExpansionSyntax, context: MacroExpansionContext) {
+  init(macro: any FreestandingMacroExpansionSyntax, context: any MacroExpansionContext) {
     let sourceLocation: AbstractSourceLocation? = context.location(of: macro)
 
     let file = "\(sourceLocation!.file)"

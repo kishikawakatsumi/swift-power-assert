@@ -3881,11 +3881,11 @@ final class AssertTests: XCTestCase {
   func testSelectorExpression() {
     captureConsoleOutput {
       #assert(
-        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
+        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: (any NSObjectProtocol).description),
         verbose: true
       )
       #assert(
-        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
+        #selector(getter: SomeObjCClass.property) != #selector(getter: (any NSObjectProtocol).description),
         verbose: true
       )
     } completion: { (output) in
@@ -3893,24 +3893,24 @@ final class AssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
-        #assert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
+        #assert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: (any NSObjectProtocol).description))
                 │                                        │  │
                 "doSomethingWithInt:"                    │  "description"
                                                          true
 
         [Selector] #selector(SomeObjCClass.doSomething(_:))
         => "doSomethingWithInt:"
-        [Selector] #selector(getter: NSObjectProtocol.description)
+        [Selector] #selector(getter: (any NSObjectProtocol).description)
         => "description"
 
-        #assert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
+        #assert(#selector(getter: SomeObjCClass.property) != #selector(getter: (any NSObjectProtocol).description))
                 │                                         │  │
                 "property"                                │  "description"
                                                           true
 
         [Selector] #selector(getter: SomeObjCClass.property)
         => "property"
-        [Selector] #selector(getter: NSObjectProtocol.description)
+        [Selector] #selector(getter: (any NSObjectProtocol).description)
         => "description"
 
 

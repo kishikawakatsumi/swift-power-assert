@@ -19,7 +19,7 @@ public enum PowerAssert {
     private var equalityExpressionValues = [EqualityExpressionValue]()
     private var identicalExpressionValues = [IdenticalExpressionValue]()
     private var comparisonValues = [ComparisonValue]()
-    private var errors = [Error]()
+    private var errors = [any Error]()
 
     public init(
       _ assertion: String,
