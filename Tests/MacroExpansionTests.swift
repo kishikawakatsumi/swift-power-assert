@@ -14,7 +14,7 @@ final class MacroExpansionTests: XCTestCase {
         #assert(numbers[2] == 4)
         """
     )
-    let macros: [String: Macro.Type] = [
+    let macros: [String: any Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
     let context = BasicMacroExpansionContext(
@@ -67,7 +67,7 @@ final class MacroExpansionTests: XCTestCase {
         #assert(numbers.contains(6))
         """
     )
-    let macros: [String: Macro.Type] = [
+    let macros: [String: any Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
     let context = BasicMacroExpansionContext(
@@ -104,7 +104,7 @@ final class MacroExpansionTests: XCTestCase {
         #assert(string1 == string2)
         """
     )
-    let macros: [String: Macro.Type] = [
+    let macros: [String: any Macro.Type] = [
       "assert": PowerAssertMacro.self,
     ]
     let context = BasicMacroExpansionContext(

@@ -3,7 +3,7 @@ import SwiftOperators
 import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
-  private let expression: SyntaxProtocol
+  private let expression: any SyntaxProtocol
   private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
   private let isTryPresent: Bool
@@ -12,7 +12,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   private var index = 0
   private let expressionStore = ExpressionStore()
 
-  init(_ expression: SyntaxProtocol, macro node: FreestandingMacroExpansionSyntax) {
+  init(_ expression: any SyntaxProtocol, macro node: any FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
       self.expression = folded
     } else {
@@ -534,7 +534,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     return exprSyntax
   }
 
-  private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
+  private func findAncestors<T: SyntaxProtocol>(syntaxType: T.Type, node: any SyntaxProtocol) -> T? {
     let node = node.parent
     var cur: Syntax? = node
     while let node = cur {
@@ -546,7 +546,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     return nil
   }
 
-  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: SyntaxProtocol) -> T? {
+  private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: any SyntaxProtocol) -> T? {
     let children = node.children(viewMode: .fixedUp)
     for child in children {
       if child.syntaxNodeType == TokenSyntax.self {
@@ -562,7 +562,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     return nil
   }
 
-  private func findLeftSiblingOperator(_ node: SyntaxProtocol) -> Bool {
+  private func findLeftSiblingOperator(_ node: any SyntaxProtocol) -> Bool {
     guard let parent = node.parent else {
       return false
     }
@@ -579,7 +579,7 @@ class PowerAssertRewriter: SyntaxRewriter {
     return false
   }
 
-  private func graphemeColumn(_ node: SyntaxProtocol) -> Int {
+  private func graphemeColumn(_ node: any SyntaxProtocol) -> Int {
     let startLocation = node.startLocation(converter: sourceLocationConverter)
     let column: Int
     if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column)) {
