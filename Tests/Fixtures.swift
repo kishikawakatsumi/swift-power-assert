@@ -73,7 +73,7 @@ class OtherClass {
   init() {}
 
   func performAction() -> Bool {
-    true
+    false
   }
 }
 
