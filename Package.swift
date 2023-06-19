@@ -65,9 +65,6 @@ let package = Package(
       dependencies: [
         "PowerAssert",
         .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-      ],
-      swiftSettings: [
-        .enableUpcomingFeature("ExistentialAny")
       ]
     ),
   ]

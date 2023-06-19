@@ -3878,7 +3878,48 @@ final class AssertTests: XCTestCase {
     }
   }
 
-  func testSelectorExpression() {
+  func testSelectorExpression1() {
+    captureConsoleOutput {
+      #assert(
+        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
+        verbose: true
+      )
+      #assert(
+        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
+        verbose: true
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
+                │                                        │  │
+                "doSomethingWithInt:"                    │  "description"
+                                                         true
+
+        [Selector] #selector(SomeObjCClass.doSomething(_:))
+        => "doSomethingWithInt:"
+        [Selector] #selector(getter: NSObjectProtocol.description)
+        => "description"
+
+        #assert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
+                │                                         │  │
+                "property"                                │  "description"
+                                                          true
+
+        [Selector] #selector(getter: SomeObjCClass.property)
+        => "property"
+        [Selector] #selector(getter: NSObjectProtocol.description)
+        => "description"
+
+
+        """
+      )
+    }
+  }
+
+  func testSelectorExpression2() {
     captureConsoleOutput {
       #assert(
         #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: (any NSObjectProtocol).description),
