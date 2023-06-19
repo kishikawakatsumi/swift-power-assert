@@ -29,7 +29,7 @@ private struct CodeGenerator {
     return syntax.with(\.leadingTrivia, macro.leadingTrivia)
   }
 
-  private func expand(expression: any SyntaxProtocol, parameters: Parameters) -> String {
+  private func expand(expression: some SyntaxProtocol, parameters: Parameters) -> String {
     let assertion = StringLiteralExprSyntax(
       content: "\(macro.poundToken.trimmed)\(macro.macro)(\(expression))"
     )
@@ -65,7 +65,7 @@ private struct Parameters {
   var line: String
   var verbose = "false"
 
-  init(macro: any FreestandingMacroExpansionSyntax, context: any MacroExpansionContext) {
+  init(macro: some FreestandingMacroExpansionSyntax, context: some MacroExpansionContext) {
     let sourceLocation: AbstractSourceLocation? = context.location(of: macro)
 
     let file = "\(sourceLocation!.file)"

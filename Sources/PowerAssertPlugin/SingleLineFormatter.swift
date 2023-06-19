@@ -3,11 +3,11 @@ import SwiftSyntax
 class SingleLineFormatter: SyntaxRewriter {
   private let expression: any SyntaxProtocol
 
-  init(_ expression: any SyntaxProtocol) {
+  init(_ expression: some SyntaxProtocol) {
     self.expression = expression
   }
 
-  func format() -> any SyntaxProtocol {
+  func format() -> some SyntaxProtocol {
     let formatted = visit(Syntax(expression).with(\.leadingTrivia, []).with(\.trailingTrivia, []))
     return SourceFileSyntax(stringLiteral: "\(formatted)")
   }
