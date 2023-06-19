@@ -1031,14 +1031,14 @@ final class AssertTests: XCTestCase {
   func testThrowError() {
     try captureConsoleOutput {
       #assert(
-        try throwRecoverableError() == "recoverable error"
+        try throwRecoverableError() == "Unrecoverable error"
       )
-      #assert(try throwUnrecoverableError(), verbose: true)
+      #assert(try throwUnrecoverableError())
 
       let input1 = "test"
       let input2 = "test"
       #assert(
-        try input1 == input2 && throwRecoverableError() == "recoverable error"
+        try input1 == input2 && throwRecoverableError() == "Unrecoverable error"
       )
       #assert(
         try input1 == input2 && throwUnrecoverableError()
@@ -1048,7 +1048,7 @@ final class AssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         #"""
-        #assert(try throwRecoverableError() == "recoverable error")
+        #assert(try throwRecoverableError() == "Unrecoverable error")
                     │                       │
                     │                       recoverableError("Recoverable error")
                     recoverableError("Recoverable error")
@@ -1056,7 +1056,7 @@ final class AssertTests: XCTestCase {
         [Error] recoverableError("Recoverable error")
         [MyError] throwRecoverableError()
         => recoverableError("Recoverable error")
-        [Not Evaluated] "recoverable error"
+        [Not Evaluated] "Unrecoverable error"
 
         #assert(try throwUnrecoverableError())
                     │
@@ -1064,7 +1064,7 @@ final class AssertTests: XCTestCase {
 
         [Error] unrecoverableError("Unrecoverable error")
 
-        #assert(try input1 == input2 && throwRecoverableError() == "recoverable error")
+        #assert(try input1 == input2 && throwRecoverableError() == "Unrecoverable error")
                     │      │  │      │  │                       │
                     "test" │  "test" │  │                       recoverableError("Recoverable error")
                            true      │  recoverableError("Recoverable error")
@@ -1079,9 +1079,9 @@ final class AssertTests: XCTestCase {
         => true
         [MyError] throwRecoverableError()
         => recoverableError("Recoverable error")
-        [MyError] throwRecoverableError() == "recoverable error"
+        [MyError] throwRecoverableError() == "Unrecoverable error"
         => recoverableError("Recoverable error")
-        [Not Evaluated] "recoverable error"
+        [Not Evaluated] "Unrecoverable error"
 
         #assert(try input1 == input2 && throwUnrecoverableError())
                     │      │  │      │  │
@@ -1415,38 +1415,58 @@ final class AssertTests: XCTestCase {
       //     .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
       // )
       #assert(
-        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue &&
-          .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1),
-        verbose: true
+        #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue &&
+          .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+      )
+      #assert(
+        #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue ||
+          .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
-                │                  │                    │                    │                    │  │   │    │   │    │  │                  │                    │                    │                    │
-                │                  0.80784315           0.02745098           0.33333334           │  │   │    │   │    │  │                  0.80784315           0.02745098           0.33333334           1.0
-                sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                         │  │   │    │   │    │  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
-                                                                                                  │  │   │    │   │    true
-                                                                                                  │  │   │    │   sRGB IEC61966-2.1 colorspace 0 0 1 1
-                                                                                                  │  │   │    true
-                                                                                                  │  │   sRGB IEC61966-2.1 colorspace 0 0 1 1
-                                                                                                  │  true
-                                                                                                  1.0
+        #assert(#colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1))
+                │                  │           │          │           │  │   │    │
+                │                  0.0         0.0        1.0         │  │   │    false
+                sRGB IEC61966-2.1 colorspace 0 0 1 1                  │  │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                      │  false
+                                                                      1.0
 
-        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
-        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        [_NSTaggedPointerColor] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
         [_NSTaggedPointerColor] .blue
         => sRGB IEC61966-2.1 colorspace 0 0 1 1
-        [Bool] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) != .blue
-        => true
+        [Bool] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue
+        => false
+        [Not Evaluated] .blue
+        [Not Evaluated] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+        [Not Evaluated] .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+
+        #assert(#colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue || .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1))
+                │                  │           │          │           │  │   │    │   │    │  │                  │           │          │           │
+                │                  0.0         0.0        1.0         │  │   │    │   │    │  │                  0.0         0.0        1.0         1.0
+                sRGB IEC61966-2.1 colorspace 0 0 1 1                  │  │   │    │   │    │  sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                      │  │   │    │   │    false
+                                                                      │  │   │    │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                      │  │   │    false
+                                                                      │  │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                      │  false
+                                                                      1.0
+
+        [_NSTaggedPointerColor] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
         [_NSTaggedPointerColor] .blue
         => sRGB IEC61966-2.1 colorspace 0 0 1 1
-        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
-        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
-        [Bool] .blue != #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
-        => true
+        [Bool] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue
+        => false
+        [_NSTaggedPointerColor] .blue
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [_NSTaggedPointerColor] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [Bool] .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
+        => false
 
 
         """
@@ -1641,45 +1661,60 @@ final class AssertTests: XCTestCase {
 
       let tuple = (name: "Katsumi", age: 37, birthday: date1)
 
-      #assert(tuple != (name: "Katsumi", age: 37, birthday: date2), verbose: true)
-      #assert(tuple != ("Katsumi", 37, date2), verbose: true)
-      #assert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1, verbose: true)
+      #assert(tuple == (name: "Katsumi", age: 37, birthday: date2))
+      #assert(tuple == ("Katsumi", 37, date2))
+      #assert(tuple.name != ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(tuple != (name: "Katsumi", age: 37, birthday: date2))
+        #assert(tuple == (name: "Katsumi", age: 37, birthday: date2))
                 │     │  │      │               │             │
                 │     │  │      "Katsumi"       37            2000-12-30 15:00:00 +0000
                 │     │  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
-                │     true
+                │     false
                 ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+
+        --- [(String, Int, Date)] tuple
+        +++ [(String, Int, Date)] (name: "Katsumi", age: 37, birthday: date2)
+        –("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+        +("Katsumi", 37, 2000-12-30 15:00:00 +0000)
 
         [(String, Int, Date)] tuple
         => ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
         [(String, Int, Date)] (name: "Katsumi", age: 37, birthday: date2)
         => ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
 
-        #assert(tuple != ("Katsumi", 37, date2))
+        #assert(tuple == ("Katsumi", 37, date2))
                 │     │  ││          │   │
                 │     │  │"Katsumi"  37  2000-12-30 15:00:00 +0000
                 │     │  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
-                │     true
+                │     false
                 ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+
+        --- [(String, Int, Date)] tuple
+        +++ [(String, Int, Date)] ("Katsumi", 37, date2)
+        –("Katsumi", 37, 1980-10-27 15:00:00 +0000)
+        +("Katsumi", 37, 2000-12-30 15:00:00 +0000)
 
         [(String, Int, Date)] tuple
         => ("Katsumi", 37, 1980-10-27 15:00:00 +0000)
         [(String, Int, Date)] ("Katsumi", 37, date2)
         => ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
 
-        #assert(tuple.name == ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
-                │     │    │  ││          │   │      │ │
-                │     │    │  │"Katsumi"  37  │      │ true
+        #assert(tuple.name != ("Katsumi", 37, date2).0 || tuple.age != ("Katsumi", 37, date2).1)
+                │     │    │  ││          │   │      │ │  │     │   │  ││          │   │      │
+                │     │    │  │"Katsumi"  37  │      │ │  │     37  │  │"Katsumi"  37  │      37
+                │     │    │  │               │      │ │  │         │  │               2000-12-30 15:00:00 +0000
+                │     │    │  │               │      │ │  │         │  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
+                │     │    │  │               │      │ │  │         false
+                │     │    │  │               │      │ │  (name: "Katsumi", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+                │     │    │  │               │      │ false
                 │     │    │  │               │      "Katsumi"
                 │     │    │  │               2000-12-30 15:00:00 +0000
                 │     │    │  ("Katsumi", 37, 2000-12-30 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "Katsumi"
                 (name: "Katsumi", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 
@@ -1687,11 +1722,14 @@ final class AssertTests: XCTestCase {
         => "Katsumi"
         [String] ("Katsumi", 37, date2).0
         => "Katsumi"
-        [Bool] tuple.name == ("Katsumi", 37, date2).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] ("Katsumi", 37, date2).1
-        [Not Evaluated] tuple.age != ("Katsumi", 37, date2).1
+        [Bool] tuple.name != ("Katsumi", 37, date2).0
+        => false
+        [Int] tuple.age
+        => 37
+        [Int] ("Katsumi", 37, date2).1
+        => 37
+        [Bool] tuple.age != ("Katsumi", 37, date2).1
+        => false
 
 
         """
@@ -1704,178 +1742,237 @@ final class AssertTests: XCTestCase {
       let s = SomeStructure(someValue: 12)
       let pathToProperty = \SomeStructure.someValue
 
-      #assert(s[keyPath: pathToProperty] == 12, verbose: true)
-      #assert(s[keyPath: \SomeStructure.someValue] == 12, verbose: true)
-      #assert(s.getValue(keyPath: \.someValue) == 12, verbose: true)
+      #assert(s[keyPath: pathToProperty] == 13)
+      #assert(s[keyPath: \SomeStructure.someValue] == 13)
+      #assert(s.getValue(keyPath: \.someValue) == 13)
 
       let nested = OuterStructure(someValue: 24)
       let nestedKeyPath = \OuterStructure.outer.someValue
 
-      #assert(nested[keyPath: nestedKeyPath] == 24, verbose: true)
-      #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24, verbose: true)
-      #assert(nested.getValue(keyPath: \.outer.someValue) == 24, verbose: true)
+      #assert(nested[keyPath: nestedKeyPath] == 13)
+      #assert(nested[keyPath: \OuterStructure.outer.someValue] == 13)
+      #assert(nested.getValue(keyPath: \.outer.someValue) == 13)
     } completion: { (output) in
       print(output)
-
       XCTAssertTrue(
         output ==
           #"""
-          #assert(s[keyPath: pathToProperty] == 12)
+          #assert(s[keyPath: pathToProperty] == 13)
                   │          │             │ │  │
-                  │          │             │ │  12
-                  │          │             │ true
+                  │          │             │ │  13
+                  │          │             │ false
                   │          │             12
                   │          \SomeStructure.someValue
                   SomeStructure(someValue: 12)
 
+          --- [Int] s[keyPath: pathToProperty]
+          +++ [Int] 13
+          –12
+          +13
+
           [Int] s[keyPath: pathToProperty]
           => 12
-          [Int] 12
-          => 12
+          [Int] 13
+          => 13
 
-          #assert(s[keyPath: \SomeStructure.someValue] == 12)
+          #assert(s[keyPath: \SomeStructure.someValue] == 13)
                   │          │                       │ │  │
-                  │          │                       │ │  12
-                  │          │                       │ true
+                  │          │                       │ │  13
+                  │          │                       │ false
                   │          │                       12
                   │          \SomeStructure.someValue
                   SomeStructure(someValue: 12)
 
+          --- [Int] s[keyPath: \SomeStructure.someValue]
+          +++ [Int] 13
+          –12
+          +13
+
           [Int] s[keyPath: \SomeStructure.someValue]
           => 12
-          [Int] 12
-          => 12
+          [Int] 13
+          => 13
 
-          #assert(s.getValue(keyPath: \.someValue) == 12)
+          #assert(s.getValue(keyPath: \.someValue) == 13)
                   │ │                 │            │  │
-                  │ 12                │            │  12
-                  │                   │            true
+                  │ 12                │            │  13
+                  │                   │            false
                   │                   \SomeStructure.someValue
                   SomeStructure(someValue: 12)
 
+          --- [Int] s.getValue(keyPath: \.someValue)
+          +++ [Int] 13
+          –12
+          +13
+
           [Int] s.getValue(keyPath: \.someValue)
           => 12
-          [Int] 12
-          => 12
+          [Int] 13
+          => 13
 
-          #assert(nested[keyPath: nestedKeyPath] == 24)
+          #assert(nested[keyPath: nestedKeyPath] == 13)
                   │               │            │ │  │
-                  │               │            │ │  24
-                  │               │            │ true
+                  │               │            │ │  13
+                  │               │            │ false
                   │               │            24
                   │               \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
+          --- [Int] nested[keyPath: nestedKeyPath]
+          +++ [Int] 13
+          –24
+          +13
+
           [Int] nested[keyPath: nestedKeyPath]
           => 24
-          [Int] 24
-          => 24
+          [Int] 13
+          => 13
 
-          #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+          #assert(nested[keyPath: \OuterStructure.outer.someValue] == 13)
                   │               │                              │ │  │
-                  │               │                              │ │  24
-                  │               │                              │ true
+                  │               │                              │ │  13
+                  │               │                              │ false
                   │               │                              24
                   │               \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
+          --- [Int] nested[keyPath: \OuterStructure.outer.someValue]
+          +++ [Int] 13
+          –24
+          +13
+
           [Int] nested[keyPath: \OuterStructure.outer.someValue]
           => 24
-          [Int] 24
-          => 24
+          [Int] 13
+          => 13
 
-          #assert(nested.getValue(keyPath: \.outer.someValue) == 24)
+          #assert(nested.getValue(keyPath: \.outer.someValue) == 13)
                   │      │                 │                  │  │
-                  │      24                │                  │  24
-                  │                        │                  true
+                  │      24                │                  │  13
+                  │                        │                  false
                   │                        \OuterStructure.outer.someValue
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
+          --- [Int] nested.getValue(keyPath: \.outer.someValue)
+          +++ [Int] 13
+          –24
+          +13
+
           [Int] nested.getValue(keyPath: \.outer.someValue)
           => 24
-          [Int] 24
-          => 24
+          [Int] 13
+          => 13
 
 
           """#
         ||
         output ==
           #"""
-          #assert(s[keyPath: pathToProperty] == 12)
+          #assert(s[keyPath: pathToProperty] == 13)
                   │          │             │ │  │
-                  │          │             │ │  12
-                  │          │             │ true
+                  │          │             │ │  13
+                  │          │             │ false
                   │          │             12
                   │          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
 
+          --- [Int] s[keyPath: pathToProperty]
+          +++ [Int] 13
+          –12
+          +13
+
           [Int] s[keyPath: pathToProperty]
           => 12
-          [Int] 12
-          => 12
+          [Int] 13
+          => 13
 
-          #assert(s[keyPath: \SomeStructure.someValue] == 12)
+          #assert(s[keyPath: \SomeStructure.someValue] == 13)
                   │          │                       │ │  │
-                  │          │                       │ │  12
-                  │          │                       │ true
+                  │          │                       │ │  13
+                  │          │                       │ false
                   │          │                       12
                   │          Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
 
+          --- [Int] s[keyPath: \SomeStructure.someValue]
+          +++ [Int] 13
+          –12
+          +13
+
           [Int] s[keyPath: \SomeStructure.someValue]
           => 12
-          [Int] 12
-          => 12
+          [Int] 13
+          => 13
 
-          #assert(s.getValue(keyPath: \.someValue) == 12)
+          #assert(s.getValue(keyPath: \.someValue) == 13)
                   │ │                 │            │  │
-                  │ 12                │            │  12
-                  │                   │            true
+                  │ 12                │            │  13
+                  │                   │            false
                   │                   Swift.WritableKeyPath<PowerAssertTests.SomeStructure, Swift.Int>
                   SomeStructure(someValue: 12)
 
+          --- [Int] s.getValue(keyPath: \.someValue)
+          +++ [Int] 13
+          –12
+          +13
+
           [Int] s.getValue(keyPath: \.someValue)
           => 12
-          [Int] 12
-          => 12
+          [Int] 13
+          => 13
 
-          #assert(nested[keyPath: nestedKeyPath] == 24)
+          #assert(nested[keyPath: nestedKeyPath] == 13)
                   │               │            │ │  │
-                  │               │            │ │  24
-                  │               │            │ true
+                  │               │            │ │  13
+                  │               │            │ false
                   │               │            24
                   │               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
+          --- [Int] nested[keyPath: nestedKeyPath]
+          +++ [Int] 13
+          –24
+          +13
+
           [Int] nested[keyPath: nestedKeyPath]
           => 24
-          [Int] 24
-          => 24
+          [Int] 13
+          => 13
 
-          #assert(nested[keyPath: \OuterStructure.outer.someValue] == 24)
+          #assert(nested[keyPath: \OuterStructure.outer.someValue] == 13)
                   │               │                              │ │  │
-                  │               │                              │ │  24
-                  │               │                              │ true
+                  │               │                              │ │  13
+                  │               │                              │ false
                   │               │                              24
                   │               Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
+          --- [Int] nested[keyPath: \OuterStructure.outer.someValue]
+          +++ [Int] 13
+          –24
+          +13
+
           [Int] nested[keyPath: \OuterStructure.outer.someValue]
           => 24
-          [Int] 24
-          => 24
+          [Int] 13
+          => 13
 
-          #assert(nested.getValue(keyPath: \.outer.someValue) == 24)
+          #assert(nested.getValue(keyPath: \.outer.someValue) == 13)
                   │      │                 │                  │  │
-                  │      24                │                  │  24
-                  │                        │                  true
+                  │      24                │                  │  13
+                  │                        │                  false
                   │                        Swift.WritableKeyPath<PowerAssertTests.OuterStructure, Swift.Int>
                   OuterStructure(outer: PowerAssertTests.SomeStructure(someValue: 24))
 
+          --- [Int] nested.getValue(keyPath: \.outer.someValue)
+          +++ [Int] 13
+          –24
+          +13
+          
           [Int] nested.getValue(keyPath: \.outer.someValue)
           => 24
-          [Int] 24
-          => 24
+          [Int] 13
+          => 13
 
 
           """#
@@ -1887,38 +1984,47 @@ final class AssertTests: XCTestCase {
     captureConsoleOutput {
       let greetings = ["hello", "hola", "bonjour", "안녕"]
 
-      #assert(greetings[keyPath: \[String].[1]] == "hola", verbose: true)
-      #assert(greetings[keyPath: \[String].first?.count] == 5, verbose: true)
+      #assert(greetings[keyPath: \[String].[1]] == "hello")
+      #assert(greetings[keyPath: \[String].first?.count] == 4)
     } completion: { (output) in
       print(output)
       XCTAssertTrue(
         output ==
         #"""
-        #assert(greetings[keyPath: \[String].[1]] == "hola")
+        #assert(greetings[keyPath: \[String].[1]] == "hello")
                 │                  │          │ │ │  │
-                │                  │          1 │ │  "hola"
-                │                  │            │ true
+                │                  │          1 │ │  "hello"
+                │                  │            │ false
                 │                  │            "hola"
                 │                  Swift.WritableKeyPath<Swift.Array<Swift.String>, Swift.String>
                 ["hello", "hola", "bonjour", "안녕"]
 
+        --- [String] greetings[keyPath: \[String].[1]]
+        +++ [String] "hello"
+        h[-o-]{+e+}l[-a-]{+lo+}
+
         [String] greetings[keyPath: \[String].[1]]
         => "hola"
-        [String] "hola"
-        => "hola"
+        [String] "hello"
+        => "hello"
 
-        #assert(greetings[keyPath: \[String].first?.count] == 5)
+        #assert(greetings[keyPath: \[String].first?.count] == 4)
                 │                  │                     │ │  │
-                │                  │                     │ │  5
-                │                  │                     │ true
+                │                  │                     │ │  4
+                │                  │                     │ false
                 │                  │                     Optional(5)
                 │                  Swift.KeyPath<Swift.Array<Swift.String>, Swift.Optional<Swift.Int>>
                 ["hello", "hola", "bonjour", "안녕"]
 
+        --- [Optional<Int>] greetings[keyPath: \[String].first?.count]
+        +++ [Int] 4
+        –Optional(5)
+        +4
+
         [Optional<Int>] greetings[keyPath: \[String].first?.count]
         => Optional(5)
-        [Int] 5
-        => 5
+        [Int] 4
+        => 4
 
 
         """#
@@ -1929,31 +2035,40 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
         #"""
-        #assert(greetings[keyPath: \[String].[1]] == "hola")
+        #assert(greetings[keyPath: \[String].[1]] == "hello")
                 │                  │          │ │ │  │
-                │                  │          1 │ │  "hola"
-                │                  │            │ true
+                │                  │          1 │ │  "hello"
+                │                  │            │ false
                 │                  │            "hola"
                 │                  \Array<String>.<computed 0x0000000000000000 (String)>
                 ["hello", "hola", "bonjour", "안녕"]
 
+        --- [String] greetings[keyPath: \[String].[1]]
+        +++ [String] "hello"
+        h[-o-]{+e+}l[-a-]{+lo+}
+
         [String] greetings[keyPath: \[String].[1]]
         => "hola"
-        [String] "hola"
-        => "hola"
+        [String] "hello"
+        => "hello"
 
-        #assert(greetings[keyPath: \[String].first?.count] == 5)
+        #assert(greetings[keyPath: \[String].first?.count] == 4)
                 │                  │                     │ │  │
-                │                  │                     │ │  5
-                │                  │                     │ true
+                │                  │                     │ │  4
+                │                  │                     │ false
                 │                  │                     Optional(5)
                 │                  \Array<String>.first?.count?
                 ["hello", "hola", "bonjour", "안녕"]
 
+        --- [Optional<Int>] greetings[keyPath: \[String].first?.count]
+        +++ [Int] 4
+        –Optional(5)
+        +4
+
         [Optional<Int>] greetings[keyPath: \[String].first?.count]
         => Optional(5)
-        [Int] 5
-        => 5
+        [Int] 4
+        => 4
 
 
         """#
@@ -2196,8 +2311,7 @@ final class AssertTests: XCTestCase {
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
       #assert(
-        interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2,
-        verbose: true
+        interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2
       )
     } completion: { (output) in
       print(output)
@@ -2205,10 +2319,10 @@ final class AssertTests: XCTestCase {
       XCTAssertTrue(
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2222,10 +2336,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2239,10 +2353,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2256,10 +2370,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2273,10 +2387,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2290,10 +2404,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2311,10 +2425,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2332,10 +2446,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2353,10 +2467,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2374,10 +2488,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2395,10 +2509,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2416,10 +2530,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] == 2)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]] != 2)
                   │                           │                 │         │ │ │  │
                   │                           │                 "prime"   0 2 │  2
-                  │                           │                               true
+                  │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2442,8 +2556,7 @@ final class AssertTests: XCTestCase {
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
       #assert(
-        interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7,
-        verbose: true
+        interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7
       )
     } completion: { (output) in
       print(output)
@@ -2451,10 +2564,10 @@ final class AssertTests: XCTestCase {
       XCTAssertTrue(
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2468,10 +2581,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2485,10 +2598,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2502,10 +2615,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2519,10 +2632,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2536,10 +2649,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2557,10 +2670,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2578,10 +2691,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2599,10 +2712,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
@@ -2620,10 +2733,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2641,10 +2754,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
@@ -2662,10 +2775,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] == 7)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count] != 7)
                   │                           │                 │                  │ │  │
                   │                           │                 "hexagonal"        7 │  7
-                  │                           │                                      true
+                  │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
 
@@ -2688,8 +2801,7 @@ final class AssertTests: XCTestCase {
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
       #assert(
-        interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64,
-        verbose: true
+        interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64
       )
     } completion: { (output) in
       print(output)
@@ -2697,10 +2809,10 @@ final class AssertTests: XCTestCase {
       XCTAssertTrue(
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
@@ -2715,10 +2827,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
@@ -2733,10 +2845,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
@@ -2751,10 +2863,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
@@ -2769,10 +2881,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
@@ -2787,10 +2899,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
@@ -2809,10 +2921,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
@@ -2831,10 +2943,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
@@ -2853,10 +2965,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
@@ -2875,10 +2987,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
@@ -2897,10 +3009,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
@@ -2919,10 +3031,10 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ) ==
           #"""
-          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] == 64)
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth] != 64)
                   │                           │                 │                           │ │  │
                   │                           │                 "hexagonal"                 │ │  64
-                  │                           │                                             │ true
+                  │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
                   ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
@@ -2957,35 +3069,65 @@ final class AssertTests: XCTestCase {
 
   func testPostfixSelfExpression() {
     captureConsoleOutput {
-      #assert(String.self != Int.self && "string".self == "string", verbose: true)
+      #assert(String.self == Int.self && "string".self == "string")
+      #assert(String.self == Int.self || "string".self != "string")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(String.self != Int.self && "string".self == "string")
-                │      │    │  │   │    │  │        │    │  │
-                │      │    │  │   │    │  "string" │    │  "string"
-                │      │    │  │   │    true        │    true
-                │      │    │  │   │                "string"
+        #assert(String.self == Int.self && "string".self == "string")
+                │      │    │  │   │    │
+                │      │    │  │   │    false
                 │      │    │  │   Optional(Swift.Int)
                 │      │    │  Optional(Swift.Int)
-                │      │    true
+                │      │    false
                 │      Optional(Swift.String)
                 Optional(Swift.String)
+
+        --- [Optional<Any.Type>] String.self
+        +++ [Optional<Any.Type>] Int.self
+        –Optional(Swift.String)
+        +Optional(Swift.Int)
 
         [Optional<Any.Type>] String.self
         => Optional(Swift.String)
         [Optional<Any.Type>] Int.self
         => Optional(Swift.Int)
-        [Bool] String.self != Int.self
-        => true
+        [Bool] String.self == Int.self
+        => false
+        [Not Evaluated] "string".self
+        [Not Evaluated] "string"
+        [Not Evaluated] "string".self == "string"
+
+        #assert(String.self == Int.self || "string".self != "string")
+                │      │    │  │   │    │  │        │    │  │
+                │      │    │  │   │    │  "string" │    │  "string"
+                │      │    │  │   │    false       │    false
+                │      │    │  │   │                "string"
+                │      │    │  │   Optional(Swift.Int)
+                │      │    │  Optional(Swift.Int)
+                │      │    false
+                │      Optional(Swift.String)
+                Optional(Swift.String)
+
+        --- [Optional<Any.Type>] String.self
+        +++ [Optional<Any.Type>] Int.self
+        –Optional(Swift.String)
+        +Optional(Swift.Int)
+
+        [Optional<Any.Type>] String.self
+        => Optional(Swift.String)
+        [Optional<Any.Type>] Int.self
+        => Optional(Swift.Int)
+        [Bool] String.self == Int.self
+        => false
         [String] "string".self
         => "string"
         [String] "string"
         => "string"
-        [Bool] "string".self == "string"
-        => true
+        [Bool] "string".self != "string"
+        => false
 
 
         """
@@ -2998,66 +3140,86 @@ final class AssertTests: XCTestCase {
       let x: Int? = 0
       let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
 
-      #assert(x! == 0, verbose: true)
-      #assert(someDictionary["a"]![0] == 1, verbose: true)
+      #assert(x! == 1)
+      #assert(someDictionary["a"]![0] == 100)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertTrue(
         output ==
         """
-        #assert(x! == 0)
+        #assert(x! == 1)
                 ││ │  │
-                │0 │  0
-                │  true
+                │0 │  1
+                │  false
                 Optional(0)
+
+        --- [Int] x!
+        +++ [Int] 1
+        –0
+        +1
 
         [Int] x!
         => 0
-        [Int] 0
-        => 0
+        [Int] 1
+        => 1
 
-        #assert(someDictionary["a"]![0] == 1)
+        #assert(someDictionary["a"]![0] == 100)
                 ││             │  │  ││ │  │
-                │[1, 2, 3]     │  │  │1 │  1
-                │              │  │  0  true
+                │[1, 2, 3]     │  │  │1 │  100
+                │              │  │  0  false
                 │              │  Optional([1, 2, 3])
                 │              "a"
                 ["a": [1, 2, 3], "b": [10, 20]]
 
+        --- [Int] someDictionary["a"]![0]
+        +++ [Int] 100
+        –1
+        +100
+
         [Int] someDictionary["a"]![0]
         => 1
-        [Int] 1
-        => 1
+        [Int] 100
+        => 100
 
 
         """
         ||
         output ==
         """
-        #assert(x! == 0)
+        #assert(x! == 1)
                 ││ │  │
-                │0 │  0
-                │  true
+                │0 │  1
+                │  false
                 Optional(0)
+
+        --- [Int] x!
+        +++ [Int] 1
+        –0
+        +1
 
         [Int] x!
         => 0
-        [Int] 0
-        => 0
+        [Int] 1
+        => 1
 
-        #assert(someDictionary["a"]![0] == 1)
+        #assert(someDictionary["a"]![0] == 100)
                 ││             │  │  ││ │  │
-                │[1, 2, 3]     │  │  │1 │  1
-                │              │  │  0  true
+                │[1, 2, 3]     │  │  │1 │  100
+                │              │  │  0  false
                 │              │  Optional([1, 2, 3])
                 │              "a"
                 ["b": [10, 20], "a": [1, 2, 3]]
 
+        --- [Int] someDictionary["a"]![0]
+        +++ [Int] 100
+        –1
+        +100
+
         [Int] someDictionary["a"]![0]
         => 1
-        [Int] 1
-        => 1
+        [Int] 100
+        => 100
 
 
         """
@@ -3068,25 +3230,25 @@ final class AssertTests: XCTestCase {
   func testOptionalChainingExpression1() {
     captureConsoleOutput {
       var c: SomeClass?
-      #assert(c?.property.performAction() == nil, verbose: true)
+      #assert(c?.property.performAction() != nil)
 
       c = SomeClass()
-      #assert((c?.property.performAction())!, verbose: true)
-      #assert(c?.property.performAction() != nil, verbose: true)
+      #assert((c?.property.performAction())!)
+      #assert(c?.property.performAction() == nil)
 
       let someDictionary = ["a": [1, 2, 3], "b": [10, 20]]
-      #assert(someDictionary["not here"]?[0] != 99, verbose: true)
-      #assert(someDictionary["a"]?[0] != 99, verbose: true)
+      #assert(someDictionary["not here"]?[0] == 99)
+      #assert(someDictionary["a"]?[0] == 99)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertTrue(
         output ==
           """
-          #assert(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() != nil)
                   │  │        │               │  │
                   │  nil      nil             │  nil
-                  nil                         true
+                  nil                         false
 
           [Optional<Bool>] c?.property.performAction()
           => nil
@@ -3095,45 +3257,60 @@ final class AssertTests: XCTestCase {
 
           #assert((c?.property.performAction())!)
                   │││ │        │
-                  │││ │        Optional(true)
+                  │││ │        Optional(false)
                   │││ Optional(PowerAssertTests.OtherClass)
                   ││Optional(PowerAssertTests.SomeClass)
-                  │true
-                  Optional(true)
+                  │false
+                  Optional(false)
 
-          #assert(c?.property.performAction() != nil)
+          #assert(c?.property.performAction() == nil)
                   │  │        │               │  │
-                  │  │        Optional(true)  │  nil
-                  │  │                        true
+                  │  │        Optional(false) │  nil
+                  │  │                        false
                   │  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
 
+          --- [Optional<Bool>] c?.property.performAction()
+          +++ [Optional<Bool>] nil
+          –Optional(false)
+          +nil
+
           [Optional<Bool>] c?.property.performAction()
-          => Optional(true)
+          => Optional(false)
           [Optional<Bool>] nil
           => nil
 
-          #assert(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] == 99)
                   │              │         │   │ │  │
                   │              │         nil │ │  99
-                  │              "not here"    │ true
+                  │              "not here"    │ false
                   │                            nil
                   ["a": [1, 2, 3], "b": [10, 20]]
+
+          --- [Optional<Int>] someDictionary["not here"]?[0]
+          +++ [Int] 99
+          –nil
+          +99
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
           [Int] 99
           => 99
 
-          #assert(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] == 99)
                   │              │  │  ││ │  │
                   │              │  │  ││ │  99
-                  │              │  │  ││ true
+                  │              │  │  ││ false
                   │              │  │  │Optional(1)
                   │              │  │  0
                   │              │  Optional([1, 2, 3])
                   │              "a"
                   ["a": [1, 2, 3], "b": [10, 20]]
+
+          --- [Optional<Int>] someDictionary["a"]?[0]
+          +++ [Int] 99
+          –Optional(1)
+          +99
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
@@ -3145,10 +3322,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           """
-          #assert(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() != nil)
                   │  │        │               │  │
                   │  nil      nil             │  nil
-                  nil                         true
+                  nil                         false
 
           [Optional<Bool>] c?.property.performAction()
           => nil
@@ -3157,106 +3334,60 @@ final class AssertTests: XCTestCase {
 
           #assert((c?.property.performAction())!)
                   │││ │        │
-                  │││ │        Optional(true)
+                  │││ │        Optional(false)
                   │││ Optional(PowerAssertTests.OtherClass)
                   ││Optional(PowerAssertTests.SomeClass)
-                  │true
-                  Optional(true)
+                  │false
+                  Optional(false)
 
-          #assert(c?.property.performAction() != nil)
-                  │  │        │               │  │
-                  │  │        Optional(true)  │  nil
-                  │  │                        true
-                  │  Optional(PowerAssertTests.OtherClass)
-                  Optional(PowerAssertTests.SomeClass)
-
-          [Optional<Bool>] c?.property.performAction()
-          => Optional(true)
-          [Optional<Bool>] nil
-          => nil
-
-          #assert(someDictionary["not here"]?[0] != 99)
-                  │              │         │   │ │  │
-                  │              │         nil │ │  99
-                  │              "not here"    │ true
-                  │                            nil
-                  ["b": [10, 20], "a": [1, 2, 3]]
-
-          [Optional<Int>] someDictionary["not here"]?[0]
-          => nil
-          [Int] 99
-          => 99
-
-          #assert(someDictionary["a"]?[0] != 99)
-                  │              │  │  ││ │  │
-                  │              │  │  ││ │  99
-                  │              │  │  ││ true
-                  │              │  │  │Optional(1)
-                  │              │  │  0
-                  │              │  Optional([1, 2, 3])
-                  │              "a"
-                  ["a": [1, 2, 3], "b": [10, 20]]
-
-          [Optional<Int>] someDictionary["a"]?[0]
-          => Optional(1)
-          [Int] 99
-          => 99
-
-          """
-        ||
-        output ==
-          """
           #assert(c?.property.performAction() == nil)
                   │  │        │               │  │
-                  │  nil      nil             │  nil
-                  nil                         true
-
-          [Optional<Bool>] c?.property.performAction()
-          => nil
-          [Optional<Bool>] nil
-          => nil
-
-          #assert((c?.property.performAction())!)
-                  │││ │        │
-                  │││ │        Optional(true)
-                  │││ Optional(PowerAssertTests.OtherClass)
-                  ││Optional(PowerAssertTests.SomeClass)
-                  │true
-                  Optional(true)
-
-          #assert(c?.property.performAction() != nil)
-                  │  │        │               │  │
-                  │  │        Optional(true)  │  nil
-                  │  │                        true
+                  │  │        Optional(false) │  nil
+                  │  │                        false
                   │  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
 
+          --- [Optional<Bool>] c?.property.performAction()
+          +++ [Optional<Bool>] nil
+          –Optional(false)
+          +nil
+
           [Optional<Bool>] c?.property.performAction()
-          => Optional(true)
+          => Optional(false)
           [Optional<Bool>] nil
           => nil
 
-          #assert(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] == 99)
                   │              │         │   │ │  │
                   │              │         nil │ │  99
-                  │              "not here"    │ true
+                  │              "not here"    │ false
                   │                            nil
-                  ["a": [1, 2, 3], "b": [10, 20]]
+                  ["b": [10, 20], "a": [1, 2, 3]]
+
+          --- [Optional<Int>] someDictionary["not here"]?[0]
+          +++ [Int] 99
+          –nil
+          +99
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
           [Int] 99
           => 99
 
-          #assert(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] == 99)
                   │              │  │  ││ │  │
                   │              │  │  ││ │  99
-                  │              │  │  ││ true
+                  │              │  │  ││ false
                   │              │  │  │Optional(1)
                   │              │  │  0
                   │              │  Optional([1, 2, 3])
                   │              "a"
-                  ["b": [10, 20], "a": [1, 2, 3]]
+                  ["a": [1, 2, 3], "b": [10, 20]]
+
+          --- [Optional<Int>] someDictionary["a"]?[0]
+          +++ [Int] 99
+          –Optional(1)
+          +99
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
@@ -3268,10 +3399,10 @@ final class AssertTests: XCTestCase {
         ||
         output ==
           """
-          #assert(c?.property.performAction() == nil)
+          #assert(c?.property.performAction() != nil)
                   │  │        │               │  │
                   │  nil      nil             │  nil
-                  nil                         true
+                  nil                         false
 
           [Optional<Bool>] c?.property.performAction()
           => nil
@@ -3280,45 +3411,137 @@ final class AssertTests: XCTestCase {
 
           #assert((c?.property.performAction())!)
                   │││ │        │
-                  │││ │        Optional(true)
+                  │││ │        Optional(false)
                   │││ Optional(PowerAssertTests.OtherClass)
                   ││Optional(PowerAssertTests.SomeClass)
-                  │true
-                  Optional(true)
+                  │false
+                  Optional(false)
 
-          #assert(c?.property.performAction() != nil)
+          #assert(c?.property.performAction() == nil)
                   │  │        │               │  │
-                  │  │        Optional(true)  │  nil
-                  │  │                        true
+                  │  │        Optional(false) │  nil
+                  │  │                        false
                   │  Optional(PowerAssertTests.OtherClass)
                   Optional(PowerAssertTests.SomeClass)
 
+          --- [Optional<Bool>] c?.property.performAction()
+          +++ [Optional<Bool>] nil
+          –Optional(false)
+          +nil
+
           [Optional<Bool>] c?.property.performAction()
-          => Optional(true)
+          => Optional(false)
           [Optional<Bool>] nil
           => nil
 
-          #assert(someDictionary["not here"]?[0] != 99)
+          #assert(someDictionary["not here"]?[0] == 99)
                   │              │         │   │ │  │
                   │              │         nil │ │  99
-                  │              "not here"    │ true
+                  │              "not here"    │ false
                   │                            nil
-                  ["b": [10, 20], "a": [1, 2, 3]]
+                  ["a": [1, 2, 3], "b": [10, 20]]
+
+          --- [Optional<Int>] someDictionary["not here"]?[0]
+          +++ [Int] 99
+          –nil
+          +99
 
           [Optional<Int>] someDictionary["not here"]?[0]
           => nil
           [Int] 99
           => 99
 
-          #assert(someDictionary["a"]?[0] != 99)
+          #assert(someDictionary["a"]?[0] == 99)
                   │              │  │  ││ │  │
                   │              │  │  ││ │  99
-                  │              │  │  ││ true
+                  │              │  │  ││ false
                   │              │  │  │Optional(1)
                   │              │  │  0
                   │              │  Optional([1, 2, 3])
                   │              "a"
                   ["b": [10, 20], "a": [1, 2, 3]]
+
+          --- [Optional<Int>] someDictionary["a"]?[0]
+          +++ [Int] 99
+          –Optional(1)
+          +99
+
+          [Optional<Int>] someDictionary["a"]?[0]
+          => Optional(1)
+          [Int] 99
+          => 99
+
+
+          """
+        ||
+        output ==
+          """
+          #assert(c?.property.performAction() != nil)
+                  │  │        │               │  │
+                  │  nil      nil             │  nil
+                  nil                         false
+
+          [Optional<Bool>] c?.property.performAction()
+          => nil
+          [Optional<Bool>] nil
+          => nil
+
+          #assert((c?.property.performAction())!)
+                  │││ │        │
+                  │││ │        Optional(false)
+                  │││ Optional(PowerAssertTests.OtherClass)
+                  ││Optional(PowerAssertTests.SomeClass)
+                  │false
+                  Optional(false)
+
+          #assert(c?.property.performAction() == nil)
+                  │  │        │               │  │
+                  │  │        Optional(false) │  nil
+                  │  │                        false
+                  │  Optional(PowerAssertTests.OtherClass)
+                  Optional(PowerAssertTests.SomeClass)
+
+          --- [Optional<Bool>] c?.property.performAction()
+          +++ [Optional<Bool>] nil
+          –Optional(false)
+          +nil
+
+          [Optional<Bool>] c?.property.performAction()
+          => Optional(false)
+          [Optional<Bool>] nil
+          => nil
+
+          #assert(someDictionary["not here"]?[0] == 99)
+                  │              │         │   │ │  │
+                  │              │         nil │ │  99
+                  │              "not here"    │ false
+                  │                            nil
+                  ["b": [10, 20], "a": [1, 2, 3]]
+
+          --- [Optional<Int>] someDictionary["not here"]?[0]
+          +++ [Int] 99
+          –nil
+          +99
+
+          [Optional<Int>] someDictionary["not here"]?[0]
+          => nil
+          [Int] 99
+          => 99
+
+          #assert(someDictionary["a"]?[0] == 99)
+                  │              │  │  ││ │  │
+                  │              │  │  ││ │  99
+                  │              │  │  ││ false
+                  │              │  │  │Optional(1)
+                  │              │  │  0
+                  │              │  Optional([1, 2, 3])
+                  │              "a"
+                  ["b": [10, 20], "a": [1, 2, 3]]
+
+          --- [Optional<Int>] someDictionary["a"]?[0]
+          +++ [Int] 99
+          –Optional(1)
+          +99
 
           [Optional<Int>] someDictionary["a"]?[0]
           => Optional(1)
@@ -3334,29 +3557,29 @@ final class AssertTests: XCTestCase {
   func testOptionalChainingExpression2() {
     captureConsoleOutput {
       var c: SomeClass?
-      #assert(c?.optionalProperty?.property.optionalProperty?.performAction() == nil, verbose: true)
+      #assert(c?.optionalProperty?.property.optionalProperty?.performAction() != nil)
       c = SomeClass()
-      #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil, verbose: true)
+      #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() != nil)
     } completion: { (output) in
       print(output)
       // Dictionary order is not guaranteed
       XCTAssertEqual(
         output,
         """
-        #assert(c?.optionalProperty?.property.optionalProperty?.performAction() == nil)
+        #assert(c?.optionalProperty?.property.optionalProperty?.performAction() != nil)
                 │  │                 │        │                 │               │  │
                 │  nil               nil      nil               nil             │  nil
-                nil                                                             true
+                nil                                                             false
 
         [Optional<Bool>] c?.optionalProperty?.property.optionalProperty?.performAction()
         => nil
         [Optional<Bool>] nil
         => nil
 
-        #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() == nil)
+        #assert(c?.optionalProperty?.property.property.optionalProperty?.performAction() != nil)
                 │  │                 │        │        │                 │               │  │
                 │  Optional(nil)     nil      nil      nil               nil             │  nil
-                Optional(PowerAssertTests.SomeClass)                                     true
+                Optional(PowerAssertTests.SomeClass)                                     false
 
         [Optional<Bool>] c?.optionalProperty?.property.property.optionalProperty?.performAction()
         => nil
@@ -3384,21 +3607,21 @@ final class AssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #assert(tuple == (name: kanjiName, age: 37, birthday: date), verbose: true)
-      #assert(tuple == (kanjiName, 37, date), verbose: true)
-      #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
-      #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
+      #assert(tuple != (name: kanjiName, age: 37, birthday: date))
+      #assert(tuple != (kanjiName, 37, date))
+      #assert(tuple.name != (kanjiName, 37, date).0 || tuple.age != (kanjiName, 37, date).1)
+      #assert(tuple.name != (kanjiName, 37, date).0 && tuple.age != (kanjiName, 37, date).1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(tuple == (name: kanjiName, age: 37, birthday: date))
+        #assert(tuple != (name: kanjiName, age: 37, birthday: date))
                 │     │  │      │               │             │
                 │     │  │      │               37            1980-10-27 15:00:00 +0000
                 │     │  │      "岸川克己"
                 │     │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     true
+                │     false
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
         [(String, Int, Date)] tuple
@@ -3406,12 +3629,12 @@ final class AssertTests: XCTestCase {
         [(String, Int, Date)] (name: kanjiName, age: 37, birthday: date)
         => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
-        #assert(tuple == (kanjiName, 37, date))
+        #assert(tuple != (kanjiName, 37, date))
                 │     │  ││          │   │
                 │     │  ││          37  1980-10-27 15:00:00 +0000
                 │     │  │"岸川克己"
                 │     │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     true
+                │     false
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
         [(String, Int, Date)] tuple
@@ -3419,41 +3642,20 @@ final class AssertTests: XCTestCase {
         [(String, Int, Date)] (kanjiName, 37, date)
         => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
-        #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
-                │     │    │  ││          │   │     │ │
-                │     │    │  ││          37  │     │ true
-                │     │    │  ││              │     "岸川克己"
-                │     │    │  ││              1980-10-27 15:00:00 +0000
-                │     │    │  │"岸川克己"
-                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
-                │     "岸川克己"
-                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-
-        [String] tuple.name
-        => "岸川克己"
-        [String] (kanjiName, 37, date).0
-        => "岸川克己"
-        [Bool] tuple.name == (kanjiName, 37, date).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] (kanjiName, 37, date).1
-        [Not Evaluated] tuple.age == (kanjiName, 37, date).1
-
-        #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
+        #assert(tuple.name != (kanjiName, 37, date).0 || tuple.age != (kanjiName, 37, date).1)
                 │     │    │  ││          │   │     │ │  │     │   │  ││          │   │     │
                 │     │    │  ││          37  │     │ │  │     37  │  ││          37  │     37
                 │     │    │  ││              │     │ │  │         │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  ││              │     │ │  │         │  │"岸川克己"
                 │     │    │  ││              │     │ │  │         │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    │  ││              │     │ │  │         true
+                │     │    │  ││              │     │ │  │         false
                 │     │    │  ││              │     │ │  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                │     │    │  ││              │     │ true
+                │     │    │  ││              │     │ false
                 │     │    │  ││              │     "岸川克己"
                 │     │    │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
                 │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 
@@ -3461,14 +3663,35 @@ final class AssertTests: XCTestCase {
         => "岸川克己"
         [String] (kanjiName, 37, date).0
         => "岸川克己"
-        [Bool] tuple.name == (kanjiName, 37, date).0
-        => true
+        [Bool] tuple.name != (kanjiName, 37, date).0
+        => false
         [Int] tuple.age
         => 37
         [Int] (kanjiName, 37, date).1
         => 37
-        [Bool] tuple.age == (kanjiName, 37, date).1
-        => true
+        [Bool] tuple.age != (kanjiName, 37, date).1
+        => false
+
+        #assert(tuple.name != (kanjiName, 37, date).0 && tuple.age != (kanjiName, 37, date).1)
+                │     │    │  ││          │   │     │ │
+                │     │    │  ││          37  │     │ false
+                │     │    │  ││              │     "岸川克己"
+                │     │    │  ││              1980-10-27 15:00:00 +0000
+                │     │    │  │"岸川克己"
+                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                │     │    false
+                │     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (kanjiName, 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name != (kanjiName, 37, date).0
+        => false
+        [Not Evaluated] tuple.age
+        [Not Evaluated] (kanjiName, 37, date).1
+        [Not Evaluated] tuple.age != (kanjiName, 37, date).1
 
 
         """
@@ -3492,101 +3715,65 @@ final class AssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #assert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1, verbose: true)
-      #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1, verbose: true)
-      #assert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1, verbose: true)
-      #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1, verbose: true)
+
+      #assert(tuple.name == (emojiName, 37, date).0 || tuple.age != (kanjiName, 37, date).1)
+      #assert(tuple.name != (kanjiName, 37, date).0 || tuple.age != (emojiName, 37, date).1)
+
+      #assert(tuple.name == (emojiName, 37, date).0 && tuple.age != (kanjiName, 37, date).1)
+      #assert(tuple.name != (kanjiName, 37, date).0 && tuple.age != (emojiName, 37, date).1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(tuple.name != (emojiName, 37, date).0 || tuple.age == (kanjiName, 37, date).1)
-                │     │    │  ││          │   │     │ │
-                │     │    │  ││          37  │     │ true
-                │     │    │  ││              │     "😇岸川克己🇯🇵"
-                │     │    │  ││              1980-10-27 15:00:00 +0000
-                │     │    │  │"😇岸川克己🇯🇵"
-                │     │    │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
-                │     "岸川克己"
-                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-
-        [String] tuple.name
-        => "岸川克己"
-        [String] (emojiName, 37, date).0
-        => "😇岸川克己🇯🇵"
-        [Bool] tuple.name != (emojiName, 37, date).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] (kanjiName, 37, date).1
-        [Not Evaluated] tuple.age == (kanjiName, 37, date).1
-
-        #assert(tuple.name == (kanjiName, 37, date).0 || tuple.age == (emojiName, 37, date).1)
-                │     │    │  ││          │   │     │ │
-                │     │    │  ││          37  │     │ true
-                │     │    │  ││              │     "岸川克己"
-                │     │    │  ││              1980-10-27 15:00:00 +0000
-                │     │    │  │"岸川克己"
-                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
-                │     "岸川克己"
-                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-
-        [String] tuple.name
-        => "岸川克己"
-        [String] (kanjiName, 37, date).0
-        => "岸川克己"
-        [Bool] tuple.name == (kanjiName, 37, date).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] (emojiName, 37, date).1
-        [Not Evaluated] tuple.age == (emojiName, 37, date).1
-
-        #assert(tuple.name != (emojiName, 37, date).0 && tuple.age == (kanjiName, 37, date).1)
+        #assert(tuple.name == (emojiName, 37, date).0 || tuple.age != (kanjiName, 37, date).1)
                 │     │    │  ││          │   │     │ │  │     │   │  ││          │   │     │
                 │     │    │  ││          37  │     │ │  │     37  │  ││          37  │     37
                 │     │    │  ││              │     │ │  │         │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  ││              │     │ │  │         │  │"岸川克己"
                 │     │    │  ││              │     │ │  │         │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    │  ││              │     │ │  │         true
+                │     │    │  ││              │     │ │  │         false
                 │     │    │  ││              │     │ │  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                │     │    │  ││              │     │ true
+                │     │    │  ││              │     │ false
                 │     │    │  ││              │     "😇岸川克己🇯🇵"
                 │     │    │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  │"😇岸川克己🇯🇵"
                 │     │    │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        --- [String] tuple.name
+        +++ [String] (emojiName, 37, date).0
+        {+😇+}岸川克己{+🇯🇵+}
 
         [String] tuple.name
         => "岸川克己"
         [String] (emojiName, 37, date).0
         => "😇岸川克己🇯🇵"
-        [Bool] tuple.name != (emojiName, 37, date).0
-        => true
+        [Bool] tuple.name == (emojiName, 37, date).0
+        => false
         [Int] tuple.age
         => 37
         [Int] (kanjiName, 37, date).1
         => 37
-        [Bool] tuple.age == (kanjiName, 37, date).1
-        => true
+        [Bool] tuple.age != (kanjiName, 37, date).1
+        => false
 
-        #assert(tuple.name == (kanjiName, 37, date).0 && tuple.age == (emojiName, 37, date).1)
+        #assert(tuple.name != (kanjiName, 37, date).0 || tuple.age != (emojiName, 37, date).1)
                 │     │    │  ││          │   │     │ │  │     │   │  ││          │   │     │
                 │     │    │  ││          37  │     │ │  │     37  │  ││          37  │     37
                 │     │    │  ││              │     │ │  │         │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  ││              │     │ │  │         │  │"😇岸川克己🇯🇵"
                 │     │    │  ││              │     │ │  │         │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-                │     │    │  ││              │     │ │  │         true
+                │     │    │  ││              │     │ │  │         false
                 │     │    │  ││              │     │ │  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                │     │    │  ││              │     │ true
+                │     │    │  ││              │     │ false
                 │     │    │  ││              │     "岸川克己"
                 │     │    │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
                 │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 
@@ -3594,14 +3781,60 @@ final class AssertTests: XCTestCase {
         => "岸川克己"
         [String] (kanjiName, 37, date).0
         => "岸川克己"
-        [Bool] tuple.name == (kanjiName, 37, date).0
-        => true
+        [Bool] tuple.name != (kanjiName, 37, date).0
+        => false
         [Int] tuple.age
         => 37
         [Int] (emojiName, 37, date).1
         => 37
-        [Bool] tuple.age == (emojiName, 37, date).1
-        => true
+        [Bool] tuple.age != (emojiName, 37, date).1
+        => false
+
+        #assert(tuple.name == (emojiName, 37, date).0 && tuple.age != (kanjiName, 37, date).1)
+                │     │    │  ││          │   │     │ │
+                │     │    │  ││          37  │     │ false
+                │     │    │  ││              │     "😇岸川克己🇯🇵"
+                │     │    │  ││              1980-10-27 15:00:00 +0000
+                │     │    │  │"😇岸川克己🇯🇵"
+                │     │    │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                │     │    false
+                │     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        --- [String] tuple.name
+        +++ [String] (emojiName, 37, date).0
+        {+😇+}岸川克己{+🇯🇵+}
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (emojiName, 37, date).0
+        => "😇岸川克己🇯🇵"
+        [Bool] tuple.name == (emojiName, 37, date).0
+        => false
+        [Not Evaluated] tuple.age
+        [Not Evaluated] (kanjiName, 37, date).1
+        [Not Evaluated] tuple.age != (kanjiName, 37, date).1
+
+        #assert(tuple.name != (kanjiName, 37, date).0 && tuple.age != (emojiName, 37, date).1)
+                │     │    │  ││          │   │     │ │
+                │     │    │  ││          37  │     │ false
+                │     │    │  ││              │     "岸川克己"
+                │     │    │  ││              1980-10-27 15:00:00 +0000
+                │     │    │  │"岸川克己"
+                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                │     │    false
+                │     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] (kanjiName, 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name != (kanjiName, 37, date).0
+        => false
+        [Not Evaluated] tuple.age
+        [Not Evaluated] (emojiName, 37, date).1
+        [Not Evaluated] tuple.age != (emojiName, 37, date).1
 
 
         """
@@ -3624,21 +3857,21 @@ final class AssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #assert(tuple == (name: "岸川克己", age: 37, birthday: date), verbose: true)
-      #assert(tuple == ("岸川克己", 37, date), verbose: true)
-      #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
-      #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
+      #assert(tuple != (name: "岸川克己", age: 37, birthday: date))
+      #assert(tuple != ("岸川克己", 37, date))
+      #assert(tuple.name != ("岸川克己", 37, date).0 || tuple.age != ("岸川克己", 37, date).1)
+      #assert(tuple.name != ("岸川克己", 37, date).0 && tuple.age != ("岸川克己", 37, date).1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(tuple == (name: "岸川克己", age: 37, birthday: date))
+        #assert(tuple != (name: "岸川克己", age: 37, birthday: date))
                 │     │  │      │                │             │
                 │     │  │      │                37            1980-10-27 15:00:00 +0000
                 │     │  │      "岸川克己"
                 │     │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     true
+                │     false
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
         [(String, Int, Date)] tuple
@@ -3646,12 +3879,12 @@ final class AssertTests: XCTestCase {
         [(String, Int, Date)] (name: "岸川克己", age: 37, birthday: date)
         => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
-        #assert(tuple == ("岸川克己", 37, date))
+        #assert(tuple != ("岸川克己", 37, date))
                 │     │  ││           │   │
                 │     │  ││           37  1980-10-27 15:00:00 +0000
                 │     │  │"岸川克己"
                 │     │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     true
+                │     false
                 ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
         [(String, Int, Date)] tuple
@@ -3659,41 +3892,20 @@ final class AssertTests: XCTestCase {
         [(String, Int, Date)] ("岸川克己", 37, date)
         => ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
 
-        #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
-                │     │    │  ││           │   │     │ │
-                │     │    │  ││           37  │     │ true
-                │     │    │  ││               │     "岸川克己"
-                │     │    │  ││               1980-10-27 15:00:00 +0000
-                │     │    │  │"岸川克己"
-                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
-                │     "岸川克己"
-                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-
-        [String] tuple.name
-        => "岸川克己"
-        [String] ("岸川克己", 37, date).0
-        => "岸川克己"
-        [Bool] tuple.name == ("岸川克己", 37, date).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] ("岸川克己", 37, date).1
-        [Not Evaluated] tuple.age == ("岸川克己", 37, date).1
-
-        #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+        #assert(tuple.name != ("岸川克己", 37, date).0 || tuple.age != ("岸川克己", 37, date).1)
                 │     │    │  ││           │   │     │ │  │     │   │  ││           │   │     │
                 │     │    │  ││           37  │     │ │  │     37  │  ││           37  │     37
                 │     │    │  ││               │     │ │  │         │  ││               1980-10-27 15:00:00 +0000
                 │     │    │  ││               │     │ │  │         │  │"岸川克己"
                 │     │    │  ││               │     │ │  │         │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    │  ││               │     │ │  │         true
+                │     │    │  ││               │     │ │  │         false
                 │     │    │  ││               │     │ │  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                │     │    │  ││               │     │ true
+                │     │    │  ││               │     │ false
                 │     │    │  ││               │     "岸川克己"
                 │     │    │  ││               1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
                 │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 
@@ -3701,14 +3913,35 @@ final class AssertTests: XCTestCase {
         => "岸川克己"
         [String] ("岸川克己", 37, date).0
         => "岸川克己"
-        [Bool] tuple.name == ("岸川克己", 37, date).0
-        => true
+        [Bool] tuple.name != ("岸川克己", 37, date).0
+        => false
         [Int] tuple.age
         => 37
         [Int] ("岸川克己", 37, date).1
         => 37
-        [Bool] tuple.age == ("岸川克己", 37, date).1
-        => true
+        [Bool] tuple.age != ("岸川克己", 37, date).1
+        => false
+
+        #assert(tuple.name != ("岸川克己", 37, date).0 && tuple.age != ("岸川克己", 37, date).1)
+                │     │    │  ││           │   │     │ │
+                │     │    │  ││           37  │     │ false
+                │     │    │  ││               │     "岸川克己"
+                │     │    │  ││               1980-10-27 15:00:00 +0000
+                │     │    │  │"岸川克己"
+                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                │     │    false
+                │     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("岸川克己", 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name != ("岸川克己", 37, date).0
+        => false
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("岸川克己", 37, date).1
+        [Not Evaluated] tuple.age != ("岸川克己", 37, date).1
 
 
         """
@@ -3731,101 +3964,63 @@ final class AssertTests: XCTestCase {
 
       let tuple = (name: kanjiName, age: 37, birthday: date)
 
-      #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1, verbose: true)
-      #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
-      #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1, verbose: true)
-      #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1, verbose: true)
+      #assert(tuple.name == ("😇岸川克己🇯🇵", 37, date).0 || tuple.age != ("岸川克己", 37, date).1)
+      #assert(tuple.name != ("岸川克己", 37, date).0 || tuple.age != ("😇岸川克己🇯🇵", 37, date).1)
+      #assert(tuple.name == ("😇岸川克己🇯🇵", 37, date).0 && tuple.age != ("岸川克己", 37, date).1)
+      #assert(tuple.name != ("岸川克己", 37, date).0 && tuple.age != ("😇岸川克己🇯🇵", 37, date).1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 || tuple.age == ("岸川克己", 37, date).1)
-                │     │    │  ││              │   │     │ │
-                │     │    │  ││              37  │     │ true
-                │     │    │  ││                  │     "😇岸川克己🇯🇵"
-                │     │    │  ││                  1980-10-27 15:00:00 +0000
-                │     │    │  │"😇岸川克己🇯🇵"
-                │     │    │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
-                │     "岸川克己"
-                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-
-        [String] tuple.name
-        => "岸川克己"
-        [String] ("😇岸川克己🇯🇵", 37, date).0
-        => "😇岸川克己🇯🇵"
-        [Bool] tuple.name != ("😇岸川克己🇯🇵", 37, date).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] ("岸川克己", 37, date).1
-        [Not Evaluated] tuple.age == ("岸川克己", 37, date).1
-
-        #assert(tuple.name == ("岸川克己", 37, date).0 || tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
-                │     │    │  ││           │   │     │ │
-                │     │    │  ││           37  │     │ true
-                │     │    │  ││               │     "岸川克己"
-                │     │    │  ││               1980-10-27 15:00:00 +0000
-                │     │    │  │"岸川克己"
-                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
-                │     "岸川克己"
-                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-
-        [String] tuple.name
-        => "岸川克己"
-        [String] ("岸川克己", 37, date).0
-        => "岸川克己"
-        [Bool] tuple.name == ("岸川克己", 37, date).0
-        => true
-        [Not Evaluated] tuple.age
-        [Not Evaluated] ("😇岸川克己🇯🇵", 37, date).1
-        [Not Evaluated] tuple.age == ("😇岸川克己🇯🇵", 37, date).1
-
-        #assert(tuple.name != ("😇岸川克己🇯🇵", 37, date).0 && tuple.age == ("岸川克己", 37, date).1)
+        #assert(tuple.name == ("😇岸川克己🇯🇵", 37, date).0 || tuple.age != ("岸川克己", 37, date).1)
                 │     │    │  ││              │   │     │ │  │     │   │  ││           │   │     │
                 │     │    │  ││              37  │     │ │  │     37  │  ││           37  │     37
                 │     │    │  ││                  │     │ │  │         │  ││               1980-10-27 15:00:00 +0000
                 │     │    │  ││                  │     │ │  │         │  │"岸川克己"
                 │     │    │  ││                  │     │ │  │         │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    │  ││                  │     │ │  │         true
+                │     │    │  ││                  │     │ │  │         false
                 │     │    │  ││                  │     │ │  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                │     │    │  ││                  │     │ true
+                │     │    │  ││                  │     │ false
                 │     │    │  ││                  │     "😇岸川克己🇯🇵"
                 │     │    │  ││                  1980-10-27 15:00:00 +0000
                 │     │    │  │"😇岸川克己🇯🇵"
                 │     │    │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        --- [String] tuple.name
+        +++ [String] ("😇岸川克己🇯🇵", 37, date).0
+        {+😇+}岸川克己{+🇯🇵+}
 
         [String] tuple.name
         => "岸川克己"
         [String] ("😇岸川克己🇯🇵", 37, date).0
         => "😇岸川克己🇯🇵"
-        [Bool] tuple.name != ("😇岸川克己🇯🇵", 37, date).0
-        => true
+        [Bool] tuple.name == ("😇岸川克己🇯🇵", 37, date).0
+        => false
         [Int] tuple.age
         => 37
         [Int] ("岸川克己", 37, date).1
         => 37
-        [Bool] tuple.age == ("岸川克己", 37, date).1
-        => true
+        [Bool] tuple.age != ("岸川克己", 37, date).1
+        => false
 
-        #assert(tuple.name == ("岸川克己", 37, date).0 && tuple.age == ("😇岸川克己🇯🇵", 37, date).1)
+        #assert(tuple.name != ("岸川克己", 37, date).0 || tuple.age != ("😇岸川克己🇯🇵", 37, date).1)
                 │     │    │  ││           │   │     │ │  │     │   │  ││              │   │     │
                 │     │    │  ││           37  │     │ │  │     37  │  ││              37  │     37
                 │     │    │  ││               │     │ │  │         │  ││                  1980-10-27 15:00:00 +0000
                 │     │    │  ││               │     │ │  │         │  │"😇岸川克己🇯🇵"
                 │     │    │  ││               │     │ │  │         │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
-                │     │    │  ││               │     │ │  │         true
+                │     │    │  ││               │     │ │  │         false
                 │     │    │  ││               │     │ │  (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
-                │     │    │  ││               │     │ true
+                │     │    │  ││               │     │ false
                 │     │    │  ││               │     "岸川克己"
                 │     │    │  ││               1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
                 │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
-                │     │    true
+                │     │    false
                 │     "岸川克己"
                 (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
 
@@ -3833,14 +4028,60 @@ final class AssertTests: XCTestCase {
         => "岸川克己"
         [String] ("岸川克己", 37, date).0
         => "岸川克己"
-        [Bool] tuple.name == ("岸川克己", 37, date).0
-        => true
+        [Bool] tuple.name != ("岸川克己", 37, date).0
+        => false
         [Int] tuple.age
         => 37
         [Int] ("😇岸川克己🇯🇵", 37, date).1
         => 37
-        [Bool] tuple.age == ("😇岸川克己🇯🇵", 37, date).1
-        => true
+        [Bool] tuple.age != ("😇岸川克己🇯🇵", 37, date).1
+        => false
+
+        #assert(tuple.name == ("😇岸川克己🇯🇵", 37, date).0 && tuple.age != ("岸川克己", 37, date).1)
+                │     │    │  ││              │   │     │ │
+                │     │    │  ││              37  │     │ false
+                │     │    │  ││                  │     "😇岸川克己🇯🇵"
+                │     │    │  ││                  1980-10-27 15:00:00 +0000
+                │     │    │  │"😇岸川克己🇯🇵"
+                │     │    │  ("😇岸川克己🇯🇵", 37, 1980-10-27 15:00:00 +0000)
+                │     │    false
+                │     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        --- [String] tuple.name
+        +++ [String] ("😇岸川克己🇯🇵", 37, date).0
+        {+😇+}岸川克己{+🇯🇵+}
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("😇岸川克己🇯🇵", 37, date).0
+        => "😇岸川克己🇯🇵"
+        [Bool] tuple.name == ("😇岸川克己🇯🇵", 37, date).0
+        => false
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("岸川克己", 37, date).1
+        [Not Evaluated] tuple.age != ("岸川克己", 37, date).1
+
+        #assert(tuple.name != ("岸川克己", 37, date).0 && tuple.age != ("😇岸川克己🇯🇵", 37, date).1)
+                │     │    │  ││           │   │     │ │
+                │     │    │  ││           37  │     │ false
+                │     │    │  ││               │     "岸川克己"
+                │     │    │  ││               1980-10-27 15:00:00 +0000
+                │     │    │  │"岸川克己"
+                │     │    │  ("岸川克己", 37, 1980-10-27 15:00:00 +0000)
+                │     │    false
+                │     "岸川克己"
+                (name: "岸川克己", age: 37, birthday: 1980-10-27 15:00:00 +0000)
+
+        [String] tuple.name
+        => "岸川克己"
+        [String] ("岸川克己", 37, date).0
+        => "岸川克己"
+        [Bool] tuple.name != ("岸川克己", 37, date).0
+        => false
+        [Not Evaluated] tuple.age
+        [Not Evaluated] ("😇岸川克己🇯🇵", 37, date).1
+        [Not Evaluated] tuple.age != ("😇岸川克己🇯🇵", 37, date).1
 
 
         """
