@@ -2084,8 +2084,7 @@ final class AssertTests: XCTestCase {
 //        "hexagonal": [1, 6, 15, 28, 45, 66, 91]
 //      ]
 //      #assert(
-//        interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15],
-//        verbose: true
+//        interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15]
 //      )
 //    } completion: { (output) in
 //      print(output)
@@ -3054,8 +3053,8 @@ final class AssertTests: XCTestCase {
 //    captureConsoleOutput {
 //      let initializer: (Int) -> String = String.init
 //
-//      #powerAssert([1, 2, 3].map(initializer).reduce("", +) == "123", verbose: true)
-//      #powerAssert([1, 2, 3].map(String.init).reduce("", +) == "123", verbose: true)
+//      #powerAssert([1, 2, 3].map(initializer).reduce("", +) == "123")
+//      #powerAssert([1, 2, 3].map(String.init).reduce("", +) == "123")
 //    } completion: { (output) in
 //      print(output)
 //      XCTAssertEqual(
@@ -4093,20 +4092,25 @@ final class AssertTests: XCTestCase {
     captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
 #if swift(>=3.2)
-      #assert(bar.val != bar.foo.val, verbose: true)
+      #assert(bar.val == bar.foo.val)
 #endif
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(bar.val != bar.foo.val)
+        #assert(bar.val == bar.foo.val)
                 │   │   │  │   │   │
                 │   3   │  │   │   2
                 │       │  │   Foo(val: 2)
                 │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                │       true
+                │       false
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        --- [Int] bar.val
+        +++ [Int] bar.foo.val
+        –3
+        +2
 
         [Int] bar.val
         => 3
@@ -4122,32 +4126,40 @@ final class AssertTests: XCTestCase {
   func testSelectorExpression1() {
     captureConsoleOutput {
       #assert(
-        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description),
-        verbose: true
+        #selector(SomeObjCClass.doSomething(_:)) == #selector(getter: NSObjectProtocol.description)
       )
       #assert(
-        #selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description),
-        verbose: true
+        #selector(getter: SomeObjCClass.property) == #selector(getter: NSObjectProtocol.description)
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: NSObjectProtocol.description))
+        #assert(#selector(SomeObjCClass.doSomething(_:)) == #selector(getter: NSObjectProtocol.description))
                 │                                        │  │
                 "doSomethingWithInt:"                    │  "description"
-                                                         true
+                                                         false
+
+        --- [Selector] #selector(SomeObjCClass.doSomething(_:))
+        +++ [Selector] #selector(getter: NSObjectProtocol.description)
+        –"doSomethingWithInt:"
+        +"description"
 
         [Selector] #selector(SomeObjCClass.doSomething(_:))
         => "doSomethingWithInt:"
         [Selector] #selector(getter: NSObjectProtocol.description)
         => "description"
 
-        #assert(#selector(getter: SomeObjCClass.property) != #selector(getter: NSObjectProtocol.description))
+        #assert(#selector(getter: SomeObjCClass.property) == #selector(getter: NSObjectProtocol.description))
                 │                                         │  │
                 "property"                                │  "description"
-                                                          true
+                                                          false
+
+        --- [Selector] #selector(getter: SomeObjCClass.property)
+        +++ [Selector] #selector(getter: NSObjectProtocol.description)
+        –"property"
+        +"description"
 
         [Selector] #selector(getter: SomeObjCClass.property)
         => "property"
@@ -4163,32 +4175,40 @@ final class AssertTests: XCTestCase {
   func testSelectorExpression2() {
     captureConsoleOutput {
       #assert(
-        #selector(SomeObjCClass.doSomething(_:)) != #selector(getter: (any NSObjectProtocol).description),
-        verbose: true
+        #selector(SomeObjCClass.doSomething(_:)) == #selector(getter: (any NSObjectProtocol).description)
       )
       #assert(
-        #selector(getter: SomeObjCClass.property) != #selector(getter: (any NSObjectProtocol).description),
-        verbose: true
+        #selector(getter: SomeObjCClass.property) == #selector(getter: (any NSObjectProtocol).description)
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(#selector(SomeObjCClass.doSomething(_:)) != #selector(getter: (any NSObjectProtocol).description))
+        #assert(#selector(SomeObjCClass.doSomething(_:)) == #selector(getter: (any NSObjectProtocol).description))
                 │                                        │  │
                 "doSomethingWithInt:"                    │  "description"
-                                                         true
+                                                         false
+
+        --- [Selector] #selector(SomeObjCClass.doSomething(_:))
+        +++ [Selector] #selector(getter: (any NSObjectProtocol).description)
+        –"doSomethingWithInt:"
+        +"description"
 
         [Selector] #selector(SomeObjCClass.doSomething(_:))
         => "doSomethingWithInt:"
         [Selector] #selector(getter: (any NSObjectProtocol).description)
         => "description"
 
-        #assert(#selector(getter: SomeObjCClass.property) != #selector(getter: (any NSObjectProtocol).description))
+        #assert(#selector(getter: SomeObjCClass.property) == #selector(getter: (any NSObjectProtocol).description))
                 │                                         │  │
                 "property"                                │  "description"
-                                                          true
+                                                          false
+
+        --- [Selector] #selector(getter: SomeObjCClass.property)
+        +++ [Selector] #selector(getter: (any NSObjectProtocol).description)
+        –"property"
+        +"description"
 
         [Selector] #selector(getter: SomeObjCClass.property)
         => "property"
@@ -4209,8 +4229,7 @@ final class AssertTests: XCTestCase {
   //       [10, 3, 20, 15, 4]
   //         .sorted()
   //         .filter { $0 > 5 }
-  //         .map { $0 * 100 } == arr,
-  //       verbose: true
+  //         .map { $0 * 100 } == arr
   //     )
   //   } completion: { (output) in
   //     print(output)
@@ -4243,8 +4262,7 @@ final class AssertTests: XCTestCase {
   //           _ = d.distance(to: c)
   //         }
   //         return c == d
-  //       }(a, b),
-  //       verbose: true
+  //       }(a, b)
   //     )
   //   } completion: { (output) in
   //     print(output)
@@ -4265,33 +4283,66 @@ final class AssertTests: XCTestCase {
 
       let array = [one, two, three]
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
-        "message",
-        verbose: true
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
+        "message"
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        "message"
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array.description.hasPrefix("[")
         => true
         [Bool] false
         => false
-        [Bool] array.description.hasPrefix("[") != false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
         => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
         [Bool] array.description.hasPrefix("Hello")
         => false
         [Bool] true
         => true
-        [Bool] array.description.hasPrefix("Hello") != true
-        => true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
 
 
         """
@@ -4307,58 +4358,125 @@ final class AssertTests: XCTestCase {
 
       let array = [one, two, three]
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
-        file: "path/to/Tests.swift",
-        verbose: true
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
+        file: "path/to/Tests.swift"
       )
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
         "message",
-        file: "path/to/Tests.swift",
-        verbose: true
+        file: "path/to/Tests.swift"
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        file: "path/to/Tests.swift"
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        "message",
+        file: "path/to/Tests.swift"
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array.description.hasPrefix("[")
         => true
         [Bool] false
         => false
-        [Bool] array.description.hasPrefix("[") != false
-        => true
-        [Bool] array.description.hasPrefix("Hello")
+        [Bool] array.description.hasPrefix("[") == false
         => false
-        [Bool] true
-        => true
-        [Bool] array.description.hasPrefix("Hello") != true
-        => true
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
 
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array.description.hasPrefix("[")
         => true
         [Bool] false
         => false
-        [Bool] array.description.hasPrefix("[") != false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
         => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
         [Bool] array.description.hasPrefix("Hello")
         => false
         [Bool] true
         => true
-        [Bool] array.description.hasPrefix("Hello") != true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
         => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
 
 
         """
@@ -4374,109 +4492,245 @@ final class AssertTests: XCTestCase {
 
       let array = [one, two, three]
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
-        line: 999,
-        verbose: true
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
+        line: 999
       )
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
         "message",
-        line: 999,
-        verbose: true
+        line: 999
       )
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
         file: "path/to/Tests.swift",
-        line: 999,
-        verbose: true
+        line: 999
       )
       #assert(
-        array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true,
+        array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true,
         "message",
         file: "path/to/Tests.swift",
-        line: 999,
-        verbose: true
+        line: 999
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        line: 999
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        "message",
+        line: 999
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        file: "path/to/Tests.swift",
+        line: 999
+      )
+      #assert(
+        array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true,
+        "message",
+        file: "path/to/Tests.swift",
+        line: 999
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array.description.hasPrefix("[")
         => true
         [Bool] false
         => false
-        [Bool] array.description.hasPrefix("[") != false
-        => true
-        [Bool] array.description.hasPrefix("Hello")
+        [Bool] array.description.hasPrefix("[") == false
         => false
-        [Bool] true
-        => true
-        [Bool] array.description.hasPrefix("Hello") != true
-        => true
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
 
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
 
-        [Bool] array.description.hasPrefix("[")
-        => true
-        [Bool] false
-        => false
-        [Bool] array.description.hasPrefix("[") != false
-        => true
-        [Bool] array.description.hasPrefix("Hello")
-        => false
-        [Bool] true
-        => true
-        [Bool] array.description.hasPrefix("Hello") != true
-        => true
-
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array.description.hasPrefix("[")
         => true
         [Bool] false
         => false
-        [Bool] array.description.hasPrefix("[") != false
-        => true
-        [Bool] array.description.hasPrefix("Hello")
+        [Bool] array.description.hasPrefix("[") == false
         => false
-        [Bool] true
-        => true
-        [Bool] array.description.hasPrefix("Hello") != true
-        => true
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
 
-        #assert(array.description.hasPrefix("[") != false && array.description.hasPrefix("Hello") != true)
-                │     │           │         │    │  │     │  │     │           │         │        │  │
-                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
-                [1, 2, 3]                        true     │  [1, 2, 3]                            true
-                                                          true
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
 
         [Bool] array.description.hasPrefix("[")
         => true
         [Bool] false
         => false
-        [Bool] array.description.hasPrefix("[") != false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
+
+        #assert(array.description.hasPrefix("[") == false && array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │
+                │     "[1, 2, 3]" true      "["  │  false false
+                [1, 2, 3]                        false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        [Bool] array.description.hasPrefix("[")
         => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Not Evaluated] array.description.hasPrefix("Hello")
+        [Not Evaluated] true
+        [Not Evaluated] array.description.hasPrefix("Hello") == true
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
         [Bool] array.description.hasPrefix("Hello")
         => false
         [Bool] true
         => true
-        [Bool] array.description.hasPrefix("Hello") != true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
         => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
+
+        #assert(array.description.hasPrefix("[") == false || array.description.hasPrefix("Hello") == true)
+                │     │           │         │    │  │     │  │     │           │         │        │  │
+                │     "[1, 2, 3]" true      "["  │  false │  │     "[1, 2, 3]" false     "Hello"  │  true
+                [1, 2, 3]                        false    │  [1, 2, 3]                            false
+                                                          false
+
+        --- [Bool] array.description.hasPrefix("[")
+        +++ [Bool] false
+        –true
+        +false
+
+        --- [Bool] array.description.hasPrefix("Hello")
+        +++ [Bool] true
+        –false
+        +true
+
+        [Bool] array.description.hasPrefix("[")
+        => true
+        [Bool] false
+        => false
+        [Bool] array.description.hasPrefix("[") == false
+        => false
+        [Bool] array.description.hasPrefix("Hello")
+        => false
+        [Bool] true
+        => true
+        [Bool] array.description.hasPrefix("Hello") == true
+        => false
 
 
         """
