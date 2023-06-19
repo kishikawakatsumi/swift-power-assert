@@ -31,6 +31,9 @@ let package = Package(
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
         .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
         "StringWidth",
+      ],
+      swiftSettings: [
+        .enableUpcomingFeature("ExistentialAny")
       ]
     ),
     .target(
@@ -38,6 +41,9 @@ let package = Package(
       dependencies: [
         "PowerAssertPlugin",
         "StringWidth",
+      ],
+      swiftSettings: [
+        .enableUpcomingFeature("ExistentialAny")
       ]
     ),
     .target(
@@ -49,6 +55,9 @@ let package = Package(
         "EastAsianWidth.swift",
         "GenerateCodePointWidth.swift",
         "URLSession+Linux.swift",
+      ],
+      swiftSettings: [
+        .enableUpcomingFeature("ExistentialAny")
       ]
     ),
     .testTarget(
@@ -56,6 +65,9 @@ let package = Package(
       dependencies: [
         "PowerAssert",
         .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+      ],
+      swiftSettings: [
+        .enableUpcomingFeature("ExistentialAny")
       ]
     ),
   ]
