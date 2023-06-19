@@ -30,8 +30,19 @@ private struct CodeGenerator {
   }
 
   private func expand(expression: some SyntaxProtocol, parameters: Parameters) -> String {
+    let content = "\(macro.poundToken.trimmed)\(macro.macro)(\(expression))"
+    let (requiresEscaping, poundCount) = requiresEscaping(content)
+    var openDelimiter: TokenSyntax? = nil
+    var closeDelimiter: TokenSyntax? = nil
+    if requiresEscaping {
+      openDelimiter = TokenSyntax.rawStringDelimiter(String(repeating: "#", count: poundCount + 1))
+      closeDelimiter = openDelimiter
+    }
+
     let assertion = StringLiteralExprSyntax(
-      content: "\(macro.poundToken.trimmed)\(macro.macro)(\(expression))"
+      openDelimiter: openDelimiter,
+      content: content,
+      closeDelimiter: closeDelimiter
     )
     let message = parameters.message
     let file = parameters.file
@@ -89,4 +100,36 @@ private struct Parameters {
       }
     }
   }
+}
+
+// FIXME: https://github.com/apple/swift-syntax/pull/1813
+private func requiresEscaping(_ content: String) -> (Bool, poundCount: Int) {
+  var countingPounds = false
+  var consecutivePounds = 0
+  var maxPounds = 0
+  var requiresEscaping = false
+
+  for c in content {
+    switch (countingPounds, c) {
+      // Normal mode: scanning for characters that can be followed by pounds.
+    case (false, "\""), (false, "\\"):
+      countingPounds = true
+      requiresEscaping = true
+    case (false, _):
+      continue
+
+      // Special mode: counting a sequence of pounds until we reach its end.
+    case (true, _) where c.unicodeScalars.contains("#"):
+      consecutivePounds += 1
+      maxPounds = max(maxPounds, consecutivePounds)
+    case (true, "\""), (true, "\\"):
+      countingPounds = true
+      requiresEscaping = true
+    case (true, _):
+      countingPounds = false
+      consecutivePounds = 0
+    }
+  }
+
+  return (requiresEscaping, poundCount: maxPounds)
 }
