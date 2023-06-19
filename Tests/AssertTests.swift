@@ -5403,11 +5403,11 @@ final class AssertTests: XCTestCase {
   func testHigherOrderFunction() {
     captureConsoleOutput {
       func testA(_ i: Int) -> Int {
-        return i + 1
+        i + 1
       }
 
       func testB(_ i: Int) -> Int {
-        return i + 1
+        i + 1
       }
 
       let array = [0, 1, 2]
@@ -5452,7 +5452,7 @@ final class AssertTests: XCTestCase {
   func testStringInterpolation() {
     captureConsoleOutput {
       func testA(_ i: Int) -> Int {
-        return i + 1
+        i + 1
       }
 
       let string = "World!"

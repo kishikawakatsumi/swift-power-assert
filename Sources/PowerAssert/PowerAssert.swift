@@ -338,11 +338,11 @@ public enum PowerAssert {
     }
 
     static func <(lhs: Value, rhs: Value) -> Bool {
-      return lhs.column < rhs.column
+      lhs.column < rhs.column
     }
 
     static func ==(lhs: Value, rhs: Value) -> Bool {
-      return lhs.column == rhs.column
+      lhs.column == rhs.column
     }
   }
 
