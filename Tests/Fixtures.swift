@@ -178,7 +178,7 @@ class IntegerRef: Equatable {
 }
 
 func == (lhs: IntegerRef, rhs: IntegerRef) -> Bool {
-  return lhs.value == rhs.value
+  lhs.value == rhs.value
 }
 
 enum MyError: Error {

@@ -17,7 +17,7 @@ class Console {
   }
 
   static func decorate(_ style: Style, on text: String) -> String {
-    return decorate([style], on: text)
+    decorate([style], on: text)
   }
 
   static func decorate(_ styles: [Style], on text: String) -> String {

@@ -163,7 +163,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: ArrowExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: ArrayExprSyntax) -> ExprSyntax {
@@ -177,15 +177,15 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: AssignmentExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: AwaitExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: BinaryOperatorExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: BooleanLiteralExprSyntax) -> ExprSyntax {
@@ -194,11 +194,11 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: BorrowExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
-    return ExprSyntax(node)
+    ExprSyntax(node)
   }
 
   override func visit(_ node: DictionaryExprSyntax) -> ExprSyntax {
@@ -207,11 +207,11 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: DiscardAssignmentExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: EditorPlaceholderExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: FloatLiteralExprSyntax) -> ExprSyntax {
@@ -246,11 +246,11 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: IfExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: InOutExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
@@ -264,7 +264,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: IsExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: KeyPathExprSyntax) -> ExprSyntax {
@@ -304,11 +304,11 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: MissingExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: MoveExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
@@ -317,19 +317,19 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: OptionalChainingExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: PackExpansionExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: PostfixIfConfigExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: PostfixUnaryExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: PrefixOperatorExprSyntax) -> ExprSyntax {
@@ -351,7 +351,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: SpecializeExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {
@@ -370,7 +370,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: SwitchExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: TernaryExprSyntax) -> ExprSyntax {
@@ -379,7 +379,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: TryExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: TupleExprSyntax) -> ExprSyntax {
@@ -388,23 +388,23 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: TypeExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: UnresolvedAsExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: UnresolvedIsExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: UnresolvedPatternExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visit(_ node: UnresolvedTernaryExprSyntax) -> ExprSyntax {
-    return super.visit(node)
+    super.visit(node)
   }
 
   override func visitPost(_ node: Syntax) {
@@ -599,7 +599,7 @@ private class ExpressionStore {
   }
 
   func filter(_ isIncluded: (Expression) -> Bool) -> [Expression] {
-    return expressions.filter { isIncluded($0) }
+    expressions.filter { isIncluded($0) }
   }
 }
 
