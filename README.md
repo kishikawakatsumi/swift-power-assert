@@ -198,6 +198,14 @@ func testConcurrency() async {
 }
 ```
 
+## For use on CI
+
+For unattended use (e.g. on CI), you can disable the package validation dialog by
+
+- individually passing `-skipMacroValidation` to `xcodebuild` or
+- globally setting `defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES`
+  for that user.
+
 ## Frequently Asked Questions
 
 **Q: Assert failure messages are not displayed.**
