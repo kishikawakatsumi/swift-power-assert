@@ -17,14 +17,22 @@ class SingleLineFormatter: SyntaxRewriter {
       return super.visit(node)
     }
     let visitedNode = super.visit(node).cast(StringLiteralExprSyntax.self)
-    let segments = visitedNode
-      .segments
-      .map { $0.with(\.leadingTrivia, []).with(\.trailingTrivia, []) }
-    return ExprSyntax(
-      StringLiteralExprSyntax(content: "\(StringLiteralSegmentsSyntax(segments))")
-        .with(\.leadingTrivia, visitedNode.leadingTrivia)
-        .with(\.trailingTrivia, visitedNode.trailingTrivia)
-    )
+    if let content = visitedNode.representedLiteralValue {
+      return ExprSyntax(
+        StringLiteralExprSyntax(content: content)
+          .with(\.leadingTrivia, visitedNode.leadingTrivia)
+          .with(\.trailingTrivia, visitedNode.trailingTrivia)
+      )
+    } else {
+      let segments = visitedNode
+        .segments
+        .map { $0.with(\.leadingTrivia, []).with(\.trailingTrivia, []) }
+      return ExprSyntax(
+        StringLiteralExprSyntax(content: "\(StringLiteralSegmentsSyntax(segments))")
+          .with(\.leadingTrivia, visitedNode.leadingTrivia)
+          .with(\.trailingTrivia, visitedNode.trailingTrivia)
+      )
+    }
   }
 
   override func visit(_ token: TokenSyntax) -> TokenSyntax {

@@ -4742,19 +4742,22 @@ final class AssertTests: XCTestCase {
     captureConsoleOutput {
       let loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
       #assert(
-        loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,",
-        verbose: true
+        loremIpsum == "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(loremIpsum != "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,")
+        #assert(loremIpsum == "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,")
                 │          │  │
                 │          │  "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
-                │          true
+                │          false
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        --- [String] loremIpsum
+        +++ [String] "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,"
+        Lorem ipsum dolor sit amet,[- -]{+\n+}consectetur adipiscing elit,[- sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.-]
 
         [String] loremIpsum
         => "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
@@ -4770,21 +4773,21 @@ final class AssertTests: XCTestCase {
   func testStringContainsEscapeSequences1() {
     captureConsoleOutput {
       let lyric1 = "Feet, don't fail me now."
-      #assert(lyric1 == "Feet, don't fail me now.", verbose: true)
-      #assert(lyric1 == "Feet, don\'t fail me now.", verbose: true)
+      #assert(lyric1 != "Feet, don't fail me now.")
+      #assert(lyric1 != "Feet, don\'t fail me now.")
 
       let lyric2 = "Feet, don\'t fail me now."
-      #assert(lyric2 == "Feet, don't fail me now.", verbose: true)
-      #assert(lyric2 == "Feet, don\'t fail me now.", verbose: true)
+      #assert(lyric2 != "Feet, don't fail me now.")
+      #assert(lyric2 != "Feet, don\'t fail me now.")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(lyric1 == "Feet, don't fail me now.")
+        #assert(lyric1 != "Feet, don't fail me now.")
                 │      │  │
                 │      │  "Feet, don\'t fail me now."
-                │      true
+                │      false
                 "Feet, don\'t fail me now."
 
         [String] lyric1
@@ -4792,10 +4795,10 @@ final class AssertTests: XCTestCase {
         [String] "Feet, don't fail me now."
         => "Feet, don\'t fail me now."
 
-        #assert(lyric1 == "Feet, don\'t fail me now.")
+        #assert(lyric1 != "Feet, don\'t fail me now.")
                 │      │  │
                 │      │  "Feet, don\'t fail me now."
-                │      true
+                │      false
                 "Feet, don\'t fail me now."
 
         [String] lyric1
@@ -4803,10 +4806,10 @@ final class AssertTests: XCTestCase {
         [String] "Feet, don\'t fail me now."
         => "Feet, don\'t fail me now."
 
-        #assert(lyric2 == "Feet, don't fail me now.")
+        #assert(lyric2 != "Feet, don't fail me now.")
                 │      │  │
                 │      │  "Feet, don\'t fail me now."
-                │      true
+                │      false
                 "Feet, don\'t fail me now."
 
         [String] lyric2
@@ -4814,10 +4817,10 @@ final class AssertTests: XCTestCase {
         [String] "Feet, don't fail me now."
         => "Feet, don\'t fail me now."
 
-        #assert(lyric2 == "Feet, don\'t fail me now.")
+        #assert(lyric2 != "Feet, don\'t fail me now.")
                 │      │  │
                 │      │  "Feet, don\'t fail me now."
-                │      true
+                │      false
                 "Feet, don\'t fail me now."
 
         [String] lyric2
@@ -4834,21 +4837,21 @@ final class AssertTests: XCTestCase {
   func testStringContainsEscapeSequences2() {
     captureConsoleOutput {
       let nestedQuote1 = "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
-      #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
-      #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
+      #assert(nestedQuote1 != "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+      #assert(nestedQuote1 != "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
 
       let nestedQuote2 = "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-      #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"", verbose: true)
-      #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"", verbose: true)
+      #assert(nestedQuote2 != "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+      #assert(nestedQuote2 != "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+        #assert(nestedQuote1 != "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 │            │  │
                 │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-                │            true
+                │            false
                 "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote1
@@ -4856,10 +4859,10 @@ final class AssertTests: XCTestCase {
         [String] "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
         => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
-        #assert(nestedQuote1 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
+        #assert(nestedQuote1 != "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 │            │  │
                 │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-                │            true
+                │            false
                 "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote1
@@ -4867,10 +4870,10 @@ final class AssertTests: XCTestCase {
         [String] "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
         => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
-        #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
+        #assert(nestedQuote2 != "My mother said, \"The baby started talking today. The baby said, 'Mama.'\"")
                 │            │  │
                 │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-                │            true
+                │            false
                 "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote2
@@ -4878,10 +4881,10 @@ final class AssertTests: XCTestCase {
         [String] "My mother said, \"The baby started talking today. The baby said, 'Mama.'\""
         => "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
-        #assert(nestedQuote2 == "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
+        #assert(nestedQuote2 != "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\"")
                 │            │  │
                 │            │  "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
-                │            true
+                │            false
                 "My mother said, \"The baby started talking today. The baby said, \'Mama.\'\""
 
         [String] nestedQuote2
@@ -4898,16 +4901,16 @@ final class AssertTests: XCTestCase {
   func testStringContainsEscapeSequences3() {
     captureConsoleOutput {
       let helpText = "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
-      #assert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]", verbose: true)
+      #assert(helpText != "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(helpText == "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
+        #assert(helpText != "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]")
                 │        │  │
                 │        │  "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
-                │        true
+                │        false
                 "OPTIONS:\n  --build-path\t\tSpecify build/cache directory [default: ./.build]"
 
         [String] helpText
@@ -4924,25 +4927,25 @@ final class AssertTests: XCTestCase {
   func testStringContainsEscapeSequences4() {
     captureConsoleOutput {
       let nullCharacter = "Null character\0Null character"
-      #assert(nullCharacter == "Null character\0Null character", verbose: true)
+      #assert(nullCharacter != "Null character\0Null character")
 
       let lineFeed = "Line feed\nLine feed"
-      #assert(lineFeed == "Line feed\nLine feed", verbose: true)
+      #assert(lineFeed != "Line feed\nLine feed")
 
       let carriageReturn = "Carriage Return\rCarriage Return"
-      #assert(carriageReturn == "Carriage Return\rCarriage Return", verbose: true)
+      #assert(carriageReturn != "Carriage Return\rCarriage Return")
 
       let backslash = "Backslash\\Backslash"
-      #assert(backslash == "Backslash\\Backslash", verbose: true)
+      #assert(backslash != "Backslash\\Backslash")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(nullCharacter == "Null character\0Null character")
+        #assert(nullCharacter != "Null character\0Null character")
                 │             │  │
                 │             │  "Null character\0Null character"
-                │             true
+                │             false
                 "Null character\0Null character"
 
         [String] nullCharacter
@@ -4950,10 +4953,10 @@ final class AssertTests: XCTestCase {
         [String] "Null character\0Null character"
         => "Null character\0Null character"
 
-        #assert(lineFeed == "Line feed\nLine feed")
+        #assert(lineFeed != "Line feed\nLine feed")
                 │        │  │
                 │        │  "Line feed\nLine feed"
-                │        true
+                │        false
                 "Line feed\nLine feed"
 
         [String] lineFeed
@@ -4961,10 +4964,10 @@ final class AssertTests: XCTestCase {
         [String] "Line feed\nLine feed"
         => "Line feed\nLine feed"
 
-        #assert(carriageReturn == "Carriage Return\rCarriage Return")
+        #assert(carriageReturn != "Carriage Return\rCarriage Return")
                 │              │  │
                 │              │  "Carriage Return\rCarriage Return"
-                │              true
+                │              false
                 "Carriage Return\rCarriage Return"
 
         [String] carriageReturn
@@ -4972,10 +4975,10 @@ final class AssertTests: XCTestCase {
         [String] "Carriage Return\rCarriage Return"
         => "Carriage Return\rCarriage Return"
 
-        #assert(backslash == "Backslash\\Backslash")
+        #assert(backslash != "Backslash\\Backslash")
                 │         │  │
                 │         │  "Backslash\\Backslash"
-                │         true
+                │         false
                 "Backslash\\Backslash"
 
         [String] backslash
@@ -4995,19 +4998,19 @@ final class AssertTests: XCTestCase {
       let dollarSign = "\u{0024}"        // $,  Unicode scalar U+0024
       let blackHeart = "\u{2665}"        // ♥,  Unicode scalar U+2665
       let sparklingHeart = "\u{1f496}"   // 💖, Unicode scalar U+1F496
-      #assert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein", verbose: true)
-      #assert(dollarSign == "\u{0024}", verbose: true)
-      #assert(blackHeart == "\u{2665}", verbose: true)
-      #assert(sparklingHeart == "\u{1f496}", verbose: true)
+      #assert(wiseWords != "\"Imagination is more important than knowledge\" - Einstein")
+      #assert(dollarSign != "\u{0024}")
+      #assert(blackHeart != "\u{2665}")
+      #assert(sparklingHeart != "\u{1f496}")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(wiseWords == "\"Imagination is more important than knowledge\" - Einstein")
+        #assert(wiseWords != "\"Imagination is more important than knowledge\" - Einstein")
                 │         │  │
                 │         │  "\"Imagination is more important than knowledge\" - Einstein"
-                │         true
+                │         false
                 "\"Imagination is more important than knowledge\" - Einstein"
 
         [String] wiseWords
@@ -5015,20 +5018,20 @@ final class AssertTests: XCTestCase {
         [String] "\"Imagination is more important than knowledge\" - Einstein"
         => "\"Imagination is more important than knowledge\" - Einstein"
 
-        #assert(dollarSign == "\u{0024}")
+        #assert(dollarSign != "\u{0024}")
                 │          │  │
                 "$"        │  "$"
-                           true
+                           false
 
         [String] dollarSign
         => "$"
         [String] "\u{0024}"
         => "$"
 
-        #assert(blackHeart == "\u{2665}")
+        #assert(blackHeart != "\u{2665}")
                 │          │  │
                 │          │  "♥"
-                │          true
+                │          false
                 "♥"
 
         [String] blackHeart
@@ -5036,10 +5039,10 @@ final class AssertTests: XCTestCase {
         [String] "\u{2665}"
         => "♥"
 
-        #assert(sparklingHeart == "\u{1f496}")
+        #assert(sparklingHeart != "\u{1f496}")
                 │              │  │
                 │              │  "💖"
-                │              true
+                │              false
                 "💖"
 
         [String] sparklingHeart
@@ -5056,38 +5059,38 @@ final class AssertTests: XCTestCase {
   func testStringContainsPoundSign() {
     captureConsoleOutput {
       let pound = "#"
-      #assert(pound == "#", verbose: true)
-      #assert("#" == pound, verbose: true)
-      #assert(String("#") == pound, verbose: true)
+      #assert(pound != "#")
+      #assert("#" != pound)
+      #assert(String("#") != pound)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(pound == "#")
+        #assert(pound != "#")
                 │     │  │
                 "#"   │  "#"
-                      true
+                      false
 
         [String] pound
         => "#"
         [String] "#"
         => "#"
 
-        #assert("#" == pound)
+        #assert("#" != pound)
                 │   │  │
                 "#" │  "#"
-                    true
+                    false
 
         [String] "#"
         => "#"
         [String] pound
         => "#"
 
-        #assert(String("#") == pound)
+        #assert(String("#") != pound)
                 │      │    │  │
                 "#"    "#"  │  "#"
-                            true
+                            false
 
         [String] String("#")
         => "#"
@@ -5107,22 +5110,21 @@ final class AssertTests: XCTestCase {
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         """
       #assert(
-        multilineLiteral == """
+        multilineLiteral != """
           Lorem ipsum dolor sit amet, consectetur adipiscing elit,
           sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          """,
-        verbose: true
+          """
       )
-      #assert(multilineLiteral == multilineLiteral, verbose: true)
+      #assert(multilineLiteral != multilineLiteral)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert(multilineLiteral == "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        #assert(multilineLiteral != "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
                 │                │  │
                 │                │  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                │                true
+                │                false
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
         [String] multilineLiteral
@@ -5130,10 +5132,10 @@ final class AssertTests: XCTestCase {
         [String] "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-        #assert(multilineLiteral == multilineLiteral)
+        #assert(multilineLiteral != multilineLiteral)
                 │                │  │
                 │                │  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                │                true
+                │                false
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
         [String] multilineLiteral
@@ -5153,28 +5155,28 @@ final class AssertTests: XCTestCase {
         Escaping the first quotation mark \"""
         Escaping all three quotation marks \"\"\"
         """
+      
       #assert(
         multilineLiteral != """
           Escaping the first quotation mark \"""
           Escaping all three quotation marks \"\"\"
-          """,
-        verbose: true
+          """
       )
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         ##"""
-        #assert(multilineLiteral != #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#)
+        #assert(multilineLiteral != #"Escaping the first quotation mark """\#nEscaping all three quotation marks """"#)
                 │                │  │
-                │                │  "Escaping the first quotation mark \\\"\"\"\nEscaping all three quotation marks \\\"\\\"\\\""
-                │                true
+                │                │  "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
+                │                false
                 "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
 
         [String] multilineLiteral
         => "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
-        [String] #"Escaping the first quotation mark \"""\#nEscaping all three quotation marks \"\"\""#
-        => "Escaping the first quotation mark \\\"\"\"\nEscaping all three quotation marks \\\"\\\"\\\""
+        [String] #"Escaping the first quotation mark """\#nEscaping all three quotation marks """"#
+        => "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
 
 
         """##
