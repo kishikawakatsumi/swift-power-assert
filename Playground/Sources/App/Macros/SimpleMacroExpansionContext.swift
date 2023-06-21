@@ -18,7 +18,7 @@ class SimpleMacroExpansionContext: MacroExpansionContext {
     of node: Node,
     at position: SwiftSyntaxMacros.PositionInSyntaxNode,
     filePathMode: SwiftSyntaxMacros.SourceLocationFilePathMode
-  ) -> SwiftSyntax.SourceLocation? where Node : SwiftSyntax.SyntaxProtocol {
+  ) -> SwiftSyntaxMacros.AbstractSourceLocation? where Node : SwiftSyntax.SyntaxProtocol {
     let fileName = fullFilePath
     let offsetAdjustment = 0
 
@@ -35,7 +35,7 @@ class SimpleMacroExpansionContext: MacroExpansionContext {
     }
 
     let converter = SourceLocationConverter(file: fileName, tree: sourceFile)
-    return converter.location(for: rawPosition.advanced(by: offsetAdjustment))
+    return AbstractSourceLocation(converter.location(for: rawPosition.advanced(by: offsetAdjustment)))
   }
 
   func makeUniqueName(_ name: String) -> TokenSyntax {
