@@ -7,6 +7,7 @@ on:
     branches: ["main"]
 env:
   DEVELOPER_DIR: /Applications/Xcode_14.3.app
+  FONTAWESOME_TOKEN: ${{ secrets.FONTAWESOME_TOKEN }}
 
 jobs:
   test:
@@ -48,3 +49,13 @@ jobs:
           fail_ci_if_error: fail
           files: ./coverage_report.lcov
           verbose: true
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v3
+      - name: Build Playground
+        run: |
+          set -ex
+          cd ./Playground
+          tar -czh . | docker build - --build-arg FONTAWESOME_TOKEN=${{ env.FONTAWESOME_TOKEN }}
