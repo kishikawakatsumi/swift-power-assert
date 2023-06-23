@@ -160,7 +160,7 @@ prefix func √√(number: Double) -> Double {
 }
 
 func upload(content: String) async -> String {
-  "OK"
+  "Success"
 }
 
 extension HTTPURLResponse {
