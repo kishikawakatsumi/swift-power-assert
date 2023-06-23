@@ -6,7 +6,7 @@
       "location" : "https://github.com/kishikawakatsumi/swift-power-assert",
       "state" : {
         "branch" : "main",
-        "revision" : "d38f1b729d6f8be7e8eab15952a1ade38f3b7be9"
+        "revision" : "3f022fd6c94c330b151644fb1146c30fd8e67620"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "165fc6d22394c1168ff76ab5d951245971ef07e5",
-        "version" : "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-06-05-a"
+        "revision" : "f1e9245226002bb134884345d4809b9543da3666",
+        "version" : "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-06-17-a"
       }
     }
   ],
