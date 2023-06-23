@@ -4,10 +4,12 @@ import XCTest
 final class ExprSyntaxTests: XCTestCase {
   override func setUp() {
     setenv("NO_COLOR", "1", 1)
+    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
   }
 
   override func tearDown() {
     unsetenv("NO_COLOR")
+    unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
   }
 
   func testArrayExprSyntax() {
@@ -31,23 +33,28 @@ final class ExprSyntaxTests: XCTestCase {
     things.append({ (name: String) -> String in "Hello, \(name)" })
 
     captureConsoleOutput {
-      #assert(things[0] as? Int == 0, verbose: true)
+      #assert(things[0] as? Int == 42)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(things[0] as? Int == 0)
+        #assert(things[0] as? Int == 42)
                 │      ││ │       │  │
-                │      │0 │       │  0
-                │      0  │       true
+                │      │0 │       │  42
+                │      0  │       false
                 │         Optional(0)
                 [0, 0.0, 42, 3.14159, "hello", (3.0, 5.0), PowerAssertTests.Movie, (Function)]
 
+        --- [Optional<Int>] things[0] as? Int
+        +++ [Int] 42
+        –Optional(0)
+        +42
+
         [Optional<Int>] things[0] as? Int
         => Optional(0)
-        [Int] 0
-        => 0
+        [Int] 42
+        => 42
 
 
         """
@@ -256,19 +263,20 @@ final class ExprSyntaxTests: XCTestCase {
   func testTypeExprSyntax() {
     captureConsoleOutput {
       let metatype: String.Type = String.self
-      #assert(metatype as String.Type == String.self, verbose: true)
-      #assert(metatype as String.Type != Int.self, verbose: true)
-      #assert(metatype as String.Type ==== String.self, verbose: true)
+      #assert(metatype as String.Type != String.self)
+      #assert(metatype as String.Type == Int.self)
+      #assert(metatype as String.Type ==== Int.self)
+      #assert(metatype as String.Type !=== String.self)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(metatype as String.Type == String.self)
+        #assert(metatype as String.Type != String.self)
                 │        │              │  │      │
                 String   │              │  │      Optional(Swift.String)
                          │              │  Optional(Swift.String)
-                         │              true
+                         │              false
                          Optional(Swift.String)
 
         [Optional<Any.Type>] metatype as String.Type
@@ -276,21 +284,30 @@ final class ExprSyntaxTests: XCTestCase {
         [Optional<Any.Type>] String.self
         => Optional(Swift.String)
 
-        #assert(metatype as String.Type != Int.self)
+        #assert(metatype as String.Type == Int.self)
                 │        │              │  │   │
                 String   │              │  │   Optional(Swift.Int)
                          │              │  Optional(Swift.Int)
-                         │              true
+                         │              false
                          Optional(Swift.String)
+
+        --- [Optional<Any.Type>] metatype as String.Type
+        +++ [Optional<Any.Type>] Int.self
+        –Optional(Swift.String)
+        +Optional(Swift.Int)
 
         [Optional<Any.Type>] metatype as String.Type
         => Optional(Swift.String)
         [Optional<Any.Type>] Int.self
         => Optional(Swift.Int)
 
-        #assert(metatype as String.Type ==== String.self)
-                │                       │    │      │
-                String                  true String String
+        #assert(metatype as String.Type ==== Int.self)
+                │                            │   │
+                String                       Int Int
+
+        #assert(metatype as String.Type !=== String.self)
+                │                            │      │
+                String                       String String
 
 
         """

@@ -343,11 +343,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {
-    guard let binaryOperatorExpr = findDescendants(syntaxType: BinaryOperatorExprSyntax.self, node: Syntax(node)) else  {
-      return super.visit(node)
-    }
-    let column = graphemeColumn(binaryOperatorExpr)
-    return apply(ExprSyntax(super.visit(node)), column: column)
+    super.visit(node)
   }
 
   override func visit(_ node: SpecializeExprSyntax) -> ExprSyntax {

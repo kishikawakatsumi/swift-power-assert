@@ -5188,59 +5188,79 @@ final class AssertTests: XCTestCase {
     captureConsoleOutput {
       let number1 = 100.0
       let number2 = 200.0
-      #assert(number1 × number2 == 20000.0, verbose: true)
-      #assert(√number2 == 14.142135623730951, verbose: true)
-      #assert(√√number2 != 200.0, verbose: true)
-      #assert(3.760603093086394 == √√number2, verbose: true)
-      #assert(√number2 != √√number2, verbose: true)
+      #assert(number1 × number2 == 200.0)
+      #assert(√number2 == 200.0)
+      #assert(√√number2 == 200.0)
+      #assert(200.0 == √√number2)
+      #assert(√number2 == √√number2)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(number1 × number2 == 20000.0)
-                │       │ │          │
-                100.0   │ 200.0      20000.0
-                        true
+        #assert(number1 × number2 == 200.0)
+                │         │          │
+                100.0     200.0      200.0
 
-        #assert(√number2 == 14.142135623730951)
+        #assert(√number2 == 200.0)
                 ││       │  │
-                │200.0   │  14.142135623730951
-                │        true
+                │200.0   │  200.0
+                │        false
                 14.142135623730951
+
+        --- [Double] √number2
+        +++ [Double] 200.0
+        –14.142135623730951
+        +200.0
 
         [Double] √number2
         => 14.142135623730951
-        [Double] 14.142135623730951
-        => 14.142135623730951
+        [Double] 200.0
+        => 200.0
 
-        #assert(√√number2 != 200.0)
+        #assert(√√number2 == 200.0)
                 │ │       │  │
                 │ 200.0   │  200.0
-                │         true
+                │         false
                 3.760603093086394
+
+        --- [Double] √√number2
+        +++ [Double] 200.0
+        –3.760603093086394
+        +200.0
 
         [Double] √√number2
         => 3.760603093086394
         [Double] 200.0
         => 200.0
 
-        #assert(3.760603093086394 == √√number2)
-                │                 │  │ │
-                3.760603093086394 │  │ 200.0
-                                  │  3.760603093086394
-                                  true
+        #assert(200.0 == √√number2)
+                │     │  │ │
+                200.0 │  │ 200.0
+                      │  3.760603093086394
+                      false
 
-        [Double] 3.760603093086394
-        => 3.760603093086394
+        --- [Double] 200.0
+        +++ [Double] √√number2
+        –200.0
+        +3.760603093086394
+
+        [Double] 200.0
+        => 200.0
         [Double] √√number2
         => 3.760603093086394
 
-        #assert(√number2 != √√number2)
+        #assert(√number2 == √√number2)
                 ││       │    ││
-                │200.0   true │3.760603093086394
-                │             200.0
+                │200.0   │    │3.760603093086394
+                │        │    200.0
+                │        false
                 14.142135623730951
+
+        --- [Double] √number2
+        +++ [Double] √√number2
+        –14.142135623730951
+        +3.760603093086394
 
         [Double] √number2
         => 14.142135623730951
@@ -5260,60 +5280,74 @@ final class AssertTests: XCTestCase {
       let i2=1
       let d1=4.0
       let d2=6.0
-      #assert(i2==1,verbose:true)
-      #assert(b1==false&&i1<i2||false==b1&&i2==1,verbose:true)
-      #assert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0,verbose:true)
+      #assert(i2==4)
+      #assert(b1==true&&i1>i2||true==b1&&i2==4)
+      #assert(b1==true&&i1>i2||true==b1&&i2==4||d1×d2==1)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(i2==1)
+        #assert(i2==4)
                 │ │ │
-                1 │ 1
-                  true
+                1 │ 4
+                  false
+
+        --- [Int] i2
+        +++ [Int] 4
+        –1
+        +4
 
         [Int] i2
         => 1
-        [Int] 1
-        => 1
+        [Int] 4
+        => 4
 
-        #assert(b1==false&&i1<i2||false==b1&&i2==1)
-                │ │ │    │ │ ││ │
-                │ │ │    │ 0 │1 true
-                │ │ │    │   true
-                │ │ │    true
-                │ │ false
-                │ true
-                false
+        #assert(b1==true&&i1>i2||true==b1&&i2==4)
+                │ │ │   │      │ │   │ │ │
+                │ │ │   false  │ │   │ │ false
+                │ │ true       │ │   │ false
+                │ false        │ │   false
+                false          │ true
+                               false
+
+        --- [Bool] b1
+        +++ [Bool] true
+        –false
+        +true
+
+        --- [Bool] true
+        +++ [Bool] b1
+        –true
+        +false
 
         [Bool] b1
         => false
-        [Bool] false
+        [Bool] true
+        => true
+        [Bool] b1==true
         => false
-        [Bool] b1==false
+        [Bool] b1==true&&i1>i2
+        => false
+        [Bool] true
         => true
-        [Int] i1
-        => 0
-        [Int] i2
-        => 1
-        [Bool] i1<i2
-        => true
-        [Bool] b1==false&&i1<i2
-        => true
-        [Not Evaluated] false
-        [Not Evaluated] b1
-        [Not Evaluated] false==b1
+        [Bool] b1
+        => false
+        [Bool] true==b1
+        => false
+        [Bool] true==b1&&i2==4
+        => false
+        [Not Evaluated] i1
         [Not Evaluated] i2
-        [Not Evaluated] 1
-        [Not Evaluated] i2==1
-        [Not Evaluated] false==b1&&i2==1
+        [Not Evaluated] i1>i2
+        [Not Evaluated] i2
+        [Not Evaluated] 4
+        [Not Evaluated] i2==4
 
-        #assert(b1==false&&i1<i2||false==b1&&i2==1||d1×d2==24.0)
-                │ │ │      │  │
-                │ │ false  0  1
-                │ true
-                false
+        #assert(b1==true&&i1>i2||true==b1&&i2==4||d1×d2==1)
+                │   │            │     │          │  │   │
+                │   true         true  false      │  6.0 1.0
+                false                             4.0
 
 
         """
@@ -5328,29 +5362,18 @@ final class AssertTests: XCTestCase {
       let i2=1
       let d1=4.0
       let d2=6.0
-      #assert(i2==1,verbose:true)
-      #assert(b1==false&&i1<i2&&false==b1&&i2==1,verbose:true)
-      #assert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0,verbose:true)
+      #assert(b1==false&&i1<i2&&false==b1&&i2==0)
+      #assert(b1==false&&i1<i2&&false==b1&&i2==0||d1×d2==30.0)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(i2==1)
-                │ │ │
-                1 │ 1
-                  true
-
-        [Int] i2
-        => 1
-        [Int] 1
-        => 1
-
-        #assert(b1==false&&i1<i2&&false==b1&&i2==1)
+        #assert(b1==false&&i1<i2&&false==b1&&i2==0)
                 │ │ │    │ │ ││ │ │    │ │ │ │ │ │
-                │ │ │    │ 0 │1 │ │    │ │ │ 1 │ 1
-                │ │ │    │   │  │ │    │ │ │   true
-                │ │ │    │   │  │ │    │ │ true
+                │ │ │    │ 0 │1 │ │    │ │ │ 1 │ 0
+                │ │ │    │   │  │ │    │ │ │   false
+                │ │ │    │   │  │ │    │ │ false
                 │ │ │    │   │  │ │    │ false
                 │ │ │    │   │  │ │    true
                 │ │ │    │   │  │ false
@@ -5360,6 +5383,11 @@ final class AssertTests: XCTestCase {
                 │ │ false
                 │ true
                 false
+
+        --- [Int] i2
+        +++ [Int] 0
+        –1
+        +0
 
         [Bool] b1
         => false
@@ -5385,16 +5413,15 @@ final class AssertTests: XCTestCase {
         => true
         [Int] i2
         => 1
-        [Int] 1
-        => 1
-        [Bool] i2==1
-        => true
+        [Int] 0
+        => 0
+        [Bool] i2==0
+        => false
 
-        #assert(b1==false&&i1<i2&&false==b1&&i2==1||d1×d2==24.0)
-                │ │ │      │  │   │      │   │   │
-                │ │ false  0  1   false  │   1   1
-                │ true                   false
-                false
+        #assert(b1==false&&i1<i2&&false==b1&&i2==0||d1×d2==30.0)
+                │   │      │  │   │      │   │   │  │  │   │
+                │   false  0  1   false  │   1   0  │  6.0 30.0
+                false                    false      4.0
 
 
         """
@@ -5413,37 +5440,47 @@ final class AssertTests: XCTestCase {
       }
 
       let array = [0, 1, 2]
-      #assert(array.map { testA($0) } == [1, 2, 3], verbose: true)
-      #assert(array.map(testB) == [1, 2, 3], verbose: true)
+      #assert(array.map { testA($0) } == [3, 4])
+      #assert(array.map(testB) == [3, 4])
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(array.map { testA($0) } == [1, 2, 3])
-                │     │                 │  ││  │  │
-                │     [1, 2, 3]         │  │1  2  3
-                [0, 1, 2]               │  [1, 2, 3]
-                                        true
+        #assert(array.map { testA($0) } == [3, 4])
+                │     │                 │  ││  │
+                │     [1, 2, 3]         │  │3  4
+                [0, 1, 2]               │  [3, 4]
+                                        false
+
+        --- [Array<Int>] array.map { testA($0) }
+        +++ [Array<Int>] [3, 4]
+        –[1, 2, 3]
+        +[3, 4]
 
         [Array<Int>] array.map { testA($0) }
         => [1, 2, 3]
-        [Array<Int>] [1, 2, 3]
-        => [1, 2, 3]
+        [Array<Int>] [3, 4]
+        => [3, 4]
 
-        #assert(array.map(testB) == [1, 2, 3])
-                │     │   │      │  ││  │  │
-                │     │   │      │  │1  2  3
-                │     │   │      │  [1, 2, 3]
-                │     │   │      true
+        #assert(array.map(testB) == [3, 4])
+                │     │   │      │  ││  │
+                │     │   │      │  │3  4
+                │     │   │      │  [3, 4]
+                │     │   │      false
                 │     │   (Function)
                 │     [1, 2, 3]
                 [0, 1, 2]
 
+        --- [Array<Int>] array.map(testB)
+        +++ [Array<Int>] [3, 4]
+        –[1, 2, 3]
+        +[3, 4]
+
         [Array<Int>] array.map(testB)
         => [1, 2, 3]
-        [Array<Int>] [1, 2, 3]
-        => [1, 2, 3]
+        [Array<Int>] [3, 4]
+        => [3, 4]
 
 
         """
@@ -5458,32 +5495,40 @@ final class AssertTests: XCTestCase {
       }
 
       let string = "World!"
-      #assert("Hello \(string)" == "Hello World!", verbose: true)
+      #assert("Hello \(string)" == "Hello Swift!")
 
-      let i = 99
-      #assert("value == \(testA(i))" == "value == 100", verbose: true)
+      let i = 100
+      #assert("value == \(testA(i))" == "value == 100")
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         #"""
-        #assert("Hello \(string)" == "Hello World!")
+        #assert("Hello \(string)" == "Hello Swift!")
                 │        │        │  │
-                │        "World!" │  "Hello World!"
-                "Hello World!"    true
+                │        "World!" │  "Hello Swift!"
+                "Hello World!"    false
+
+        --- [String] "Hello \(string)"
+        +++ [String] "Hello Swift!"
+        Hello [-World-]{+Swift+}!
 
         [String] "Hello \(string)"
         => "Hello World!"
-        [String] "Hello World!"
-        => "Hello World!"
+        [String] "Hello Swift!"
+        => "Hello Swift!"
 
         #assert("value == \(testA(i))" == "value == 100")
                 │           │     │    │  │
-                │           100   99   │  "value == 100"
-                "value == 100"         true
+                │           101   100  │  "value == 100"
+                "value == 101"         false
+
+        --- [String] "value == \(testA(i))"
+        +++ [String] "value == 100"
+        value == 10[-1-]{+0+}
 
         [String] "value == \(testA(i))"
-        => "value == 100"
+        => "value == 101"
         [String] "value == 100"
         => "value == 100"
 
@@ -5500,14 +5545,12 @@ final class AssertTests: XCTestCase {
         let regex = #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#
         let result = try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")
 
-        #assert(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil, verbose: true)
+        #assert(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") == nil)
         #assert(
-          try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0,
-          verbose: true
+          try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.1
         )
         #assert(
-          try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT",
-          verbose: true
+          try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "03/01/2022"
         )
       } catch {
         XCTFail()
@@ -5517,47 +5560,62 @@ final class AssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         #"""
-        #assert(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") != nil)
+        #assert(try regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23") == nil)
                     │     │              │                                                             │  │
                     │     │              "CREDIT    03/01/2022    Payroll from employer      $200.23"  │  _OptionalNilComparisonType()
-                    │     │                                                                            true
+                    │     │                                                                            false
                     │     Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
+
+        --- [Optional<Match>] regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")
+        +++ [_OptionalNilComparisonType] nil
+        –Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
+        +_OptionalNilComparisonType()
 
         [Optional<Match>] regex.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")
         => Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
         [_OptionalNilComparisonType] nil
         => _OptionalNilComparisonType()
 
-        #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.0)
+        #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0 == result?.output.1)
                     │                                            │              │                                                              │      │ │  │       │      │
-                    │                                            │              "CREDIT    03/01/2022    Payroll from employer      $200.23"   │      │ │  │       │      Optional("CREDIT    03/01/2022")
+                    │                                            │              "CREDIT    03/01/2022    Payroll from employer      $200.23"   │      │ │  │       │      Optional("CREDIT")
                     │                                            │                                                                             │      │ │  │       Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
                     │                                            │                                                                             │      │ │  Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
-                    │                                            │                                                                             │      │ true
+                    │                                            │                                                                             │      │ false
                     │                                            │                                                                             │      Optional("CREDIT    03/01/2022")
                     │                                            │                                                                             Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
                     │                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
 
+        --- [Optional<Substring>] #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0
+        +++ [Optional<Substring>] result?.output.1
+        –Optional("CREDIT    03/01/2022")
+        +Optional("CREDIT")
+
         [Optional<Substring>] #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.0
         => Optional("CREDIT    03/01/2022")
-        [Optional<Substring>] result?.output.0
-        => Optional("CREDIT    03/01/2022")
+        [Optional<Substring>] result?.output.1
+        => Optional("CREDIT")
 
-        #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "CREDIT")
+        #assert(try #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1 == "03/01/2022")
                     │                                            │              │                                                              │      │ │  │
-                    │                                            │              "CREDIT    03/01/2022    Payroll from employer      $200.23"   │      │ │  Optional("CREDIT")
-                    │                                            │                                                                             │      │ true
+                    │                                            │              "CREDIT    03/01/2022    Payroll from employer      $200.23"   │      │ │  Optional("03/01/2022")
+                    │                                            │                                                                             │      │ false
                     │                                            │                                                                             │      Optional("CREDIT")
                     │                                            │                                                                             Optional(("CREDIT    03/01/2022", "CREDIT", "03/01/2022"))
                     │                                            Optional(_StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Match(anyRegexOutput: _StringProcessing.AnyRegexOutput(input: "CREDIT    03/01/2022    Payroll from employer      $200.23", _elements: [_StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 393221)), value: nil)), name: nil, referenceID: nil), _StringProcessing.AnyRegexOutput.ElementRepresentation(optionalDepth: 0, content: Optional((range: Range(Swift.String.Index(_rawBits: 655623)..<Swift.String.Index(_rawBits: 1310983)), value: nil)), name: nil, referenceID: nil)]), range: Range(Swift.String.Index(_rawBits: 15)..<Swift.String.Index(_rawBits: 1310983))))
                     Regex<(Substring, Substring, Substring)>(program: _StringProcessing.Regex<(Swift.Substring, Swift.Substring, Swift.Substring)>.Program)
 
+        --- [Optional<Substring>] #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1
+        +++ [Optional<Substring>] "03/01/2022"
+        –Optional("CREDIT")
+        +Optional("03/01/2022")
+
         [Optional<Substring>] #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#.firstMatch(in: "CREDIT    03/01/2022    Payroll from employer      $200.23")?.output.1
         => Optional("CREDIT")
-        [Optional<Substring>] "CREDIT"
-        => Optional("CREDIT")
+        [Optional<Substring>] "03/01/2022"
+        => Optional("03/01/2022")
 
 
         """#
@@ -5567,21 +5625,37 @@ final class AssertTests: XCTestCase {
 
   func testTypeIdentifier1() {
     captureConsoleOutput {
-      #assert(String.Type.self != Int.Type.self, verbose: true)
+      #assert(String.Type.self == Int.Type.self)
+      #assert(String.Type.self != String.Type.self)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(String.Type.self != Int.Type.self)
+        #assert(String.Type.self == Int.Type.self)
                             │    │           │
-                            │    true        Optional(Swift.Int.Type)
+                            │    false       Optional(Swift.Int.Type)
                             Optional(Swift.String.Type)
+
+        --- [Optional<Any.Type>] String.Type.self
+        +++ [Optional<Any.Type>] Int.Type.self
+        –Optional(Swift.String.Type)
+        +Optional(Swift.Int.Type)
 
         [Optional<Any.Type>] String.Type.self
         => Optional(Swift.String.Type)
         [Optional<Any.Type>] Int.Type.self
         => Optional(Swift.Int.Type)
+
+        #assert(String.Type.self != String.Type.self)
+                            │    │              │
+                            │    false          Optional(Swift.String.Type)
+                            Optional(Swift.String.Type)
+
+        [Optional<Any.Type>] String.Type.self
+        => Optional(Swift.String.Type)
+        [Optional<Any.Type>] String.Type.self
+        => Optional(Swift.String.Type)
 
 
         """
@@ -5591,16 +5665,20 @@ final class AssertTests: XCTestCase {
 
   func testTypeIdentifier2() {
     captureConsoleOutput {
-      #assert(String.Type.self !=== Int.Type.self, verbose: true)
+      #assert(String.Type.self ==== Int.Type.self)
+      #assert(String.Type.self !=== String.Type.self)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(String.Type.self !=== Int.Type.self)
-                            │    │             │
-                            │    true          Int.Type
-                            String.Type
+        #assert(String.Type.self ==== Int.Type.self)
+                            │                  │
+                            String.Type        Int.Type
+
+        #assert(String.Type.self !=== String.Type.self)
+                            │                     │
+                            String.Type           String.Type
 
 
         """
@@ -5611,66 +5689,86 @@ final class AssertTests: XCTestCase {
   func testTypeIdentifier3() {
     captureConsoleOutput {
       let s: Any = "string"
-      #assert(s as? String.Type == nil, verbose: true)
-      #assert(s as? String.Type != String.Type.self, verbose: true)
-      #assert(s as? String.Type != String.self, verbose: true)
-      #assert(String.Type.self != s as? String.Type, verbose: true)
-      #assert(String.self != s as? String.Type, verbose: true)
+      #assert(s as? String.Type != nil)
+      #assert(s as? String.Type == String.Type.self)
+      #assert(s as? String.Type == String.self)
+      #assert(String.Type.self == s as? String.Type)
+      #assert(String.self == s as? String.Type)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(s as? String.Type == nil)
+        #assert(s as? String.Type != nil)
                 │ │               │  │
                 │ nil             │  nil
-                "string"          true
+                "string"          false
 
         [Optional<String.Type>] s as? String.Type
         => nil
         [Optional<Any.Type>] nil
         => nil
 
-        #assert(s as? String.Type != String.Type.self)
+        #assert(s as? String.Type == String.Type.self)
                 │ │               │              │
-                │ nil             true           Optional(Swift.String.Type)
+                │ nil             false          Optional(Swift.String.Type)
                 "string"
+
+        --- [Optional<String.Type>] s as? String.Type
+        +++ [Optional<Any.Type>] String.Type.self
+        –nil
+        +Optional(Swift.String.Type)
 
         [Optional<String.Type>] s as? String.Type
         => nil
         [Optional<Any.Type>] String.Type.self
         => Optional(Swift.String.Type)
 
-        #assert(s as? String.Type != String.self)
+        #assert(s as? String.Type == String.self)
                 │ │               │  │      │
                 │ nil             │  │      Optional(Swift.String)
                 "string"          │  Optional(Swift.String)
-                                  true
+                                  false
+
+        --- [Optional<String.Type>] s as? String.Type
+        +++ [Optional<Any.Type>] String.self
+        –nil
+        +Optional(Swift.String)
 
         [Optional<String.Type>] s as? String.Type
         => nil
         [Optional<Any.Type>] String.self
         => Optional(Swift.String)
 
-        #assert(String.Type.self != s as? String.Type)
+        #assert(String.Type.self == s as? String.Type)
                             │    │  │ │
                             │    │  │ nil
                             │    │  "string"
-                            │    true
+                            │    false
                             Optional(Swift.String.Type)
+
+        --- [Optional<Any.Type>] String.Type.self
+        +++ [Optional<String.Type>] s as? String.Type
+        –Optional(Swift.String.Type)
+        +nil
 
         [Optional<Any.Type>] String.Type.self
         => Optional(Swift.String.Type)
         [Optional<String.Type>] s as? String.Type
         => nil
 
-        #assert(String.self != s as? String.Type)
+        #assert(String.self == s as? String.Type)
                 │      │    │  │ │
                 │      │    │  │ nil
                 │      │    │  "string"
-                │      │    true
+                │      │    false
                 │      Optional(Swift.String)
                 Optional(Swift.String)
+
+        --- [Optional<Any.Type>] String.self
+        +++ [Optional<String.Type>] s as? String.Type
+        –Optional(Swift.String)
+        +nil
 
         [Optional<Any.Type>] String.self
         => Optional(Swift.String)
@@ -5685,21 +5783,26 @@ final class AssertTests: XCTestCase {
 
   func testAsyncExpression1() async {
     await captureConsoleOutput(execute: {
-      let status = "OK"
-      #assert(await upload(content: "example") == status, verbose: true)
+      let status = "Failure"
+      #assert(await upload(content: "example") == status)
     }, completion: { (output) in
+      print(output)
       XCTAssertEqual(
         output,
         #"""
         #assert(await upload(content: "example") == status)
                       │               │          │  │
-                      "OK"            "example"  │  "OK"
-                                                 true
+                      "Success"       "example"  │  "Failure"
+                                                 false
+
+        --- [String] upload(content: "example")
+        +++ [String] status
+        [-S-]{+Fail+}u[-cc-]{+r+}e[-ss-]
 
         [String] upload(content: "example")
-        => "OK"
+        => "Success"
         [String] status
-        => "OK"
+        => "Failure"
 
 
         """#
@@ -5710,22 +5813,27 @@ final class AssertTests: XCTestCase {
   func testAsyncExpression2() async {
     await captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
-      #assert(bar.val != bar.foo.val, verbose: true)
+      #assert(bar.val == bar.foo.val)
 
-      let status = "OK"
-      #assert(await upload(content: "example") == status, verbose: true)
+      let status = "Failure"
+      #assert(await upload(content: "example") == status)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
         output,
         """
-        #assert(bar.val != bar.foo.val)
+        #assert(bar.val == bar.foo.val)
                 │   │   │  │   │   │
                 │   3   │  │   │   2
                 │       │  │   Foo(val: 2)
                 │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                │       true
+                │       false
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        --- [Int] bar.val
+        +++ [Int] bar.foo.val
+        –3
+        +2
 
         [Int] bar.val
         => 3
@@ -5734,13 +5842,17 @@ final class AssertTests: XCTestCase {
 
         #assert(await upload(content: "example") == status)
                       │               │          │  │
-                      "OK"            "example"  │  "OK"
-                                                 true
+                      "Success"       "example"  │  "Failure"
+                                                 false
+
+        --- [String] upload(content: "example")
+        +++ [String] status
+        [-S-]{+Fail+}u[-cc-]{+r+}e[-ss-]
 
         [String] upload(content: "example")
-        => "OK"
+        => "Success"
         [String] status
-        => "OK"
+        => "Failure"
 
 
         """
@@ -5751,15 +5863,15 @@ final class AssertTests: XCTestCase {
   func testAsyncExpression3() async throws {
     try await captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
-      #assert(bar.val != bar.foo.val, verbose: true)
+      #assert(bar.val == bar.foo.val)
 
-      let status = "OK"
-      #assert(await upload(content: "example") == status, verbose: true)
+      let status = "Failure"
+      #assert(await upload(content: "example") == status)
 
       let request = URLRequest(url: URL(string: "https://example.com")!)
       let session = URLSession(configuration: .ephemeral)
-      #assert(try await session.data(for: request).0.count > 0, verbose: true)
-      #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 200, verbose: true)
+      #assert(try await session.data(for: request).0.count > .max)
+      #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 500)
     } completion: { (output) in
       print(output)
       XCTAssertEqual(
@@ -5769,13 +5881,18 @@ final class AssertTests: XCTestCase {
           options: .regularExpression
         ),
         """
-        #assert(bar.val != bar.foo.val)
+        #assert(bar.val == bar.foo.val)
                 │   │   │  │   │   │
                 │   3   │  │   │   2
                 │       │  │   Foo(val: 2)
                 │       │  Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
-                │       true
+                │       false
                 Bar(foo: PowerAssertTests.Foo(val: 2), val: 3)
+
+        --- [Int] bar.val
+        +++ [Int] bar.foo.val
+        –3
+        +2
 
         [Int] bar.val
         => 3
@@ -5784,18 +5901,22 @@ final class AssertTests: XCTestCase {
 
         #assert(await upload(content: "example") == status)
                       │               │          │  │
-                      "OK"            "example"  │  "OK"
-                                                 true
+                      "Success"       "example"  │  "Failure"
+                                                 false
+
+        --- [String] upload(content: "example")
+        +++ [String] status
+        [-S-]{+Fail+}u[-cc-]{+r+}e[-ss-]
 
         [String] upload(content: "example")
-        => "OK"
+        => "Success"
         [String] status
-        => "OK"
+        => "Failure"
 
-        #assert(try await session.data(for: request).0.count > 0)
-                          │       │         │        │ │     │ │
-                          │       │         │        │ 1256  │ 0
-                          │       │         │        │       true
+        #assert(try await session.data(for: request).0.count > .max)
+                          │       │         │        │ │     │  │
+                          │       │         │        │ 1256  │  9223372036854775807
+                          │       │         │        │       false
                           │       │         │        1256 bytes
                           │       │         https://example.com
                           │       (1256 bytes, Status Code: 200 (no error), URL: https://example.com/)
@@ -5803,13 +5924,13 @@ final class AssertTests: XCTestCase {
 
         [Int] session.data(for: request).0.count
         => 1256
-        [Int] 0
-        => 0
+        [Int] .max
+        => 9223372036854775807
 
-        #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 200)
+        #assert((try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode == 500)
                 │          │       │         │        │ │                     │          │  │
-                │          │       │         │        │ │                     │          │  200
-                │          │       │         │        │ │                     │          true
+                │          │       │         │        │ │                     │          │  500
+                │          │       │         │        │ │                     │          false
                 │          │       │         │        │ │                     Optional(200)
                 │          │       │         │        │ Optional(Status Code: 200 (no error), URL: https://example.com/)
                 │          │       │         │        Status Code: 200 (no error), URL: https://example.com/
@@ -5818,10 +5939,15 @@ final class AssertTests: XCTestCase {
                 │          <__NSURLSessionLocal: 0x000000000>
                 Optional(Status Code: 200 (no error), URL: https://example.com/)
 
+        --- [Optional<Int>] (try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode
+        +++ [Int] 500
+        –Optional(200)
+        +500
+
         [Optional<Int>] (try await session.data(for: request).1 as? HTTPURLResponse)?.statusCode
         => Optional(200)
-        [Int] 200
-        => 200
+        [Int] 500
+        => 500
 
 
         """
@@ -5829,12 +5955,7 @@ final class AssertTests: XCTestCase {
     }
   }
 
-  func testTypecheckTimeoutDueToOvealoading() {
-    setenv("SWIFTPOWERASSERT_WITHOUT_XCTEST", "1", 1)
-    defer {
-      unsetenv("SWIFTPOWERASSERT_WITHOUT_XCTEST")
-    }
-
+  func testTypecheckTimeoutDueToOverloading() {
     captureConsoleOutput {
       let a = 2
       let b = 3
