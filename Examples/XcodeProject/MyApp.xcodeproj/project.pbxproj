@@ -12,7 +12,7 @@
 		141EF9E32A2F284600D44693 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 141EF9E22A2F284600D44693 /* Assets.xcassets */; };
 		141EF9E62A2F284600D44693 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 141EF9E52A2F284600D44693 /* Preview Assets.xcassets */; };
 		141EF9F22A2F284600D44693 /* MyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EF9F12A2F284600D44693 /* MyAppTests.swift */; };
-		1425555F2A2F2ABF00FB310C /* PowerAssert in Frameworks */ = {isa = PBXBuildFile; productRef = 1425555E2A2F2ABF00FB310C /* PowerAssert */; };
+		14765F662A5490A50089BB85 /* PowerAssert in Frameworks */ = {isa = PBXBuildFile; productRef = 14765F652A5490A50089BB85 /* PowerAssert */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,7 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1425555F2A2F2ABF00FB310C /* PowerAssert in Frameworks */,
+				14765F662A5490A50089BB85 /* PowerAssert in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,7 +134,7 @@
 			);
 			name = MyAppTests;
 			packageProductDependencies = (
-				1425555E2A2F2ABF00FB310C /* PowerAssert */,
+				14765F652A5490A50089BB85 /* PowerAssert */,
 			);
 			productName = MyAppTests;
 			productReference = 141EF9ED2A2F284600D44693 /* MyAppTests.xctest */;
@@ -169,7 +169,7 @@
 			);
 			mainGroup = 141EF9D22A2F284500D44693;
 			packageReferences = (
-				1425555D2A2F2ABF00FB310C /* XCRemoteSwiftPackageReference "swift-power-assert" */,
+				14765F642A5490A50089BB85 /* XCRemoteSwiftPackageReference "swift-power-assert" */,
 			);
 			productRefGroup = 141EF9DC2A2F284500D44693 /* Products */;
 			projectDirPath = "";
@@ -477,20 +477,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1425555D2A2F2ABF00FB310C /* XCRemoteSwiftPackageReference "swift-power-assert" */ = {
+		14765F642A5490A50089BB85 /* XCRemoteSwiftPackageReference "swift-power-assert" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kishikawakatsumi/swift-power-assert.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1425555E2A2F2ABF00FB310C /* PowerAssert */ = {
+		14765F652A5490A50089BB85 /* PowerAssert */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1425555D2A2F2ABF00FB310C /* XCRemoteSwiftPackageReference "swift-power-assert" */;
+			package = 14765F642A5490A50089BB85 /* XCRemoteSwiftPackageReference "swift-power-assert" */;
 			productName = PowerAssert;
 		};
 /* End XCSwiftPackageProductDependency section */
