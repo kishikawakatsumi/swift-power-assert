@@ -1337,8 +1337,8 @@ final class AssertTests: XCTestCase {
         output ==
         """
         #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
-                │     │  │         │             │               │
-                │     │  "*.swift" false         false           false
+                │     │  │         │           │ │             │ │
+                │     │  "*.swift" false       1 false         2 false
                 │     false
                 "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
 
@@ -1352,15 +1352,17 @@ final class AssertTests: XCTestCase {
         => "*.swift"
         [Bool] #file == "*.swift"
         => false
+        [Int] 1
+        => 1
         [Bool] #file == "*.swift" && #line == 1
         => false
+        [Int] 2
+        => 2
         [Bool] #file == "*.swift" && #line == 1 && #column == 2
         => false
         [Not Evaluated] #line
-        [Not Evaluated] 1
         [Not Evaluated] #line == 1
         [Not Evaluated] #column
-        [Not Evaluated] 2
         [Not Evaluated] #column == 2
         [Not Evaluated] #function
         [Not Evaluated] "function"
@@ -1372,8 +1374,8 @@ final class AssertTests: XCTestCase {
         output ==
         """
         #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
-                │     │  │         │             │               │
-                │     │  "*.swift" false         false           false
+                │     │  │         │           │ │             │ │
+                │     │  "*.swift" false       1 false         2 false
                 │     false
                 "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
 
@@ -1387,15 +1389,17 @@ final class AssertTests: XCTestCase {
         => "*.swift"
         [Bool] #file == "*.swift"
         => false
+        [Int] 1
+        => 1
         [Bool] #file == "*.swift" && #line == 1
         => false
+        [Int] 2
+        => 2
         [Bool] #file == "*.swift" && #line == 1 && #column == 2
         => false
         [Not Evaluated] #line
-        [Not Evaluated] 1
         [Not Evaluated] #line == 1
         [Not Evaluated] #column
-        [Not Evaluated] 2
         [Not Evaluated] #column == 2
         [Not Evaluated] #function
         [Not Evaluated] "function"
@@ -1409,11 +1413,14 @@ final class AssertTests: XCTestCase {
 
   func testMagicLiteralExpression2() {
     captureConsoleOutput {
-      // FIXME: The compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
-      // #assert(
-      //   #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue &&
-      //     .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
-      // )
+      #assert(
+        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue &&
+          .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+      )
+      #assert(
+        #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue ||
+          .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+      )
       #assert(
         #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue &&
           .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
@@ -1427,12 +1434,65 @@ final class AssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         """
+        #assert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue && .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
+                │                  │                    │                    │                    │  │   │    │                              │                    │                    │                    │
+                │                  0.8078431487         0.02745098062        0.3333333433         1  │   │    false                          0.8078431487         0.02745098062        0.3333333433         1
+                sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                            │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                                                     false
+
+        --- [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        +++ [_NSTaggedPointerColor] .blue
+        –sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        +sRGB IEC61966-2.1 colorspace 0 0 1 1
+
+        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        [_NSTaggedPointerColor] .blue
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [Bool] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue
+        => false
+        [Not Evaluated] .blue
+        [Not Evaluated] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        [Not Evaluated] .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+
+        #assert(#colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue || .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))
+                │                  │                    │                    │                    │  │   │    │   │    │  │                  │                    │                    │                    │
+                │                  0.8078431487         0.02745098062        0.3333333433         1  │   │    │   │    │  │                  0.8078431487         0.02745098062        0.3333333433         1
+                sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1                            │   │    │   │    │  sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+                                                                                                     │   │    │   │    false
+                                                                                                     │   │    │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                                                     │   │    false
+                                                                                                     │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                                                     false
+
+        --- [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        +++ [_NSTaggedPointerColor] .blue
+        –sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        +sRGB IEC61966-2.1 colorspace 0 0 1 1
+
+        --- [_NSTaggedPointerColor] .blue
+        +++ [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        –sRGB IEC61966-2.1 colorspace 0 0 1 1
+        +sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+
+        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        [_NSTaggedPointerColor] .blue
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [Bool] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1) == .blue
+        => false
+        [_NSTaggedPointerColor] .blue
+        => sRGB IEC61966-2.1 colorspace 0 0 1 1
+        [NSColorSpaceColor] #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => sRGB IEC61966-2.1 colorspace 0.807843 0.027451 0.333333 1
+        [Bool] .blue == #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+        => false
+
         #assert(#colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue && .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1))
-                │                  │           │          │           │  │   │    │
-                │                  0.0         0.0        1.0         │  │   │    false
-                sRGB IEC61966-2.1 colorspace 0 0 1 1                  │  │   sRGB IEC61966-2.1 colorspace 0 0 1 1
-                                                                      │  false
-                                                                      1.0
+                │                  │           │          │           │  │   │    │                              │           │          │           │
+                │                  0.0         0.0        1.0         1  │   │    false                          0.0         0.0        1.0         1
+                sRGB IEC61966-2.1 colorspace 0 0 1 1                     │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                         false
 
         [_NSTaggedPointerColor] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
         => sRGB IEC61966-2.1 colorspace 0 0 1 1
@@ -1446,14 +1506,13 @@ final class AssertTests: XCTestCase {
 
         #assert(#colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1) != .blue || .blue != #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1))
                 │                  │           │          │           │  │   │    │   │    │  │                  │           │          │           │
-                │                  0.0         0.0        1.0         │  │   │    │   │    │  │                  0.0         0.0        1.0         1.0
-                sRGB IEC61966-2.1 colorspace 0 0 1 1                  │  │   │    │   │    │  sRGB IEC61966-2.1 colorspace 0 0 1 1
-                                                                      │  │   │    │   │    false
-                                                                      │  │   │    │   sRGB IEC61966-2.1 colorspace 0 0 1 1
-                                                                      │  │   │    false
-                                                                      │  │   sRGB IEC61966-2.1 colorspace 0 0 1 1
-                                                                      │  false
-                                                                      1.0
+                │                  0.0         0.0        1.0         1  │   │    │   │    │  │                  0.0         0.0        1.0         1
+                sRGB IEC61966-2.1 colorspace 0 0 1 1                     │   │    │   │    │  sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                         │   │    │   │    false
+                                                                         │   │    │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                         │   │    false
+                                                                         │   sRGB IEC61966-2.1 colorspace 0 0 1 1
+                                                                         false
 
         [_NSTaggedPointerColor] #colorLiteral(red: 0.0, green: 0.0, blue: 1.0, alpha: 1)
         => sRGB IEC61966-2.1 colorspace 0 0 1 1
@@ -3280,10 +3339,13 @@ final class AssertTests: XCTestCase {
           => nil
 
           #assert(someDictionary["not here"]?[0] == 99)
-                  │              │         │   │ │  │
-                  │              │         nil │ │  99
-                  │              "not here"    │ false
-                  │                            nil
+                  │              │         │  ││ │  │
+                  │              │         │  ││ │  99
+                  │              │         │  ││ false
+                  │              │         │  │nil
+                  │              │         │  0
+                  │              │         nil
+                  │              "not here"
                   ["a": [1, 2, 3], "b": [10, 20]]
 
           --- [Optional<Int>] someDictionary["not here"]?[0]
@@ -3357,10 +3419,13 @@ final class AssertTests: XCTestCase {
           => nil
 
           #assert(someDictionary["not here"]?[0] == 99)
-                  │              │         │   │ │  │
-                  │              │         nil │ │  99
-                  │              "not here"    │ false
-                  │                            nil
+                  │              │         │  ││ │  │
+                  │              │         │  ││ │  99
+                  │              │         │  ││ false
+                  │              │         │  │nil
+                  │              │         │  0
+                  │              │         nil
+                  │              "not here"
                   ["b": [10, 20], "a": [1, 2, 3]]
 
           --- [Optional<Int>] someDictionary["not here"]?[0]
@@ -3434,10 +3499,13 @@ final class AssertTests: XCTestCase {
           => nil
 
           #assert(someDictionary["not here"]?[0] == 99)
-                  │              │         │   │ │  │
-                  │              │         nil │ │  99
-                  │              "not here"    │ false
-                  │                            nil
+                  │              │         │  ││ │  │
+                  │              │         │  ││ │  99
+                  │              │         │  ││ false
+                  │              │         │  │nil
+                  │              │         │  0
+                  │              │         nil
+                  │              "not here"
                   ["a": [1, 2, 3], "b": [10, 20]]
 
           --- [Optional<Int>] someDictionary["not here"]?[0]
@@ -3511,10 +3579,13 @@ final class AssertTests: XCTestCase {
           => nil
 
           #assert(someDictionary["not here"]?[0] == 99)
-                  │              │         │   │ │  │
-                  │              │         nil │ │  99
-                  │              "not here"    │ false
-                  │                            nil
+                  │              │         │  ││ │  │
+                  │              │         │  ││ │  99
+                  │              │         │  ││ false
+                  │              │         │  │nil
+                  │              │         │  0
+                  │              │         nil
+                  │              "not here"
                   ["b": [10, 20], "a": [1, 2, 3]]
 
           --- [Optional<Int>] someDictionary["not here"]?[0]
@@ -3672,8 +3743,8 @@ final class AssertTests: XCTestCase {
         => false
 
         #assert(tuple.name != (kanjiName, 37, date).0 && tuple.age != (kanjiName, 37, date).1)
-                │     │    │  ││          │   │     │ │
-                │     │    │  ││          37  │     │ false
+                │     │    │  ││          │   │     │ │                           │
+                │     │    │  ││          37  │     │ false                       37
                 │     │    │  ││              │     "岸川克己"
                 │     │    │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
@@ -3790,8 +3861,8 @@ final class AssertTests: XCTestCase {
         => false
 
         #assert(tuple.name == (emojiName, 37, date).0 && tuple.age != (kanjiName, 37, date).1)
-                │     │    │  ││          │   │     │ │
-                │     │    │  ││          37  │     │ false
+                │     │    │  ││          │   │     │ │                           │
+                │     │    │  ││          37  │     │ false                       37
                 │     │    │  ││              │     "😇岸川克己🇯🇵"
                 │     │    │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  │"😇岸川克己🇯🇵"
@@ -3815,8 +3886,8 @@ final class AssertTests: XCTestCase {
         [Not Evaluated] tuple.age != (kanjiName, 37, date).1
 
         #assert(tuple.name != (kanjiName, 37, date).0 && tuple.age != (emojiName, 37, date).1)
-                │     │    │  ││          │   │     │ │
-                │     │    │  ││          37  │     │ false
+                │     │    │  ││          │   │     │ │                           │
+                │     │    │  ││          37  │     │ false                       37
                 │     │    │  ││              │     "岸川克己"
                 │     │    │  ││              1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
@@ -3922,8 +3993,8 @@ final class AssertTests: XCTestCase {
         => false
 
         #assert(tuple.name != ("岸川克己", 37, date).0 && tuple.age != ("岸川克己", 37, date).1)
-                │     │    │  ││           │   │     │ │
-                │     │    │  ││           37  │     │ false
+                │     │    │  ││           │   │     │ │                            │
+                │     │    │  ││           37  │     │ false                        37
                 │     │    │  ││               │     "岸川克己"
                 │     │    │  ││               1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
@@ -4037,8 +4108,8 @@ final class AssertTests: XCTestCase {
         => false
 
         #assert(tuple.name == ("😇岸川克己🇯🇵", 37, date).0 && tuple.age != ("岸川克己", 37, date).1)
-                │     │    │  ││              │   │     │ │
-                │     │    │  ││              37  │     │ false
+                │     │    │  ││              │   │     │ │                            │
+                │     │    │  ││              37  │     │ false                        37
                 │     │    │  ││                  │     "😇岸川克己🇯🇵"
                 │     │    │  ││                  1980-10-27 15:00:00 +0000
                 │     │    │  │"😇岸川克己🇯🇵"
@@ -4062,8 +4133,8 @@ final class AssertTests: XCTestCase {
         [Not Evaluated] tuple.age != ("岸川克己", 37, date).1
 
         #assert(tuple.name != ("岸川克己", 37, date).0 && tuple.age != ("😇岸川克己🇯🇵", 37, date).1)
-                │     │    │  ││           │   │     │ │
-                │     │    │  ││           37  │     │ false
+                │     │    │  ││           │   │     │ │                               │
+                │     │    │  ││           37  │     │ false                           37
                 │     │    │  ││               │     "岸川克己"
                 │     │    │  ││               1980-10-27 15:00:00 +0000
                 │     │    │  │"岸川克己"
@@ -4221,31 +4292,41 @@ final class AssertTests: XCTestCase {
     }
   }
 
-  // FIXME: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
-  // func testClosureExpression() {
-  //   captureConsoleOutput {
-  //     let arr = [1000, 1500, 2000]
-  //     #assert(
-  //       [10, 3, 20, 15, 4]
-  //         .sorted()
-  //         .filter { $0 > 5 }
-  //         .map { $0 * 100 } == arr
-  //     )
-  //   } completion: { (output) in
-  //     print(output)
-  //     XCTAssertEqual(
-  //       output,
-  //       """
-  //       #assert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
-  //               ││   │  │   │   │   │         │                  │                │  │
-  //               │10  3  20  15  4   │         [10, 15, 20]       │                │  [1000, 1500, 2000]
-  //               [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           │                true
-  //                                                                [1000, 1500, 2000]
-  //
-  //       """
-  //     )
-  //   }
-  // }
+   func testClosureExpression() {
+     captureConsoleOutput {
+       let arr = [2000, 1500, 1000]
+       #assert(
+         [10, 3, 20, 15, 4]
+           .sorted()
+           .filter { $0 > 5 }
+           .map { $0 * 100 } == arr
+       )
+     } completion: { (output) in
+       print(output)
+       XCTAssertEqual(
+         output,
+         """
+         #assert([10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 } == arr)
+                 ││   │  │   │   │   │         │                  │                │  │
+                 │10  3  20  15  4   │         [10, 15, 20]       │                │  [2000, 1500, 1000]
+                 [10, 3, 20, 15, 4]  [3, 4, 10, 15, 20]           │                false
+                                                                  [1000, 1500, 2000]
+
+         --- [Array<Int>] [10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 }
+         +++ [Array<Int>] arr
+         –[1000, 1500, 2000]
+         +[2000, 1500, 1000]
+
+         [Array<Int>] [10, 3, 20, 15, 4] .sorted() .filter { $0 > 5 } .map { $0 * 100 }
+         => [1000, 1500, 2000]
+         [Array<Int>] arr
+         => [2000, 1500, 1000]
+
+
+         """
+       )
+     }
+   }
 
   // FIXME: If closures that span multiple lines are formatted on a single line, such as consecutive variable definitions, the statements must be separated by a semicolon.
   // func testMultipleStatementInClosure() {
@@ -5304,8 +5385,8 @@ final class AssertTests: XCTestCase {
         => 4
 
         #assert(b1==true&&i1>i2||true==b1&&i2==4)
-                │ │ │   │      │ │   │ │ │
-                │ │ │   false  │ │   │ │ false
+                │ │ │   │      │ │   │ │ │     │
+                │ │ │   false  │ │   │ │ false 4
                 │ │ true       │ │   │ false
                 │ false        │ │   false
                 false          │ true
@@ -5335,18 +5416,19 @@ final class AssertTests: XCTestCase {
         => false
         [Bool] true==b1
         => false
+        [Int] 4
+        => 4
         [Bool] true==b1&&i2==4
         => false
         [Not Evaluated] i1
         [Not Evaluated] i2
         [Not Evaluated] i1>i2
         [Not Evaluated] i2
-        [Not Evaluated] 4
         [Not Evaluated] i2==4
 
         #assert(b1==true&&i1>i2||true==b1&&i2==4||d1×d2==1)
-                │   │            │     │          │  │   │
-                │   true         true  false      │  6.0 1.0
+                │   │            │     │       │  │  │   │
+                │   true         true  false   4  │  6.0 1
                 false                             4.0
 
 
@@ -5986,6 +6068,98 @@ final class AssertTests: XCTestCase {
         => 4
         [Int] (a + b) * c
         => 20
+        [Int] 15
+        => 15
+
+
+        """
+      )
+    }
+  }
+
+  func testFloatLiteralExpression() {
+    captureConsoleOutput {
+      let a = 2.0
+      let b = 3.0
+      let c = 4.0
+      #assert((a + b) * c == 15.0)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert((a + b) * c == 15.0)
+                ││ │ │  │ │ │  │
+                ││ │ │  │ │ │  15.0
+                ││ │ │  │ │ false
+                ││ │ │  │ 4.0
+                ││ │ │  20.0
+                ││ │ 3.0
+                ││ 5.0
+                │2.0
+                5.0
+
+        --- [Double] (a + b) * c
+        +++ [Double] 15.0
+        –20.0
+        +15.0
+
+        [Double] a
+        => 2.0
+        [Double] b
+        => 3.0
+        [Double] (a + b)
+        => 5.0
+        [Double] c
+        => 4.0
+        [Double] (a + b) * c
+        => 20.0
+        [Double] 15.0
+        => 15.0
+
+
+        """
+      )
+    }
+  }
+
+  func testIntegerLiteralExpression() {
+    captureConsoleOutput {
+      let a = 2.0
+      let b = 3.0
+      let c = 4.0
+      #assert((a + b) * c == 15)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert((a + b) * c == 15)
+                ││ │ │  │ │ │  │
+                ││ │ │  │ │ │  15
+                ││ │ │  │ │ false
+                ││ │ │  │ 4.0
+                ││ │ │  20.0
+                ││ │ 3.0
+                ││ 5.0
+                │2.0
+                5.0
+
+        --- [Double] (a + b) * c
+        +++ [Int] 15
+        –20.0
+        +15
+
+        [Double] a
+        => 2.0
+        [Double] b
+        => 3.0
+        [Double] (a + b)
+        => 5.0
+        [Double] c
+        => 4.0
+        [Double] (a + b) * c
+        => 20.0
         [Int] 15
         => 15
 
