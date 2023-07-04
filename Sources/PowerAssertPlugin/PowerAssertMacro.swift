@@ -61,7 +61,8 @@ private struct CodeGenerator {
         verbose: \(verbose),
         equalityExpressions: \(rewriter.equalityExpressions()),
         identicalExpressions: \(rewriter.identicalExpressions()),
-        comparisonOperands: \(rewriter.comparisonOperands())
+        comparisonOperands: \(rewriter.comparisonOperands()),
+        literalExpresions: \(rewriter.literalExpressions())
       ) {
         \(captures)
       }

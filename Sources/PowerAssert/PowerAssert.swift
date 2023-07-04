@@ -13,6 +13,7 @@ public enum PowerAssert {
     private let equalityExpressions: [(Int, Int, Int)]
     private let identicalExpressions: [(Int, Int, Int)]
     private let comparisonOperands: [Int: String]
+    private let literalExpresions: [(Int, Any, Int)]
 
     private var result: Bool = false
     private var values = [Value]()
@@ -30,6 +31,7 @@ public enum PowerAssert {
       equalityExpressions: [(Int, Int, Int)],
       identicalExpressions: [(Int, Int, Int)],
       comparisonOperands: [Int: String],
+      literalExpresions: [(Int, Any, Int)],
       evaluateSync: (Assertion) throws -> Bool = { _ in true }
     ) {
       self.assertion = assertion
@@ -40,6 +42,7 @@ public enum PowerAssert {
       self.equalityExpressions = equalityExpressions
       self.identicalExpressions = identicalExpressions
       self.comparisonOperands = comparisonOperands
+      self.literalExpresions = literalExpresions
       do {
         self.result = try evaluateSync(self)
       } catch {
@@ -56,6 +59,7 @@ public enum PowerAssert {
       equalityExpressions: [(Int, Int, Int)],
       identicalExpressions: [(Int, Int, Int)],
       comparisonOperands: [Int: String],
+      literalExpresions: [(Int, Any, Int)],
       evaluateAsync: (Assertion) async throws -> Bool = { _ in true }
     ) async {
       self.assertion = assertion
@@ -66,6 +70,7 @@ public enum PowerAssert {
       self.equalityExpressions = equalityExpressions
       self.identicalExpressions = identicalExpressions
       self.comparisonOperands = comparisonOperands
+      self.literalExpresions = literalExpresions
       do {
         self.result = try await evaluateAsync(self)
       } catch {
@@ -152,13 +157,8 @@ public enum PowerAssert {
     }
 
     private func renderDiagram() -> String {
-      func align(_ message: inout String, current: inout Int, column: Int, string: String) {
-        while current < column {
-          message += " "
-          current += 1
-        }
-        message += string
-        current += stringWidth(string)
+      for (id, value, column) in literalExpresions {
+        store(value: value, column: column, id: id)
       }
 
       var message = "\(assertion.bold)\n"
@@ -274,6 +274,7 @@ public enum PowerAssert {
     private func renderComparisonOperands() -> String {
       var message = ""
       if !comparisonValues.isEmpty {
+        comparisonValues.sort()
         message += comparisonValues
           .map { (comparison) in
             if equalityExpressions.contains(where: { $0.1 == comparison.id }) ||
@@ -303,6 +304,15 @@ public enum PowerAssert {
           .joined(separator: "\n")
       }
       return message
+    }
+
+    private func align(_ message: inout String, current: inout Int, column: Int, string: String) {
+      while current < column {
+        message += " "
+        current += 1
+      }
+      message += string
+      current += stringWidth(string)
     }
   }
 
@@ -337,12 +347,12 @@ public enum PowerAssert {
       self.column = column
     }
 
-    static func <(lhs: Value, rhs: Value) -> Bool {
-      lhs.column < rhs.column
+    static func == (lhs: Value, rhs: Value) -> Bool {
+      lhs.column == rhs.column
     }
 
-    static func ==(lhs: Value, rhs: Value) -> Bool {
-      lhs.column == rhs.column
+    static func < (lhs: Value, rhs: Value) -> Bool {
+      lhs.column < rhs.column
     }
   }
 
@@ -356,10 +366,18 @@ public enum PowerAssert {
     let value: Any
   }
 
-  private struct ComparisonValue {
+  private struct ComparisonValue: Comparable {
     let id: Int
     let value: Any
     let expression: String
+
+    static func == (lhs: PowerAssert.ComparisonValue, rhs: PowerAssert.ComparisonValue) -> Bool {
+      lhs.id == rhs.id
+    }
+
+    static func < (lhs: PowerAssert.ComparisonValue, rhs: PowerAssert.ComparisonValue) -> Bool {
+      lhs.id < rhs.id
+    }
   }
 }
 
