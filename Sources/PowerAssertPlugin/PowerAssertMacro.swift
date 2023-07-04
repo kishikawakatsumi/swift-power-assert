@@ -124,8 +124,7 @@ private func requiresEscaping(_ content: String) -> (Bool, poundCount: Int) {
       consecutivePounds += 1
       maxPounds = max(maxPounds, consecutivePounds)
     case (true, "\""), (true, "\\"):
-      countingPounds = true
-      requiresEscaping = true
+      continue
     case (true, _):
       countingPounds = false
       consecutivePounds = 0
