@@ -2135,236 +2135,339 @@ final class AssertTests: XCTestCase {
     }
   }
 
-//  func testSubscriptKeyPathExpression2() {
-//    captureConsoleOutput {
-//      let interestingNumbers = [
-//        "prime": [2, 3, 5, 7, 11, 13, 15],
-//        "triangular": [1, 3, 6, 10, 15, 21, 28],
-//        "hexagonal": [1, 6, 15, 28, 45, 66, 91]
-//      ]
-//      #assert(
-//        interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15]
-//      )
-//    } completion: { (output) in
-//      print(output)
-//      if ProcessInfo.processInfo.environment["CI"] == "true" {
-//        // Dictionary order is not guaranteed
-//        XCTAssertTrue(
-//          output ==
-//          #"""
-//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      │        │  true
-//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      ["prime"]
-//                  ││                          ││        Array<Int>
-//                  ││                          │Dictionary<String, Array<Int>>
-//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                  │["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
-//                  [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      │        │  true
-//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      ["prime"]
-//                  ││                          ││        Array<Int>
-//                  ││                          │Dictionary<String, Array<Int>>
-//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                  │["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
-//                  [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      │        │  true
-//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      ["prime"]
-//                  ││                          ││        Array<Int>
-//                  ││                          │Dictionary<String, Array<Int>>
-//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                  │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
-//                  [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      │        │  true
-//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      ["prime"]
-//                  ││                          ││        Array<Int>
-//                  ││                          │Dictionary<String, Array<Int>>
-//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                  │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
-//                  [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      │        │  true
-//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      ["prime"]
-//                  ││                          ││        Array<Int>
-//                  ││                          │Dictionary<String, Array<Int>>
-//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                  │["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
-//                  [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                  ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                  ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                  ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      │        │  true
-//                  ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                  ││                          ││        │      ["prime"]
-//                  ││                          ││        Array<Int>
-//                  ││                          │Dictionary<String, Array<Int>>
-//                  ││                          Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
-//                  │["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
-//                  [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//        )
-//      } else {
-//        // Dictionary order is not guaranteed
-//        XCTAssertTrue(
-//          output ==
-//          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
-//                       │["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
-//                       [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
-//                       │["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
-//                       [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
-//                       │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
-//                       [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
-//                       │["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
-//                       [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
-//                       │["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
-//                       [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//          ||
-//          output ==
-//          #"""
-//          #powerAssert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 15])
-//                       ││                          ││        │      ││       │  │  ││  │  │  │  │   │   │
-//                       ││                          ││        │      │"prime" │  │  │2  3  5  7  11  13  15
-//                       ││                          ││        │      │        │  │  [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      │        │  true
-//                       ││                          ││        │      │        [2, 3, 5, 7, 11, 13, 15]
-//                       ││                          ││        │      ["prime"]
-//                       ││                          ││        Array<Int>
-//                       ││                          │Dictionary<String, Array<Int>>
-//                       ││                          \Dictionary<String, Array<Int>>.<computed 0x00000001a128b19c (Optional<Array<Int>>)>
-//                       │["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
-//                       [2, 3, 5, 7, 11, 13, 15]
-//
-//          """#
-//        )
-//      }
-//    }
-//  }
+  func testSubscriptKeyPathExpression2() {
+    captureConsoleOutput {
+      let interestingNumbers = [
+        "prime": [2, 3, 5, 7, 11, 13, 17],
+        "triangular": [1, 3, 6, 10, 15, 21, 28],
+        "hexagonal": [1, 6, 15, 28, 45, 66, 91]
+      ]
+      #assert(
+        interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19]
+      )
+    } completion: { (output) in
+      print(output)
+      // Dictionary order is not guaranteed
+      XCTAssertTrue(
+        output ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Optional<Swift.Array<Swift.Int>>>
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+        ||
+        output.replacingOccurrences(
+          of: "0x[:xdigit:]{16}",
+          with: "0x0000000000000000",
+          options: .regularExpression
+        ) ==
+          #"""
+          #assert(interestingNumbers[keyPath: \[String: [Int]].["prime"]]! == [2, 3, 5, 7, 11, 13, 17, 19])
+                  ││                          │                 │       │  │  ││  │  │  │  │   │   │   │
+                  │[2, 3, 5, 7, 11, 13, 17]   │                 "prime" │  │  │2  3  5  7  11  13  17  19
+                  │                           │                         │  │  [2, 3, 5, 7, 11, 13, 17, 19]
+                  │                           │                         │  false
+                  │                           │                         Optional([2, 3, 5, 7, 11, 13, 17])
+                  │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
+
+          --- [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          +++ [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          –[2, 3, 5, 7, 11, 13, 17]
+          +[2, 3, 5, 7, 11, 13, 17, 19]
+
+          [Array<Int>] interestingNumbers[keyPath: \[String: [Int]].["prime"]]!
+          => [2, 3, 5, 7, 11, 13, 17]
+          [Array<Int>] [2, 3, 5, 7, 11, 13, 17, 19]
+          => [2, 3, 5, 7, 11, 13, 17, 19]
+
+
+          """#
+      )
+    }
+  }
 
   func testSubscriptKeyPathExpression3() {
     captureConsoleOutput {
       let interestingNumbers = [
-        "prime": [2, 3, 5, 7, 11, 13, 15],
+        "prime": [2, 3, 5, 7, 11, 13, 17],
         "triangular": [1, 3, 6, 10, 15, 21, 28],
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
@@ -2382,7 +2485,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2399,7 +2502,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2416,7 +2519,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2433,7 +2536,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2450,7 +2553,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2467,7 +2570,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           Swift.WritableKeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2488,7 +2591,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2509,7 +2612,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2530,7 +2633,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2551,7 +2654,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2572,7 +2675,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2593,7 +2696,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "prime"   0 2 │  2
                   │                           │                               false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.<computed 0x0000000000000000 (Int)>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["prime"]![0]]
           => 2
@@ -2609,7 +2712,7 @@ final class AssertTests: XCTestCase {
   func testSubscriptKeyPathExpression4() {
     captureConsoleOutput {
       let interestingNumbers = [
-        "prime": [2, 3, 5, 7, 11, 13, 15],
+        "prime": [2, 3, 5, 7, 11, 13, 17],
         "triangular": [1, 3, 6, 10, 15, 21, 28],
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
@@ -2627,7 +2730,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2644,7 +2747,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2661,7 +2764,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2678,7 +2781,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2695,7 +2798,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2712,7 +2815,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2733,7 +2836,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2754,7 +2857,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2775,7 +2878,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2796,7 +2899,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2817,7 +2920,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2838,7 +2941,7 @@ final class AssertTests: XCTestCase {
                   │                           │                 "hexagonal"        7 │  7
                   │                           │                                      false
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count]
           => 7
@@ -2854,7 +2957,7 @@ final class AssertTests: XCTestCase {
   func testSubscriptKeyPathExpression5() {
     captureConsoleOutput {
       let interestingNumbers = [
-        "prime": [2, 3, 5, 7, 11, 13, 15],
+        "prime": [2, 3, 5, 7, 11, 13, 17],
         "triangular": [1, 3, 6, 10, 15, 21, 28],
         "hexagonal": [1, 6, 15, 28, 45, 66, 91]
       ]
@@ -2873,7 +2976,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -2891,7 +2994,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -2909,7 +3012,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -2927,7 +3030,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -2945,7 +3048,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -2963,7 +3066,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           Swift.KeyPath<Swift.Dictionary<Swift.String, Swift.Array<Swift.Int>>, Swift.Int>
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -2985,7 +3088,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -3007,7 +3110,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
-                  ["prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -3029,7 +3132,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15], "triangular": [1, 3, 6, 10, 15, 21, 28]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17], "triangular": [1, 3, 6, 10, 15, 21, 28]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -3051,7 +3154,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
-                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["hexagonal": [1, 6, 15, 28, 45, 66, 91], "triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -3073,7 +3176,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 15], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "prime": [2, 3, 5, 7, 11, 13, 17], "hexagonal": [1, 6, 15, 28, 45, 66, 91]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
@@ -3095,7 +3198,7 @@ final class AssertTests: XCTestCase {
                   │                           │                                             │ false
                   │                           │                                             64
                   │                           \Dictionary<String, Array<Int>>.<computed 0x0000000000000000 (Optional<Array<Int>>)>!.count.bitWidth
-                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 15]]
+                  ["triangular": [1, 3, 6, 10, 15, 21, 28], "hexagonal": [1, 6, 15, 28, 45, 66, 91], "prime": [2, 3, 5, 7, 11, 13, 17]]
 
           [Int] interestingNumbers[keyPath: \[String: [Int]].["hexagonal"]!.count.bitWidth]
           => 64
