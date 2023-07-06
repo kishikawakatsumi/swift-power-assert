@@ -1,7 +1,5 @@
 import StringWidth
-#if canImport(XCTest)
 import XCTest
-#endif
 
 public enum PowerAssert {
   public class Assertion {
@@ -121,8 +119,12 @@ public enum PowerAssert {
           message = "\(diagram)\n\(comparison)\n"
         }
 
-        if !result {
-#if canImport(XCTest)
+        switch (result, verbose) {
+        case (true, false):
+          break
+        case (true, true):
+          print(message)
+        case (false, _):
           if ProcessInfo.processInfo.environment["SWIFTPOWERASSERT_WITHOUT_XCTEST"] != "1" {
             XCTFail(
               "\(originalMessage.isEmpty ? "Assertion failed" : originalMessage)\n\(message)",
@@ -132,11 +134,6 @@ public enum PowerAssert {
           } else {
             print(message)
           }
-#else
-          print(message)
-#endif
-        } else if verbose {
-          print(message)
         }
       }
     }
