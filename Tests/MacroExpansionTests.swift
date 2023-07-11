@@ -1,6 +1,7 @@
 import XCTest
 import SwiftParser
 import SwiftSyntaxMacros
+import SwiftSyntaxMacroExpansion
 import PowerAssertPlugin
 
 private let testModuleName = "TestModule"
