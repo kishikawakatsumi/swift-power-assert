@@ -1,4 +1,4 @@
-import SwiftSyntax
+@_spi(RawSyntax) import SwiftSyntax
 import SwiftOperators
 import StringWidth
 
@@ -12,14 +12,25 @@ class PowerAssertRewriter: SyntaxRewriter {
   private var index = 0
   private let expressionStore = ExpressionStore()
 
+  private let singleLineExpression: any SyntaxProtocol
+  var originalTree = [Syntax]()
+  var singleLineTree = [Syntax]()
+  private let singleLineSourceLocationConverter: SourceLocationConverter
+
   init(_ expression: some SyntaxProtocol, macro node: some FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
       self.expression = folded
+      singleLineExpression = SingleLineFormatter(folded).format()
     } else {
       self.expression = expression
+      singleLineExpression = SingleLineFormatter(expression).format()
     }
 
+    flatten(self.expression, storage: &originalTree)
+    flatten(singleLineExpression, storage: &singleLineTree)
+
     self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
+    self.singleLineSourceLocationConverter = SourceLocationConverter(file: "", tree: singleLineExpression)
 
     startColumn = {
       let converter = SourceLocationConverter(file: "", tree: node.detach())
@@ -418,6 +429,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visitPost(_ node: Syntax) {
+    let node = singleLineTree.first { $0.id.indexInTree == node.id.indexInTree } ?? node
     if let expr = node.as(ExprSyntax.self) {
       let id = index
       index += 1
@@ -590,14 +602,25 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   private func graphemeColumn(_ node: some SyntaxProtocol) -> Int {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let n = singleLineTree.first { $0.id.indexInTree == node.id.indexInTree } ?? Syntax(node)
+    let startLocation = n.startLocation(converter: singleLineSourceLocationConverter)
     let column: Int
-    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column)) {
+    if let graphemeClusters = String("\(singleLineExpression)".utf8.prefix(startLocation.column)) {
       column = stringWidth(graphemeClusters)
     } else {
       column = startLocation.column
     }
     return column
+  }
+}
+
+private func flatten(_ syntax: some SyntaxProtocol, storage: inout [Syntax]) {
+  for child in syntax.children(viewMode: .fixedUp) {
+    storage.append(child)
+    let children = child.children(viewMode: .fixedUp)
+    if !children.isEmpty {
+      flatten(child, storage: &storage)
+    }
   }
 }
 
@@ -625,4 +648,3 @@ private struct Expression {
   let id: Int
   let type: ExpressionType
 }
-

@@ -9,7 +9,7 @@ class SingleLineFormatter: SyntaxRewriter {
 
   func format() -> some SyntaxProtocol {
     let formatted = rewrite(Syntax(expression).with(\.leadingTrivia, []).with(\.trailingTrivia, []))
-    return SourceFileSyntax(stringLiteral: "\(formatted)")
+    return formatted
   }
 
   override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {

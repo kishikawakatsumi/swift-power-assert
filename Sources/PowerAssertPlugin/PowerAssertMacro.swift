@@ -21,7 +21,7 @@ private struct CodeGenerator {
     }
 
     let expanded = expand(
-      expression: SingleLineFormatter(assertion).format(),
+      expression: assertion,
       parameters: Parameters(macro: macro, context: context)
     )
 
@@ -31,14 +31,14 @@ private struct CodeGenerator {
 
   private func expand(expression: some SyntaxProtocol, parameters: Parameters) -> String {
     let assertion = StringLiteralExprSyntax(
-      content: "\(macro.poundToken.trimmed)\(macro.macro)(\(expression))"
+      content: "\(macro.poundToken.trimmed)\(macro.macro)(\(SingleLineFormatter(expression).format()))"
     )
     let message = parameters.message
     let file = parameters.file
     let line = parameters.line
     let verbose = parameters.verbose
 
-    let rewriter = PowerAssertRewriter(expression, macro: macro)
+    let rewriter = PowerAssertRewriter(SourceFileSyntax("\(expression)"), macro: macro)
     let captures = rewriter.rewrite()
 
     return """
