@@ -482,7 +482,7 @@
 			repositoryURL = "https://github.com/kishikawakatsumi/swift-power-assert.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.10.0;
+				minimumVersion = 0.11.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
