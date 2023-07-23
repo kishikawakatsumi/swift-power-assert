@@ -4431,33 +4431,37 @@ final class AssertTests: XCTestCase {
      }
    }
 
-  // FIXME: If closures that span multiple lines are formatted on a single line, such as consecutive variable definitions, the statements must be separated by a semicolon.
-  // func testMultipleStatementInClosure() {
-  //   captureConsoleOutput {
-  //     let a = 5
-  //     let b = 10
-  //
-  //     #powerAssert(
-  //       { (a: Int, b: Int) -> Bool in
-  //         let c = a + b // error: consecutive statements on a line must be separated by ';'
-  //         let d = a - b
-  //         if c != d {
-  //           _ = c.distance(to: d)
-  //           _ = d.distance(to: c)
-  //         }
-  //         return c == d
-  //       }(a, b)
-  //     )
-  //   } completion: { (output) in
-  //     print(output)
-  //     XCTAssertEqual(
-  //       output,
-  //       """
-  //
-  //       """
-  //     )
-  //   }
-  // }
+  func testMultipleStatementInClosure() {
+    captureConsoleOutput {
+      let a = 5
+      let b = 10
+
+      #assert(
+        { (a: Int, b: Int) -> Bool in
+          let c = a + b
+          let d = a - b
+          if c != d {
+            _ = c.distance(to: d)
+            _ = d.distance(to: c)
+          }
+          return c == d
+        }(a, b)
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert({ (a: Int, b: Int) -> Bool in let c = a + b let d = a - b if c != d { _ = c.distance(to: d) _ = d.distance(to: c) } return c == d }(a, b))
+                                                                                                                                                  │ │  │
+                                                                                                                                                  │ 5  10
+                                                                                                                                                  false
+
+        
+        """
+      )
+    }
+  }
 
   func testMessageParameter() {
     captureConsoleOutput {
