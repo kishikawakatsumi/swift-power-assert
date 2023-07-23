@@ -1,10 +1,10 @@
-import SwiftSyntax
+@_spi(RawSyntax) import SwiftSyntax
 import SwiftOperators
 import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
   private let expression: any SyntaxProtocol
-  private let sourceLocationConverter: SourceLocationConverter
+  private let sourceManager: SourceManager
   private let startColumn: Int
   private let isTryPresent: Bool
   let isAwaitPresent: Bool
@@ -19,12 +19,12 @@ class PowerAssertRewriter: SyntaxRewriter {
       self.expression = expression
     }
 
-    self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
+    sourceManager = SourceManager(self.expression)
 
     startColumn = {
-      let converter = SourceLocationConverter(file: "", tree: node.detach())
-      let startLocation = node.startLocation(converter: converter)
-      let endLocation = node.macro.endLocation(converter: converter)
+      let locationConverter = SourceLocationConverter(file: "", tree: node.detach())
+      let startLocation = node.startLocation(converter: locationConverter)
+      let endLocation = node.macro.endLocation(converter: locationConverter)
 #if SWIFTPOWERASSERT_PLAYGROUND
       return "\(node.poundToken.trimmed)\(node.macro.trimmed)".count
 #else
@@ -418,6 +418,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visitPost(_ node: Syntax) {
+    let node = Syntax(sourceManager.singleLineNode(from: node))
     if let expr = node.as(ExprSyntax.self) {
       let id = index
       index += 1
@@ -590,14 +591,49 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   private func graphemeColumn(_ node: some SyntaxProtocol) -> Int {
-    let startLocation = node.startLocation(converter: sourceLocationConverter)
+    let node = sourceManager.singleLineNode(from: node)
+    let startLocation = node.startLocation(converter: sourceManager.locationConverter)
     let column: Int
-    if let graphemeClusters = String("\(expression)".utf8.prefix(startLocation.column)) {
+    if let graphemeClusters = String("\(sourceManager.singleLine)".utf8.prefix(startLocation.column)) {
       column = stringWidth(graphemeClusters)
     } else {
       column = startLocation.column
     }
     return column
+  }
+}
+
+private func flatten(_ syntax: some SyntaxProtocol, storage: inout [Syntax]) {
+  for child in syntax.children(viewMode: .fixedUp) {
+    storage.append(child)
+    let children = child.children(viewMode: .fixedUp)
+    if !children.isEmpty {
+      flatten(child, storage: &storage)
+    }
+  }
+}
+
+private class SourceManager {
+  let original: any SyntaxProtocol
+  let singleLine: any SyntaxProtocol
+
+  var originalTree = [Syntax]()
+  var singleLineTree = [Syntax]()
+
+  let locationConverter: SourceLocationConverter
+
+  init(_ expression: any SyntaxProtocol) {
+    original = expression
+    singleLine = SingleLineFormatter().format(expression)
+
+    flatten(original, storage: &originalTree)
+    flatten(singleLine, storage: &singleLineTree)
+
+    locationConverter = SourceLocationConverter(file: "", tree: singleLine)
+  }
+
+  func singleLineNode(from node: some SyntaxProtocol) -> any SyntaxProtocol {
+    singleLineTree.first { $0.id.indexInTree == node.id.indexInTree } ?? node
   }
 }
 
@@ -625,4 +661,3 @@ private struct Expression {
   let id: Int
   let type: ExpressionType
 }
-

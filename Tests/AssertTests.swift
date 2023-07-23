@@ -4431,33 +4431,37 @@ final class AssertTests: XCTestCase {
      }
    }
 
-  // FIXME: If closures that span multiple lines are formatted on a single line, such as consecutive variable definitions, the statements must be separated by a semicolon.
-  // func testMultipleStatementInClosure() {
-  //   captureConsoleOutput {
-  //     let a = 5
-  //     let b = 10
-  //
-  //     #powerAssert(
-  //       { (a: Int, b: Int) -> Bool in
-  //         let c = a + b // error: consecutive statements on a line must be separated by ';'
-  //         let d = a - b
-  //         if c != d {
-  //           _ = c.distance(to: d)
-  //           _ = d.distance(to: c)
-  //         }
-  //         return c == d
-  //       }(a, b)
-  //     )
-  //   } completion: { (output) in
-  //     print(output)
-  //     XCTAssertEqual(
-  //       output,
-  //       """
-  //
-  //       """
-  //     )
-  //   }
-  // }
+  func testMultipleStatementInClosure() {
+    captureConsoleOutput {
+      let a = 5
+      let b = 10
+
+      #assert(
+        { (a: Int, b: Int) -> Bool in
+          let c = a + b
+          let d = a - b
+          if c != d {
+            _ = c.distance(to: d)
+            _ = d.distance(to: c)
+          }
+          return c == d
+        }(a, b)
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert({ (a: Int, b: Int) -> Bool in let c = a + b let d = a - b if c != d { _ = c.distance(to: d) _ = d.distance(to: c) } return c == d }(a, b))
+                                                                                                                                                  │ │  │
+                                                                                                                                                  │ 5  10
+                                                                                                                                                  false
+
+        
+        """
+      )
+    }
+  }
 
   func testMessageParameter() {
     captureConsoleOutput {
@@ -5305,7 +5309,7 @@ final class AssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         #"""
-        #assert(multilineLiteral != "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        #assert(multilineLiteral != """ Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. """)
                 │                │  │
                 │                │  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 │                false
@@ -5313,7 +5317,7 @@ final class AssertTests: XCTestCase {
 
         [String] multilineLiteral
         => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        [String] "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        [String] """ Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. """
         => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
         #assert(multilineLiteral != multilineLiteral)
@@ -5351,7 +5355,7 @@ final class AssertTests: XCTestCase {
       XCTAssertEqual(
         output,
         ##"""
-        #assert(multilineLiteral != #"Escaping the first quotation mark """\#nEscaping all three quotation marks """"#)
+        #assert(multilineLiteral != """ Escaping the first quotation mark \"""\nEscaping all three quotation marks \"\"\" """)
                 │                │  │
                 │                │  "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
                 │                false
@@ -5359,8 +5363,44 @@ final class AssertTests: XCTestCase {
 
         [String] multilineLiteral
         => "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
-        [String] #"Escaping the first quotation mark """\#nEscaping all three quotation marks """"#
+        [String] """ Escaping the first quotation mark \"""\nEscaping all three quotation marks \"\"\" """
         => "Escaping the first quotation mark \"\"\"\nEscaping all three quotation marks \"\"\""
+
+
+        """##
+      )
+    }
+  }
+
+  func testMultilineStringLiterals3() {
+    captureConsoleOutput {
+      let multilineLiteral = """
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        """
+      let interpolate = "consectetur"
+      #assert(
+        multilineLiteral != """
+          Lorem ipsum dolor sit amet, \(interpolate) adipiscing elit,
+          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          """
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        ##"""
+        #assert(multilineLiteral != """ Lorem ipsum dolor sit amet, \(interpolate) adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. """)
+                │                │  │                                 │
+                │                │  │                                 "consectetur"
+                │                │  "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                │                false
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+        [String] multilineLiteral
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        [String] """ Lorem ipsum dolor sit amet, \(interpolate) adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. """
+        => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
 
         """##
