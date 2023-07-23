@@ -4,7 +4,6 @@ import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
   private let expression: any SyntaxProtocol
-  private let sourceLocationConverter: SourceLocationConverter
   private let startColumn: Int
   private let isTryPresent: Bool
   let isAwaitPresent: Bool
@@ -12,30 +11,21 @@ class PowerAssertRewriter: SyntaxRewriter {
   private var index = 0
   private let expressionStore = ExpressionStore()
 
-  private let singleLineExpression: any SyntaxProtocol
-  var originalTree = [Syntax]()
-  var singleLineTree = [Syntax]()
-  private let singleLineSourceLocationConverter: SourceLocationConverter
+  private let sourceManager: SourceManager
 
   init(_ expression: some SyntaxProtocol, macro node: some FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
       self.expression = folded
-      singleLineExpression = SingleLineFormatter().format(folded)
     } else {
       self.expression = expression
-      singleLineExpression = SingleLineFormatter().format(expression)
     }
 
-    flatten(self.expression, storage: &originalTree)
-    flatten(singleLineExpression, storage: &singleLineTree)
-
-    self.sourceLocationConverter = SourceLocationConverter(file: "", tree: expression)
-    self.singleLineSourceLocationConverter = SourceLocationConverter(file: "", tree: singleLineExpression)
+    sourceManager = SourceManager(self.expression)
 
     startColumn = {
-      let converter = SourceLocationConverter(file: "", tree: node.detach())
-      let startLocation = node.startLocation(converter: converter)
-      let endLocation = node.macro.endLocation(converter: converter)
+      let locationConverter = SourceLocationConverter(file: "", tree: node.detach())
+      let startLocation = node.startLocation(converter: locationConverter)
+      let endLocation = node.macro.endLocation(converter: locationConverter)
 #if SWIFTPOWERASSERT_PLAYGROUND
       return "\(node.poundToken.trimmed)\(node.macro.trimmed)".count
 #else
@@ -429,7 +419,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visitPost(_ node: Syntax) {
-    let node = singleLineTree.first { $0.id.indexInTree == node.id.indexInTree } ?? node
+    let node = Syntax(sourceManager.singleLineNode(from: node))
     if let expr = node.as(ExprSyntax.self) {
       let id = index
       index += 1
@@ -602,10 +592,10 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   private func graphemeColumn(_ node: some SyntaxProtocol) -> Int {
-    let n = singleLineTree.first { $0.id.indexInTree == node.id.indexInTree } ?? Syntax(node)
-    let startLocation = n.startLocation(converter: singleLineSourceLocationConverter)
+    let node = sourceManager.singleLineNode(from: node)
+    let startLocation = node.startLocation(converter: sourceManager.locationConverter)
     let column: Int
-    if let graphemeClusters = String("\(singleLineExpression)".utf8.prefix(startLocation.column)) {
+    if let graphemeClusters = String("\(sourceManager.singleLine)".utf8.prefix(startLocation.column)) {
       column = stringWidth(graphemeClusters)
     } else {
       column = startLocation.column
@@ -621,6 +611,30 @@ private func flatten(_ syntax: some SyntaxProtocol, storage: inout [Syntax]) {
     if !children.isEmpty {
       flatten(child, storage: &storage)
     }
+  }
+}
+
+private class SourceManager {
+  let original: any SyntaxProtocol
+  let singleLine: any SyntaxProtocol
+
+  var originalTree = [Syntax]()
+  var singleLineTree = [Syntax]()
+
+  let locationConverter: SourceLocationConverter
+
+  init(_ expression: any SyntaxProtocol) {
+    original = expression
+    singleLine = SingleLineFormatter().format(expression)
+
+    flatten(original, storage: &originalTree)
+    flatten(singleLine, storage: &singleLineTree)
+
+    locationConverter = SourceLocationConverter(file: "", tree: singleLine)
+  }
+
+  func singleLineNode(from node: some SyntaxProtocol) -> any SyntaxProtocol {
+    singleLineTree.first { $0.id.indexInTree == node.id.indexInTree } ?? node
   }
 }
 
