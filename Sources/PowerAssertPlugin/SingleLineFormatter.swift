@@ -1,15 +1,8 @@
 import SwiftSyntax
 
 class SingleLineFormatter: SyntaxRewriter {
-  private let expression: any SyntaxProtocol
-
-  init(_ expression: some SyntaxProtocol) {
-    self.expression = expression
-  }
-
-  func format() -> some SyntaxProtocol {
-    let formatted = rewrite(Syntax(expression).with(\.leadingTrivia, []).with(\.trailingTrivia, []))
-    return formatted
+  func format(_ expression: some SyntaxProtocol) -> Syntax {
+    rewrite(Syntax(expression).with(\.leadingTrivia, []).with(\.trailingTrivia, []))
   }
 
   override func visit(_ node: StringSegmentSyntax) -> StringSegmentSyntax {

@@ -20,10 +20,10 @@ class PowerAssertRewriter: SyntaxRewriter {
   init(_ expression: some SyntaxProtocol, macro node: some FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
       self.expression = folded
-      singleLineExpression = SingleLineFormatter(folded).format()
+      singleLineExpression = SingleLineFormatter().format(folded)
     } else {
       self.expression = expression
-      singleLineExpression = SingleLineFormatter(expression).format()
+      singleLineExpression = SingleLineFormatter().format(expression)
     }
 
     flatten(self.expression, storage: &originalTree)
