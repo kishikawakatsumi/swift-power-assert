@@ -5673,7 +5673,7 @@ final class AssertTests: XCTestCase {
     }
   }
 
-  func testStringInterpolation() {
+  func testStringInterpolation1() {
     captureConsoleOutput {
       func testA(_ i: Int) -> Int {
         i + 1
@@ -5719,6 +5719,63 @@ final class AssertTests: XCTestCase {
 
 
         """#
+      )
+    }
+  }
+
+  func testStringInterpolation2() {
+    captureConsoleOutput {
+      let multiplier = 3
+      #assert("\(multiplier) times 2.5 is \(Double(multiplier) * 2.5)" != "3 times 2.5 is 7.5")
+
+      #assert(#"Write an interpolated string in Swift using \(multiplier)."# != #"Write an interpolated string in Swift using \(multiplier)."#)
+
+      #assert(#"6 times 7 is \#(6 * 7)."# != "6 times 7 is 42.")
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        ##"""
+        #assert("\(multiplier) times 2.5 is \(Double(multiplier) * 2.5)" != "3 times 2.5 is 7.5")
+                │  │                          │      │           │ │     │  │
+                │  3                          3.0    3           │ 2.5   │  "3 times 2.5 is 7.5"
+                "3 times 2.5 is 7.5"                             7.5     false
+
+        [Double] Double(multiplier)
+        => 3.0
+        [Double] 2.5
+        => 2.5
+        [String] "\(multiplier) times 2.5 is \(Double(multiplier) * 2.5)"
+        => "3 times 2.5 is 7.5"
+        [String] "3 times 2.5 is 7.5"
+        => "3 times 2.5 is 7.5"
+
+        #assert(#"Write an interpolated string in Swift using \(multiplier)."# != #"Write an interpolated string in Swift using \(multiplier)."#)
+                │                                                              │  │
+                "Write an interpolated string in Swift using \\(multiplier)."  │  "Write an interpolated string in Swift using \\(multiplier)."
+                                                                               false
+
+        [String] #"Write an interpolated string in Swift using \(multiplier)."#
+        => "Write an interpolated string in Swift using \\(multiplier)."
+        [String] #"Write an interpolated string in Swift using \(multiplier)."#
+        => "Write an interpolated string in Swift using \\(multiplier)."
+
+        #assert(#"6 times 7 is \#(6 * 7)."# != "6 times 7 is 42.")
+                │                 │ │ │     │  │
+                │                 6 │ 7     │  "6 times 7 is 42."
+                "6 times 7 is 42."  42      false
+
+        [Int] 6
+        => 6
+        [Int] 7
+        => 7
+        [String] #"6 times 7 is \#(6 * 7)."#
+        => "6 times 7 is 42."
+        [String] "6 times 7 is 42."
+        => "6 times 7 is 42."
+
+
+        """##
       )
     }
   }
