@@ -12,27 +12,9 @@ class SingleLineFormatter: SyntaxRewriter {
     return formatted
   }
 
-  override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {
-    guard node.openQuote.tokenKind == .multilineStringQuote && node.closeQuote.tokenKind == .multilineStringQuote else {
-      return super.visit(node)
-    }
-    let visitedNode = super.visit(node).cast(StringLiteralExprSyntax.self)
-    if let content = visitedNode.representedLiteralValue {
-      return ExprSyntax(
-        StringLiteralExprSyntax(content: content)
-          .with(\.leadingTrivia, visitedNode.leadingTrivia)
-          .with(\.trailingTrivia, visitedNode.trailingTrivia)
-      )
-    } else {
-      let segments = visitedNode
-        .segments
-        .map { $0.with(\.leadingTrivia, []).with(\.trailingTrivia, []) }
-      return ExprSyntax(
-        StringLiteralExprSyntax(content: "\(StringLiteralSegmentsSyntax(segments))")
-          .with(\.leadingTrivia, visitedNode.leadingTrivia)
-          .with(\.trailingTrivia, visitedNode.trailingTrivia)
-      )
-    }
+  override func visit(_ node: StringSegmentSyntax) -> StringSegmentSyntax {
+    let visitedNode = super.visit(node)
+    return visitedNode.with(\.content, .stringSegment(visitedNode.content.text.replacingOccurrences(of: "\n", with: "\\n")))
   }
 
   override func visit(_ token: TokenSyntax) -> TokenSyntax {
