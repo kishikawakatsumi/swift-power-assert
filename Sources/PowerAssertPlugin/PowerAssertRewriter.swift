@@ -4,14 +4,13 @@ import StringWidth
 
 class PowerAssertRewriter: SyntaxRewriter {
   private let expression: any SyntaxProtocol
+  private let sourceManager: SourceManager
   private let startColumn: Int
   private let isTryPresent: Bool
   let isAwaitPresent: Bool
 
   private var index = 0
   private let expressionStore = ExpressionStore()
-
-  private let sourceManager: SourceManager
 
   init(_ expression: some SyntaxProtocol, macro node: some FreestandingMacroExpansionSyntax) {
     if let folded = try? OperatorTable.standardOperators.foldAll(expression) {
