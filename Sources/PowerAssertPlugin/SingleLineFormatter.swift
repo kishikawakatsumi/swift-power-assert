@@ -8,7 +8,7 @@ class SingleLineFormatter: SyntaxRewriter {
   }
 
   func format() -> some SyntaxProtocol {
-    let formatted = visit(Syntax(expression).with(\.leadingTrivia, []).with(\.trailingTrivia, []))
+    let formatted = rewrite(Syntax(expression).with(\.leadingTrivia, []).with(\.trailingTrivia, []))
     return SourceFileSyntax(stringLiteral: "\(formatted)")
   }
 
