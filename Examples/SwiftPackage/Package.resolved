@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kishikawakatsumi/swift-power-assert.git",
       "state" : {
-        "revision" : "8cd9c47d17ef01ecf2b08c396aa66f10cf87e7b0",
-        "version" : "0.10.0"
+        "revision" : "6541084fbfaa1a8227418775452ebdc1efc6f071",
+        "version" : "0.11.0"
       }
     },
     {
