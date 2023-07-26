@@ -63,6 +63,7 @@ let package = Package(
     .testTarget(
       name: "PowerAssertTests",
       dependencies: [
+        "PowerAssertPlugin",
         "PowerAssert",
         .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
       ]

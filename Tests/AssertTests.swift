@@ -1333,58 +1333,25 @@ final class AssertTests: XCTestCase {
       #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
     } completion: { (output) in
       print(output)
-      XCTAssertTrue(
-        output ==
+      XCTAssertEqual(
+        output.replacingOccurrences(
+          of: "(/.+/)(Tests/)",
+          with: "/swift-power-assert/Tests/",
+          options: .regularExpression
+        ),
         """
         #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
                 │     │  │         │           │ │             │ │
                 │     │  "*.swift" false       1 false         2 false
                 │     false
-                "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
+                "/swift-power-assert/Tests/AssertTests.swift"
 
         --- [String] #file
         +++ [String] "*.swift"
-        [-@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_-]{+*+}.swift
+        [-/swift-power-assert/Tests/AssertTests-]{+*+}.swift
 
         [String] #file
-        => "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
-        [String] "*.swift"
-        => "*.swift"
-        [Bool] #file == "*.swift"
-        => false
-        [Int] 1
-        => 1
-        [Bool] #file == "*.swift" && #line == 1
-        => false
-        [Int] 2
-        => 2
-        [Bool] #file == "*.swift" && #line == 1 && #column == 2
-        => false
-        [Not Evaluated] #line
-        [Not Evaluated] #line == 1
-        [Not Evaluated] #column
-        [Not Evaluated] #column == 2
-        [Not Evaluated] #function
-        [Not Evaluated] "function"
-        [Not Evaluated] #function == "function"
-
-
-        """
-        ||
-        output ==
-        """
-        #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
-                │     │  │         │           │ │             │ │
-                │     │  "*.swift" false       1 false         2 false
-                │     false
-                "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
-
-        --- [String] #file
-        +++ [String] "*.swift"
-        [-@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_-]{+*+}.swift
-
-        [String] #file
-        => "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_83CDEF1031207B73D1DF9E55E024D4A9Ll6assertfMf_.swift"
+        => "/swift-power-assert/Tests/AssertTests.swift"
         [String] "*.swift"
         => "*.swift"
         [Bool] #file == "*.swift"
