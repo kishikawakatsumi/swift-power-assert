@@ -1334,20 +1334,24 @@ final class AssertTests: XCTestCase {
     } completion: { (output) in
       print(output)
       XCTAssertTrue(
-        output ==
+        output.replacingOccurrences(
+          of: "(/.+/)(swift-power-assert/Tests/)",
+          with: "/swift-power-assert/Tests/",
+          options: .regularExpression
+        ) ==
         """
         #assert(#file == "*.swift" && #line == 1 && #column == 2 && #function == "function")
                 │     │  │         │           │ │             │ │
                 │     │  "*.swift" false       1 false         2 false
                 │     false
-                "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
+                "/swift-power-assert/Tests/AssertTests.swift"
 
         --- [String] #file
         +++ [String] "*.swift"
-        [-@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_-]{+*+}.swift
+        [-/swift-power-assert/Tests/AssertTests-]{+*+}.swift
 
         [String] #file
-        => "@__swiftmacro_16PowerAssertTests0bC0C27testMagicLiteralExpression1yyFXefU_33_C626B39EEAD1AD280555E8A40FB44EF2Ll6assertfMf_.swift"
+        => "/swift-power-assert/Tests/AssertTests.swift"
         [String] "*.swift"
         => "*.swift"
         [Bool] #file == "*.swift"
