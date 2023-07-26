@@ -874,6 +874,33 @@ final class AssertTests: XCTestCase {
     }
   }
 
+  func testMultilineExpression8() {
+    captureConsoleOutput {
+      let numbers = [1, 2, 3, 4, 5]
+      #assert   (
+        numbers
+        .
+
+      contains (
+        6
+      )
+        )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(numbers . contains ( 6 ))
+                │         │          │
+                │         false      6
+                [1, 2, 3, 4, 5]
+
+
+        """
+      )
+    }
+  }
+
   func testCommentsInExpression() {
     captureConsoleOutput {
       let one = 1
@@ -5368,6 +5395,62 @@ final class AssertTests: XCTestCase {
         => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         [String] """ Lorem ipsum dolor sit amet, \(interpolate) adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua. """
         => "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
+
+        """##
+      )
+    }
+  }
+
+  func testMultilineStringLiterals4() {
+    captureConsoleOutput {
+      #assert(
+          """
+          0123456789
+
+          9876543210
+
+          """
+            .
+          isEmpty
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        ##"""
+        #assert(""" 0123456789\n\n9876543210\n """ . isEmpty)
+                │                                    │
+                "0123456789\n\n9876543210\n"         false
+
+
+        """##
+      )
+    }
+  }
+
+  func testMultilineStringLiterals5() async {
+    await captureConsoleOutput {
+      #assert(
+        """
+        Uploading...
+
+        \(await upload(content: ""))
+
+        Finished.
+
+        """
+          .isEmpty
+      )
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        ##"""
+        #assert(""" Uploading...\n\n\(await upload(content: ""))\n\nFinished.\n """ .isEmpty)
+                │                           │               │                        │
+                │                           "Success"       ""                       false
+                "Uploading...\n\nSuccess\n\nFinished.\n"
 
 
         """##

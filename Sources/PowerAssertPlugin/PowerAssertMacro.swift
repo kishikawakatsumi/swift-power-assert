@@ -2,6 +2,8 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 public struct PowerAssertMacro: ExpressionMacro {
+  public static var formatMode: FormatMode = .disabled
+  
   public static func expansion(
     of node: some FreestandingMacroExpansionSyntax,
     in context: some MacroExpansionContext
@@ -31,7 +33,7 @@ private struct CodeGenerator {
 
   private func expand(expression: some SyntaxProtocol, parameters: Parameters) -> String {
     let assertion = StringLiteralExprSyntax(
-      content: "\(macro.poundToken.trimmed)\(macro.macro)(\(SingleLineFormatter().format(expression)))"
+      content: "\(macro.poundToken.trimmed)\(macro.macro.trimmed)(\(SingleLineFormatter().format(expression)))"
     )
     let message = parameters.message
     let file = parameters.file
@@ -53,7 +55,7 @@ private struct CodeGenerator {
         comparisonOperands: \(rewriter.comparisonOperands()),
         literalExpresions: \(rewriter.literalExpressions())
       ) {
-        \(captures)
+      \(captures)
       }
       .render()
       """
