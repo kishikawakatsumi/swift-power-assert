@@ -160,7 +160,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [2: "string2", 0: "string1"],
         literalExpresions: []
       ) {
-      $0.captureSync($0.captureSync(string1.self , column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
+      $0.captureSync($0.captureSync(string1.self, column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
       }
       .render()
       """
