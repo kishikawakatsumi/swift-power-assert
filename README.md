@@ -152,7 +152,7 @@ let package = Package(
     ...,
     .package(
       url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
-      from: "0.11.0"
+      from: "0.11.1"
     ),
   ],
   targets: [
