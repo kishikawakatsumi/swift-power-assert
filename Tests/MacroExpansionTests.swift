@@ -24,6 +24,7 @@ final class MacroExpansionTests: XCTestCase {
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
+    print(expanded)
     XCTAssertTrue(
       expanded ==
       """
@@ -39,7 +40,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [2: "numbers[2]", 4: "4"],
         literalExpresions: [(1, 2, 9), (4, 4, 15)]
       ) {
-        $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[2] , column: 10, id: 2) == 4, column: 12, id: 5)
+      $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[2], column: 10, id: 2) == 4, column: 12, id: 5)
       }
       .render()
       """
@@ -58,7 +59,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [4: "4", 2: "numbers[2]"],
         literalExpresions: [(1, 2, 9), (4, 4, 15)]
       ) {
-        $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[2] , column: 10, id: 2) == 4, column: 12, id: 5)
+      $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[2], column: 10, id: 2) == 4, column: 12, id: 5)
       }
       .render()
       """
@@ -96,7 +97,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [:],
         literalExpresions: [(2, 6, 18)]
       ) {
-        $0.captureSync($0.captureSync(numbers.self, column: 1, id: 0).contains(6), column: 9, id: 3)
+      $0.captureSync($0.captureSync(numbers.self, column: 1, id: 0).contains(6), column: 9, id: 3)
       }
       .render()
       """
@@ -120,6 +121,7 @@ final class MacroExpansionTests: XCTestCase {
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
+    print(expanded)
     XCTAssertTrue(
       expanded ==
       """
@@ -137,7 +139,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [0: "string1", 2: "string2"],
         literalExpresions: []
       ) {
-        $0.captureSync($0.captureSync(string1.self , column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
+      $0.captureSync($0.captureSync(string1.self, column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
       }
       .render()
       """
@@ -158,7 +160,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [2: "string2", 0: "string1"],
         literalExpresions: []
       ) {
-        $0.captureSync($0.captureSync(string1.self , column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
+      $0.captureSync($0.captureSync(string1.self , column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
       }
       .render()
       """
@@ -186,11 +188,12 @@ final class MacroExpansionTests: XCTestCase {
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
+    print(expanded)
     XCTAssertEqual(
       expanded,
       """
       PowerAssert.Assertion(
-        "#assert   (numbers . contains ( 6 ))",
+        "#assert(numbers . contains ( 6 ))",
         message: "",
         file: "TestModule/test.swift",
         line: 1,
@@ -198,13 +201,10 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [],
         identicalExpressions: [],
         comparisonOperands: [:],
-        literalExpresions: [(2,
-        6, 29)]
+        literalExpresions: [(2, 6, 29)]
       ) {
 
-        $0.captureSync(
-        $0.captureSync(
-        numbers.self, column: 8, id: 0)
+        $0.captureSync($0.captureSync(numbers.self, column: 8, id: 0)
         .
 
       contains (
@@ -296,6 +296,7 @@ final class MacroExpansionTests: XCTestCase {
     )
 
     let expanded = "\(sourceFile.expand(macros: macros, in: context))"
+    print(expanded)
     #assert(
       expanded ==
       ##"""

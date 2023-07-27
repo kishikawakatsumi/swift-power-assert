@@ -161,7 +161,7 @@ class PowerAssertRewriter: SyntaxRewriter {
       }
       .compactMap {
         if case .literalExpression(let column) = $0.type {
-          return "(\($0.id), \($0.node), \(column))"
+          return "(\($0.id), \($0.node.trimmed), \(column))"
         }
         return nil
       }
