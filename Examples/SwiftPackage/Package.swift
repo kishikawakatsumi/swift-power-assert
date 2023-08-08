@@ -11,7 +11,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/kishikawakatsumi/swift-power-assert.git",
-      from: "0.11.1"
+      from: "0.12.0"
     ),
   ],
   targets: [
