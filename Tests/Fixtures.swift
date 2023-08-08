@@ -1,11 +1,5 @@
 import Foundation
 
-extension AssertTests {
-  var stringValue: String { "string" }
-  var intValue: Int { 100 }
-  var doubleValue: Double { 999.9 }
-}
-
 struct Bar {
   let foo: Foo
   var val: Int
@@ -131,6 +125,12 @@ class SomeObjCClass: NSObject {
 
   init(property: String) {
     self.property = property
+  }
+}
+
+extension Bool {
+  static var `false`: Bool {
+    false
   }
 }
 
