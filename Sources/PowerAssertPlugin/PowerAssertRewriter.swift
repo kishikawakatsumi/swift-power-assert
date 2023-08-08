@@ -199,7 +199,9 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: AwaitExprSyntax) -> ExprSyntax {
-    super.visit(node)
+    super.visit(
+      node.with(\.awaitKeyword, "")
+    )
   }
 
   override func visit(_ node: BinaryOperatorExprSyntax) -> ExprSyntax {
