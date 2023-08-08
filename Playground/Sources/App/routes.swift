@@ -2,6 +2,7 @@ import Vapor
 import SwiftSyntax
 import SwiftParser
 import SwiftSyntaxMacros
+import SwiftSyntaxMacroExpansion
 import PowerAssertPlugin
 
 private let testModuleName = "TestModule"
