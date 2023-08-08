@@ -3223,22 +3223,39 @@ final class AssertTests: XCTestCase {
     }
   }
 
-//  func testInitializerExpression() throws {
-//    captureConsoleOutput {
-//      let initializer: (Int) -> String = String.init
-//
-//      #powerAssert([1, 2, 3].map(initializer).reduce("", +) == "123")
-//      #powerAssert([1, 2, 3].map(String.init).reduce("", +) == "123")
-//    } completion: { (output) in
-//      print(output)
-//      XCTAssertEqual(
-//        output,
-//        """
-//
-//        """
-//      )
-//    }
-//  }
+  func testInitializerExpression() throws {
+    captureConsoleOutput {
+      let initializer: (Int) -> String = String.init.self
+
+      #assert([1, 2, 3].map(initializer).reduce("", +) == "321")
+      // FIXME: The compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+      // #assert([1, 2, 3].reversed().map(initializer).reduce("", +) == "321")
+      // FIXME: The compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+      // #assert([1, 2, 3].map(String.init).reduce("", +) == "123")
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert([1, 2, 3].map(initializer).reduce("", +) == "321")
+                ││  │  │  │   │            │      │      │  │
+                │1  2  3  │   (Function)   "123"  ""     │  "321"
+                [1, 2, 3] ["1", "2", "3"]                false
+
+        --- [String] [1, 2, 3].map(initializer).reduce("", +)
+        +++ [String] "321"
+        [-12-]3{+21+}
+
+        [String] [1, 2, 3].map(initializer).reduce("", +)
+        => "123"
+        [String] "321"
+        => "321"
+
+
+        """
+      )
+    }
+  }
 
   func testPostfixSelfExpression() {
     captureConsoleOutput {
