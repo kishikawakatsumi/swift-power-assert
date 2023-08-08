@@ -1607,7 +1607,25 @@ final class AssertTests: XCTestCase {
     }
   }
 
-  func testImplicitMemberExpression() {
+  func testImplicitMemberExpression1() {
+    captureConsoleOutput {
+      #assert(.false)
+    } completion: { (output) in
+      print(output)
+      XCTAssertEqual(
+        output,
+        """
+        #assert(.false)
+                 │
+                 false
+
+
+        """
+      )
+    }
+  }
+
+  func testImplicitMemberExpression2() {
     captureConsoleOutput {
       let i = 16
       #assert(i == .bitWidth && i == Double.Exponent.bitWidth)
@@ -6418,4 +6436,10 @@ final class AssertTests: XCTestCase {
       )
     }
   }
+}
+
+extension AssertTests {
+  var stringValue: String { "string" }
+  var intValue: Int { 100 }
+  var doubleValue: Double { 999.9 }
 }
