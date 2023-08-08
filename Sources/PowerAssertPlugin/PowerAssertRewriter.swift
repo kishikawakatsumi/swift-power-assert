@@ -168,13 +168,13 @@ class PowerAssertRewriter: SyntaxRewriter {
     return "[\(expressions.joined(separator: ", "))]"
   }
 
-  override func visit(_ node: ArrowExprSyntax) -> ExprSyntax {
-    super.visit(node)
-  }
-
   override func visit(_ node: ArrayExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     return apply(ExprSyntax(super.visit(node)), column: column)
+  }
+
+  override func visit(_ node: ArrowExprSyntax) -> ExprSyntax {
+    super.visit(node)
   }
 
   override func visit(_ node: AsExprSyntax) -> ExprSyntax {
@@ -203,8 +203,41 @@ class PowerAssertRewriter: SyntaxRewriter {
     super.visit(node)
   }
 
+  override func visit(_ node: CanImportExprSyntax) -> ExprSyntax {
+    super.visit(node)
+  }
+
+  override func visit(_ node: CanImportVersionInfoSyntax) -> ExprSyntax {
+    super.visit(node)
+  }
+
   override func visit(_ node: ClosureExprSyntax) -> ExprSyntax {
     ExprSyntax(node)
+  }
+
+  override func visit(_ node: ConsumeExprSyntax) -> ExprSyntax {
+    super.visit(node)
+  }
+
+  override func visit(_ node: CopyExprSyntax) -> ExprSyntax {
+    super.visit(node)
+  }
+
+  override func visit(_ node: DeclReferenceExprSyntax) -> ExprSyntax {
+    if case .binaryOperator = node.baseName.tokenKind {
+      return super.visit(node)
+    }
+    guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self else {
+      return super.visit(node)
+    }
+    if let memberAccess = parent.as(MemberAccessExprSyntax.self), memberAccess.declName == node {
+      return super.visit(node)
+    }
+    if parent.syntaxNodeType == KeyPathPropertyComponentSyntax.self {
+      return super.visit(node)
+    }
+    let column = graphemeColumn(node)
+    return apply(ExprSyntax(super.visit(node)), column: column)
   }
 
   override func visit(_ node: DictionaryExprSyntax) -> ExprSyntax {
@@ -244,21 +277,8 @@ class PowerAssertRewriter: SyntaxRewriter {
     return apply(ExprSyntax(super.visit(node)), column: column)
   }
 
-  override func visit(_ node: DeclReferenceExprSyntax) -> ExprSyntax {
-    if case .binaryOperator = node.baseName.tokenKind {
-      return super.visit(node)
-    }
-    guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self else {
-      return super.visit(node)
-    }
-    if let memberAccess = parent.as(MemberAccessExprSyntax.self), memberAccess.declName == node {
-      return super.visit(node)
-    }
-    if parent.syntaxNodeType == KeyPathPropertyComponentSyntax.self {
-      return super.visit(node)
-    }
-    let column = graphemeColumn(node)
-    return apply(ExprSyntax(super.visit(node)), column: column)
+  override func visit(_ node: GenericSpecializationExprSyntax) -> ExprSyntax {
+    super.visit(node)
   }
 
   override func visit(_ node: IfExprSyntax) -> ExprSyntax {
@@ -327,10 +347,6 @@ class PowerAssertRewriter: SyntaxRewriter {
     super.visit(node)
   }
 
-  override func visit(_ node: ConsumeExprSyntax) -> ExprSyntax {
-    super.visit(node)
-  }
-
   override func visit(_ node: NilLiteralExprSyntax) -> ExprSyntax {
     let column = graphemeColumn(node)
     return apply(ExprSyntax(super.visit(node)), column: column)
@@ -340,7 +356,15 @@ class PowerAssertRewriter: SyntaxRewriter {
     super.visit(node)
   }
 
+  override func visit(_ node: PackElementExprSyntax) -> ExprSyntax {
+    super.visit(node)
+  }
+
   override func visit(_ node: PackExpansionExprSyntax) -> ExprSyntax {
+    super.visit(node)
+  }
+
+  override func visit(_ node: PatternExprSyntax) -> ExprSyntax {
     super.visit(node)
   }
 
@@ -363,10 +387,6 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: SequenceExprSyntax) -> ExprSyntax {
-    super.visit(node)
-  }
-
-  override func visit(_ node: GenericSpecializationExprSyntax) -> ExprSyntax {
     super.visit(node)
   }
 
@@ -412,10 +432,6 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   override func visit(_ node: UnresolvedIsExprSyntax) -> ExprSyntax {
-    super.visit(node)
-  }
-
-  override func visit(_ node: PatternExprSyntax) -> ExprSyntax {
     super.visit(node)
   }
 
