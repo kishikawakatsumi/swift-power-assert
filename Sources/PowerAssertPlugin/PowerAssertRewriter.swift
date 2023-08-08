@@ -32,13 +32,25 @@ class PowerAssertRewriter: SyntaxRewriter {
 #endif
     }()
 
-    let tokens = expression.tokens(viewMode: .fixedUp).map { $0 }
+    let tokens = expression.tokens(viewMode: .sourceAccurate).map { $0 }
     isTryPresent = tokens.contains { $0.tokenKind == .keyword(.try) }
     isAwaitPresent = tokens.contains { $0.tokenKind == .keyword(.await) }
   }
 
   func rewrite() -> String {
-    "\(isTryPresent ? "try " : "")\(rewrite(Syntax(expression)))"
+    let rewritten = rewrite(Syntax(expression))
+    let firstToken = rewritten.firstToken(viewMode: .sourceAccurate)
+    let tryOrEmpty: String
+    if isTryPresent {
+      if firstToken?.tokenKind == .keyword(.try) {
+        tryOrEmpty = ""
+      } else {
+        tryOrEmpty = "try "
+      }
+    } else {
+      tryOrEmpty = ""
+    }
+    return "\(tryOrEmpty)\(rewritten)"
   }
 
   func equalityExpressions() -> String {
@@ -269,7 +281,7 @@ class PowerAssertRewriter: SyntaxRewriter {
 
   override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
     let column: Int
-    if let function = node.calledExpression.children(viewMode: .fixedUp).last {
+    if let function = node.calledExpression.children(viewMode: .sourceAccurate).last {
       column = graphemeColumn(function)
     } else {
       column = graphemeColumn(node)
@@ -580,7 +592,7 @@ class PowerAssertRewriter: SyntaxRewriter {
   }
 
   private func findDescendants<T: SyntaxProtocol>(syntaxType: T.Type, node: some SyntaxProtocol) -> T? {
-    let children = node.children(viewMode: .fixedUp)
+    let children = node.children(viewMode: .sourceAccurate)
     for child in children {
       if child.syntaxNodeType == TokenSyntax.self {
         continue
@@ -600,7 +612,7 @@ class PowerAssertRewriter: SyntaxRewriter {
       return false
     }
 
-    for token in parent.tokens(viewMode: .fixedUp) {
+    for token in parent.tokens(viewMode: .sourceAccurate) {
       if token.position >= node.position {
         return false
       }
@@ -626,9 +638,9 @@ class PowerAssertRewriter: SyntaxRewriter {
 }
 
 private func flatten(_ syntax: some SyntaxProtocol, storage: inout [Syntax]) {
-  for child in syntax.children(viewMode: .fixedUp) {
+  for child in syntax.children(viewMode: .sourceAccurate) {
     storage.append(child)
-    let children = child.children(viewMode: .fixedUp)
+    let children = child.children(viewMode: .sourceAccurate)
     if !children.isEmpty {
       flatten(child, storage: &storage)
     }
