@@ -8,8 +8,8 @@ class MacroEraser: SyntaxRewriter {
       return ExprSyntax(
         AwaitExprSyntax(
           expression: node
-            .with(\.poundToken, .identifier(""))
-            .with(\.macro, .identifier("xassert"))
+            .with(\.pound, .identifier(""))
+            .with(\.macroName, .identifier("xassert"))
             .with(\.leadingTrivia, .space)
             .with(\.trailingTrivia, [])
         )
@@ -19,8 +19,8 @@ class MacroEraser: SyntaxRewriter {
     } else {
       return ExprSyntax(
         node
-          .with(\.poundToken, .identifier(""))
-          .with(\.macro, .identifier("vassert"))
+          .with(\.pound, .identifier(""))
+          .with(\.macroName, .identifier("vassert"))
           .with(\.leadingTrivia, node.leadingTrivia)
           .with(\.trailingTrivia, node.trailingTrivia)
       )
