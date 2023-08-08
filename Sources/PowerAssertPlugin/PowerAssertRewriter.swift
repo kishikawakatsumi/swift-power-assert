@@ -251,6 +251,12 @@ class PowerAssertRewriter: SyntaxRewriter {
     guard let parent = node.parent, parent.syntaxNodeType != FunctionCallExprSyntax.self else {
       return super.visit(node)
     }
+    if let parent = node.parent, let memberAccess = parent.as(MemberAccessExprSyntax.self), memberAccess.declName == node {
+      return super.visit(node)
+    }
+    if let parent = node.parent, parent.syntaxNodeType == KeyPathPropertyComponentSyntax.self {
+      return super.visit(node)
+    }
     let column = graphemeColumn(node)
     return apply(ExprSyntax(super.visit(node)), column: column)
   }
