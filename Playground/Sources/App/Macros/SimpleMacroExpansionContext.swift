@@ -34,7 +34,7 @@ class SimpleMacroExpansionContext: MacroExpansionContext {
       rawPosition = node.endPosition
     }
 
-    let converter = SourceLocationConverter(file: fileName, tree: sourceFile)
+    let converter = SourceLocationConverter(fileName: fileName, tree: sourceFile)
     return AbstractSourceLocation(converter.location(for: rawPosition.advanced(by: offsetAdjustment)))
   }
 
