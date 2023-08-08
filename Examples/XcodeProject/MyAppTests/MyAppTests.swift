@@ -1,5 +1,4 @@
 import XCTest
-@testable import MyApp
 import PowerAssert
 
 final class MyAppTests: XCTestCase {
