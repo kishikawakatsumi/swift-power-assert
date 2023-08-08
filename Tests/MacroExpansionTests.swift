@@ -38,9 +38,9 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [(5, 2, 4)],
         identicalExpressions: [],
         comparisonOperands: [2: "numbers[2]", 4: "4"],
-        literalExpresions: [(1, 2, 9), (4, 4, 15)]
+        literalExpresions: [(1, 2, 16), (4, 4, 22)]
       ) {
-      $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[2], column: 10, id: 2) == 4, column: 12, id: 5)
+      $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 8, id: 0)[2], column: 17, id: 2) == 4, column: 19, id: 5)
       }
       .render()
       """
@@ -57,9 +57,9 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [(5, 2, 4)],
         identicalExpressions: [],
         comparisonOperands: [4: "4", 2: "numbers[2]"],
-        literalExpresions: [(1, 2, 9), (4, 4, 15)]
+        literalExpresions: [(1, 2, 16), (4, 4, 22)]
       ) {
-      $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 1, id: 0)[2], column: 10, id: 2) == 4, column: 12, id: 5)
+      $0.captureSync($0.captureSync($0.captureSync(numbers.self, column: 8, id: 0)[2], column: 17, id: 2) == 4, column: 19, id: 5)
       }
       .render()
       """
@@ -95,9 +95,9 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [],
         identicalExpressions: [],
         comparisonOperands: [:],
-        literalExpresions: [(2, 6, 18)]
+        literalExpresions: [(3, 6, 25)]
       ) {
-      $0.captureSync($0.captureSync(numbers.self, column: 1, id: 0).contains(6), column: 9, id: 3)
+      $0.captureSync($0.captureSync(numbers.self, column: 8, id: 0).contains(6), column: 16, id: 4)
       }
       .render()
       """
@@ -139,7 +139,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [0: "string1", 2: "string2"],
         literalExpresions: []
       ) {
-      $0.captureSync($0.captureSync(string1.self, column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
+      $0.captureSync($0.captureSync(string1.self, column: 8, id: 0) == $0.captureSync(string2.self, column: 19, id: 2), column: 16, id: 3)
       }
       .render()
       """
@@ -160,7 +160,7 @@ final class MacroExpansionTests: XCTestCase {
         comparisonOperands: [2: "string2", 0: "string1"],
         literalExpresions: []
       ) {
-      $0.captureSync($0.captureSync(string1.self, column: 1, id: 0) == $0.captureSync(string2.self, column: 12, id: 2), column: 9, id: 3)
+      $0.captureSync($0.captureSync(string1.self, column: 8, id: 0) == $0.captureSync(string2.self, column: 19, id: 2), column: 16, id: 3)
       }
       .render()
       """
@@ -201,7 +201,7 @@ final class MacroExpansionTests: XCTestCase {
         equalityExpressions: [],
         identicalExpressions: [],
         comparisonOperands: [:],
-        literalExpresions: [(2, 6, 29)]
+        literalExpresions: [(3, 6, 29)]
       ) {
 
         $0.captureSync($0.captureSync(numbers.self, column: 8, id: 0)
@@ -209,7 +209,7 @@ final class MacroExpansionTests: XCTestCase {
 
       contains (
         6
-      ), column: 18, id: 3)
+      ), column: 18, id: 4)
       }
       .render()
       """
@@ -262,7 +262,7 @@ final class MacroExpansionTests: XCTestCase {
 
         """, column: 8, id: 0)
           .
-        isEmpty, column: 45, id: 1)
+        isEmpty, column: 45, id: 2)
       }
       .render()
       """#
@@ -310,20 +310,20 @@ final class MacroExpansionTests: XCTestCase {
         verbose: false,
         equalityExpressions: [],
         identicalExpressions: [],
-        comparisonOperands: [3: "string . starts( with: \"Swift\" )", 8: "\"\"\" Swift 5.9 \"\"\" .contains(\"Swift\")"],
+        comparisonOperands: [4: "string . starts( with: \"Swift\" )", 10: "\"\"\" Swift 5.9 \"\"\" .contains(\"Swift\")"],
         literalExpresions: []
       ) {
 
         $0.captureSync($0.captureSync($0.captureSync(string.self, column: 8, id: 0)
         .
           starts(
-            with: $0.captureSync("Swift", column: 31, id: 2)
-              ), column: 17, id: 3)
+            with: $0.captureSync("Swift", column: 31, id: 3)
+              ), column: 17, id: 4)
         &&
           $0.captureSync($0.captureSync("""
           Swift 5.9
-          """, column: 44, id: 5)
-            .contains($0.captureSync("Swift", column: 72, id: 7)), column: 63, id: 8), column: 41, id: 9)
+          """, column: 44, id: 6)
+            .contains($0.captureSync("Swift", column: 72, id: 9)), column: 63, id: 10), column: 41, id: 11)
       }
       .render()
       """## ||
@@ -339,20 +339,20 @@ final class MacroExpansionTests: XCTestCase {
         verbose: false,
         equalityExpressions: [],
         identicalExpressions: [],
-        comparisonOperands: [8: "\"\"\" Swift 5.9 \"\"\" .contains(\"Swift\")", 3: "string . starts( with: \"Swift\" )"],
+        comparisonOperands: [10: "\"\"\" Swift 5.9 \"\"\" .contains(\"Swift\")", 4: "string . starts( with: \"Swift\" )"],
         literalExpresions: []
       ) {
 
         $0.captureSync($0.captureSync($0.captureSync(string.self, column: 8, id: 0)
         .
           starts(
-            with: $0.captureSync("Swift", column: 31, id: 2)
-              ), column: 17, id: 3)
+            with: $0.captureSync("Swift", column: 31, id: 3)
+              ), column: 17, id: 4)
         &&
           $0.captureSync($0.captureSync("""
           Swift 5.9
-          """, column: 44, id: 5)
-            .contains($0.captureSync("Swift", column: 72, id: 7)), column: 63, id: 8), column: 41, id: 9)
+          """, column: 44, id: 6)
+            .contains($0.captureSync("Swift", column: 72, id: 9)), column: 63, id: 10), column: 41, id: 11)
       }
       .render()
       """##
