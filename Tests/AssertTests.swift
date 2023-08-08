@@ -1023,7 +1023,7 @@ final class AssertTests: XCTestCase {
   }
 
   func testTryExpression2() throws {
-    try captureConsoleOutput {
+    captureConsoleOutput {
       let landmark = Landmark(
         name: "Tokyo Tower",
         foundingYear: 1957,
@@ -1056,7 +1056,7 @@ final class AssertTests: XCTestCase {
   }
 
   func testThrowError() {
-    try captureConsoleOutput {
+    captureConsoleOutput {
       #assert(
         try throwRecoverableError() == "Unrecoverable error"
       )
@@ -6211,7 +6211,7 @@ final class AssertTests: XCTestCase {
   }
 
   func testAsyncExpression3() async throws {
-    try await captureConsoleOutput {
+    await captureConsoleOutput {
       let bar = Bar(foo: Foo(val: 2), val: 3)
       #assert(bar.val == bar.foo.val)
 
