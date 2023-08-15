@@ -48,7 +48,6 @@ let package = Package(
     ),
     .target(
       name: "StringWidth",
-      dependencies: [],
       exclude: [
         "DerivedCoreProperties.swift",
         "DerivedGeneralCategory.swift",
