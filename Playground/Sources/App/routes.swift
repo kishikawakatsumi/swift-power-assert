@@ -29,60 +29,16 @@ func routes(_ app: Application) throws {
       throw Abort(.badRequest)
     }
 
-    let session = request.session
-    let sourceFile = Parser.parse(source: request.code)
-
-    let commonOptions = [
-      "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update"
-    ]
     do {
-      let eraser = MacroEraser()
-      let code = "\(eraser.rewrite(Syntax(sourceFile)))"
-
       let outputNotifier = BufferedNotifier()
       let errorNotifier = BufferedNotifier()
 
-      let status = try await runInTemporaryDirectory(code: code) {
-        let command = Command(
-          ["/usr/bin/env", "swift", "build", "--build-tests"] + commonOptions,
-          workingDirectory: $0
-        )
-        return try await command.run(
-          onOutput: { (output) in
-            outputNotifier.send(output, session: session, type: .build)
-          },
-          onError: { (output) in
-            errorNotifier.send(output, session: session, type: .build)
-          }
-        )
-      }
-
-      notify(session: session, type: .build, message: outputNotifier.storage)
-      notify(session: session, type: .build, message: errorNotifier.storage)
-
-      guard status.isSuccess else {
-        return PlaygroundResponse(
-          stdout: "",
-          stderr: "\(status.stdout)\(status.stderr)"
-        )
-      }
-    } catch {
-      throw Abort(.internalServerError)
-    }
-
-    do {
-      let macros: [String: Macro.Type] = [
-        "assert": PowerAssertMacro.self,
+      let session = request.session
+      let commonOptions = [
+        "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update"
       ]
-      let context = SimpleMacroExpansionContext(
-        moduleName: testModuleName, fullFilePath: testFileName, sourceFile: sourceFile
-      )
-      let code = "\(sourceFile.expand(macros: macros, in: context))"
 
-      let outputNotifier = BufferedNotifier()
-      let errorNotifier = BufferedNotifier()
-
-      let status = try await runInTemporaryDirectory(code: code) {
+      let status = try await runInTemporaryDirectory(code: request.code) {
         let command = Command(
           ["/usr/bin/env", "swift", "test"] + commonOptions,
           workingDirectory: $0
