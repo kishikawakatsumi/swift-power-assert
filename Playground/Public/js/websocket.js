@@ -6,8 +6,8 @@ export class WebSocketClient {
   constructor(endpoint) {
     this.connection = this.createConnection(endpoint);
 
-    this.onconnect = () => {};
-    this.onresponse = () => {};
+    this.onconnect = () => { };
+    this.onresponse = () => { };
   }
 
   get isReady() {
@@ -48,7 +48,7 @@ export class WebSocketClient {
     connection.onmessage = (event) => {
       try {
         this.onresponse(JSON.parse(event.data));
-      } catch (error) {}
+      } catch (error) { }
     };
 
     return connection;

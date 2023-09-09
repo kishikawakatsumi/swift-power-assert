@@ -25,11 +25,7 @@ class PowerAssertRewriter: SyntaxRewriter {
       let locationConverter = SourceLocationConverter(fileName: "", tree: node.detached)
       let startLocation = node.startLocation(converter: locationConverter)
       let endLocation = node.macro.endLocation(converter: locationConverter)
-#if SWIFTPOWERASSERT_PLAYGROUND
-      return "\(node.poundToken.trimmed)\(node.macro.trimmed)".count
-#else
       return endLocation.column - startLocation.column
-#endif
     }()
 
     let tokens = expression.tokens(viewMode: .sourceAccurate).map { $0 }

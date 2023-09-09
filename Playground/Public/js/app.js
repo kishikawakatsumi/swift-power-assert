@@ -83,28 +83,20 @@ final class MyLibraryTests: XCTestCase {
     );
     let lastLine = "";
     logStream.onresponse = (response) => {
-      switch (response.type) {
-        case "build":
-          this.terminal.eraseLine();
-          if (lastLine.length) {
-            this.terminal.eraseLines(1);
-          }
-          const lines = response.message.split("\n").filter(Boolean);
-          if (lines.length) {
-            const line = truncateString(
-              lines[lines.length - 1],
-              this.terminal.cols
-            );
-            lastLine = stripDirectoryPath(`${line}\n`);
-            this.terminal.write(lastLine);
-          } else {
-            lastLine = "";
-          }
-          break;
-        case "test":
-          break;
-        default:
-          break;
+      this.terminal.eraseLine();
+      if (lastLine.length) {
+        this.terminal.eraseLines(1);
+      }
+      const lines = response.message.split("\n").filter(Boolean);
+      if (lines.length) {
+        const line = truncateString(
+          lines[lines.length - 1],
+          this.terminal.cols
+        );
+        lastLine = stripDirectoryPath(`${line}\n`);
+        this.terminal.write(lastLine);
+      } else {
+        lastLine = "";
       }
     };
 
