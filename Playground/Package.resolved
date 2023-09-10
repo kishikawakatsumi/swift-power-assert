@@ -172,15 +172,6 @@
       }
     },
     {
-      "identity" : "swift-syntax",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
-      "state" : {
-        "revision" : "7bb5231dad28c6dceabf7a439867f39d2c105e4f",
-        "version" : "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-09-05-a"
-      }
-    },
-    {
       "identity" : "swift-system",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
