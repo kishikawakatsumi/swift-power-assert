@@ -1,20 +1,7 @@
 import Vapor
-import SwiftSyntax
-import SwiftParser
-import SwiftSyntaxMacros
-import SwiftSyntaxMacroExpansion
-import PowerAssertPlugin
-
-private let testModuleName = "TestModule"
-private let testFileName = "test.swift"
 
 private let healthcheckResponse = ["status": "pass"]
-
 private let notificationName = Notification.Name("onOutput")
-enum LogType: String {
-  case build
-  case test
-}
 
 func routes(_ app: Application) throws {
   app.get("health") { _ in healthcheckResponse }
@@ -29,76 +16,28 @@ func routes(_ app: Application) throws {
       throw Abort(.badRequest)
     }
 
-    let session = request.session
-    let sourceFile = Parser.parse(source: request.code)
-
-    let commonOptions = [
-      "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update"
-    ]
     do {
-      let eraser = MacroEraser()
-      let code = "\(eraser.rewrite(Syntax(sourceFile)))"
-
       let outputNotifier = BufferedNotifier()
       let errorNotifier = BufferedNotifier()
 
-      let status = try await runInTemporaryDirectory(code: code) {
-        let command = Command(
-          ["/usr/bin/env", "swift", "build", "--build-tests"] + commonOptions,
-          workingDirectory: $0
-        )
-        return try await command.run(
-          onOutput: { (output) in
-            outputNotifier.send(output, session: session, type: .build)
-          },
-          onError: { (output) in
-            errorNotifier.send(output, session: session, type: .build)
-          }
-        )
-      }
-
-      notify(session: session, type: .build, message: outputNotifier.storage)
-      notify(session: session, type: .build, message: errorNotifier.storage)
-
-      guard status.isSuccess else {
-        return PlaygroundResponse(
-          stdout: "",
-          stderr: "\(status.stdout)\(status.stderr)"
-        )
-      }
-    } catch {
-      throw Abort(.internalServerError)
-    }
-
-    do {
-      let macros: [String: Macro.Type] = [
-        "assert": PowerAssertMacro.self,
+      let session = request.session
+      let commonOptions = [
+        "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update"
       ]
-      let context = SimpleMacroExpansionContext(
-        moduleName: testModuleName, fullFilePath: testFileName, sourceFile: sourceFile
-      )
-      let code = "\(sourceFile.expand(macros: macros, in: context))"
 
-      let outputNotifier = BufferedNotifier()
-      let errorNotifier = BufferedNotifier()
-
-      let status = try await runInTemporaryDirectory(code: code) {
+      let status = try await runInTemporaryDirectory(code: request.code) {
         let command = Command(
           ["/usr/bin/env", "swift", "test"] + commonOptions,
           workingDirectory: $0
         )
         return try await command.run(
-          onOutput: { (output) in
-            outputNotifier.send(output, session: session, type: .test)
-          },
-          onError: { (output) in
-            errorNotifier.send(output, session: session, type: .build)
-          }
+          onOutput: { outputNotifier.send($0, session: session) },
+          onError: { errorNotifier.send($0, session: session) }
         )
       }
 
-      notify(session: session, type: .test, message: outputNotifier.storage)
-      notify(session: session, type: .build, message: errorNotifier.storage)
+      notify(session: session, message: outputNotifier.storage)
+      notify(session: session, message: errorNotifier.storage)
 
       if status.stdout.isEmpty {
         let parameters: [String: Any] = [
@@ -148,13 +87,10 @@ func routes(_ app: Application) throws {
       guard userInfo["session"] as? String == session else {
         return
       }
-      guard let type = userInfo["type"] as? String else {
-        return
-      }
       guard let message = userInfo["message"] as? String else {
         return
       }
-      let response = StreamResponse(type: type, message: message)
+      let response = StreamResponse(message: message)
       if let data = try? JSONEncoder().encode(response) {
         ws.send(String(decoding: data, as: UTF8.self))
       }
@@ -168,7 +104,7 @@ func routes(_ app: Application) throws {
 private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> CommandStatus) async throws -> CommandStatus {
   let fileManager = FileManager()
   let templateDirectory = URL(
-    fileURLWithPath: "\(DirectoryConfiguration.detect().resourcesDirectory)\(testModuleName)"
+    fileURLWithPath: "\(DirectoryConfiguration.detect().resourcesDirectory)TestModule"
   )
 
   let temporaryDirectory = fileManager.temporaryDirectory.appendingPathComponent(UUID().base64())
@@ -199,11 +135,11 @@ private func copyItem(at srcURL: URL, to dstURL: URL) throws {
 #endif
 }
 
-private func notify(session: String, type: LogType, message: String) {
+private func notify(session: String, message: String) {
   NotificationCenter.default.post(
     name: notificationName,
     object: nil,
-    userInfo: ["session": session, "type": "\(type)", "message": message]
+    userInfo: ["session": session, "message": message]
   )
 }
 
@@ -230,20 +166,22 @@ private struct PlaygroundResponse: Content {
 }
 
 private struct StreamResponse: Codable {
-  let type: String
   let message: String
 }
 
 private class BufferedNotifier {
   var storage = ""
 
-  func send(_ output: String, session: String, type: LogType) {
+  func send(_ output: String, session: String) {
     var message = storage
     for character in output {
-      if character == "\n" {
-        notify(session: session, type: type, message: message)
+      if character == "\r" {
+        notify(session: session, message: message)
         message = ""
       } else {
+        if character == "\u{001B}" {
+          continue
+        }
         message.append(character)
       }
     }

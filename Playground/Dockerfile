@@ -13,10 +13,12 @@ COPY Public ./Public/
 RUN npx webpack --config webpack.prod.js
 
 
-FROM swift:5.8-focal as swift
+FROM swiftlang/swift:nightly-5.9-focal as swift
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update && apt-get -q dist-upgrade -y \
-    && apt-get install -y --no-install-recommends libsqlite3-dev \
+    && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
@@ -26,13 +28,14 @@ RUN swift package resolve
 
 COPY . .
 RUN swift build -c release --static-swift-stdlib
+RUN swift package resolve --package-path Resources/TestModule
 
 RUN echo 'int isatty(int fd) { return 1; }' | \
-  clang -O2 -fpic -shared -ldl -o faketty.so -xc -
+    clang -O2 -fpic -shared -ldl -o faketty.so -xc -
 RUN strip faketty.so && chmod 400 faketty.so && mv faketty.so ./Resources/TestModule/
 
 WORKDIR /staging
-    
+
 RUN cp "$(swift build --package-path /build -c release --show-bin-path)/App" ./
 
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
@@ -41,7 +44,7 @@ RUN [ -d /build/Public ] && { mv /build/Public ./Public && chmod -R a-w ./Public
 RUN [ -d /build/Resources ] && { mv /build/Resources ./Resources && chmod -R a-w ./Resources; } || true
 
 
-FROM swift:5.8-focal
+FROM swiftlang/swift:nightly-5.9-focal
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
@@ -52,12 +55,10 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     libcurl4 \
     libxml2 \
     && rm -r /var/lib/apt/lists/*
-RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app vapor
 
 WORKDIR /app
-COPY --from=swift --chown=vapor:vapor /staging /app
+COPY --from=swift /staging /app
 
-USER vapor:vapor
 EXPOSE 8080
 
 ENTRYPOINT ["./App"]
