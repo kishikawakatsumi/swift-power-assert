@@ -103,11 +103,11 @@ func routes(_ app: Application) throws {
 
 private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> CommandStatus) async throws -> CommandStatus {
   let fileManager = FileManager()
-  let templateDirectory = URL(
-    fileURLWithPath: "\(DirectoryConfiguration.detect().resourcesDirectory)TestModule"
-  )
 
-  let temporaryDirectory = fileManager.temporaryDirectory.appendingPathComponent(UUID().base64())
+  let resourcesDirectory = DirectoryConfiguration.detect().resourcesDirectory
+  let templateDirectory = URL(fileURLWithPath: "\(resourcesDirectory)TestModule")
+
+  let temporaryDirectory = URL(fileURLWithPath: resourcesDirectory).appendingPathComponent(UUID().base64())
   try fileManager.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
   defer {
     try? fileManager.removeItem(at: temporaryDirectory)
@@ -176,7 +176,7 @@ private class BufferedNotifier {
     var message = storage
     for character in output {
       if character == "\r" {
-        notify(session: session, message: message)
+        notify(session: session, message: message.replacingOccurrences(of: "[2K", with: ""))
         message = ""
       } else {
         if character == "\u{001B}" {
