@@ -13,7 +13,7 @@ COPY Public ./Public/
 RUN npx webpack --config webpack.prod.js
 
 
-FROM swiftlang/swift:nightly-5.9-focal as swift
+FROM swiftlang/swift:nightly-5.9-jammy as swift
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update && apt-get -q dist-upgrade -y \
     && apt-get install -y --no-install-recommends \
@@ -44,7 +44,7 @@ RUN [ -d /build/Public ] && { mv /build/Public ./Public && chmod -R a-w ./Public
 RUN [ -d /build/Resources ] && { mv /build/Resources ./Resources && chmod -R a-w ./Resources; } || true
 
 
-FROM swiftlang/swift:nightly-5.9-focal
+FROM swiftlang/swift:nightly-5.9-jammy
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
@@ -53,7 +53,6 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     ca-certificates \
     tzdata \
     libcurl4 \
-    libxml2 \
     && rm -r /var/lib/apt/lists/*
 
 WORKDIR /app
