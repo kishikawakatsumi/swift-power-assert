@@ -55,14 +55,10 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     tzdata \
     libcurl4 \
     && rm -r /var/lib/apt/lists/*
-RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app vapor
 
 WORKDIR /app
-COPY --from=swift --chown=vapor:vapor /staging /app
+COPY --from=swift /staging /app
 
-RUN swift build --build-tests --package-path Resources/TestModule
-
-USER vapor:vapor
 EXPOSE 8080
 
 ENTRYPOINT ["./App"]
