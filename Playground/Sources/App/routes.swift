@@ -25,7 +25,7 @@ func routes(_ app: Application) throws {
         "--disable-dependency-cache", "--disable-build-manifest-caching", "--manifest-cache=none", "--skip-update"
       ]
 
-      let status = try await run(code: request.code) {
+      let status = try await runInTemporaryDirectory(code: request.code) {
         let command = Command(
           ["/usr/bin/env", "swift", "test"] + commonOptions,
           workingDirectory: $0
@@ -101,16 +101,38 @@ func routes(_ app: Application) throws {
   }
 }
 
-private func run(code: String, execute: (URL) async throws -> CommandStatus) async throws -> CommandStatus {
+private func runInTemporaryDirectory(code: String, execute: (URL) async throws -> CommandStatus) async throws -> CommandStatus {
   let fileManager = FileManager()
 
   let resourcesDirectory = DirectoryConfiguration.detect().resourcesDirectory
-  let packageDirectory = URL(fileURLWithPath: "\(resourcesDirectory)TestModule")
+  let templateDirectory = URL(fileURLWithPath: "\(resourcesDirectory)TestModule")
+
+  let temporaryDirectory = fileManager.temporaryDirectory.appendingPathComponent(UUID().base64())
+  try fileManager.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+  defer {
+    try? fileManager.removeItem(at: temporaryDirectory)
+  }
+
+  let packageDirectory = temporaryDirectory.appendingPathComponent(templateDirectory.lastPathComponent)
+  try copyItem(at: templateDirectory, to: packageDirectory)
 
   let testFile = packageDirectory.appendingPathComponent("Tests/TestTarget/test.swift")
   try code.write(to: testFile, atomically: true, encoding: .utf8)
 
   return try await execute(packageDirectory)
+}
+
+private func copyItem(at srcURL: URL, to dstURL: URL) throws {
+#if os(Linux)
+  try FileManager().copyItem(at: srcURL, to: dstURL)
+#else
+  let process = Process()
+  process.executableURL = URL(fileURLWithPath: "/bin/cp")
+  process.arguments = ["-R", "-L", srcURL.path, dstURL.path]
+
+  try process.run()
+  process.waitUntilExit()
+#endif
 }
 
 private func notify(session: String, message: String) {
