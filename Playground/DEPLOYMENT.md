@@ -37,4 +37,4 @@ You should now be able to see the application running at `localhost:8080`.
 
 ## Production Deployment
 
-For deploying to production, we recommend using [Koyeb](https://www.koyeb.com/). Railway is a platform that allows you to deploy your application to the cloud with ease. It also provides a free tier that is sufficient for deploying this application.
+For deploying to production, we recommend using [Cloud Run](https://cloud.google.com/run). Cloud Run is a platform that allows you to deploy your application to the cloud with ease. It also provides a free tier that is sufficient for deploying this application.
