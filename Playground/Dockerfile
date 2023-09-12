@@ -59,6 +59,8 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 WORKDIR /app
 COPY --from=swift /staging /app
 
+RUN swift build --build-tests --package-path Resources/TestModule
+
 EXPOSE 8080
 
 ENTRYPOINT ["./App"]
