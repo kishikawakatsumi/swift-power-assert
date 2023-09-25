@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faToolbox,
-  faCommentAltSmile,
+  faMessageSmile,
   faAt,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faSpinnerThird } from "@fortawesome/pro-duotone-svg-icons";
@@ -27,7 +27,7 @@ library.add(
   faHeart,
 
   faToolbox,
-  faCommentAltSmile,
+  faMessageSmile,
   faAt,
 
   faSpinnerThird,
