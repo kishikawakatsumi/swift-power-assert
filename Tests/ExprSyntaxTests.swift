@@ -245,11 +245,54 @@ final class ExprSyntaxTests: XCTestCase {
   }
 
   func testSwitchExprSyntax() {
+    captureConsoleOutput {
+      #assert(switch "match" { case "no" : true; case "match": false; default: true;})
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert(switch "match" { case "no" : true; case "match": false; default: true;})
+                       │              │                 │        │
+                       "match"        "no"              "match"  false
 
+
+        """
+      )
+  }
   }
 
   func testTernaryExprSyntax() {
+    captureConsoleOutput {
+      #assert("" == "no" ? true : false)
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert("" == "no" ? true : false)
+                ││ │  │             │
+                ││ │  "no"          false
+                ││ false
+                │false
+                ""
 
+        --- [String] ""
+        +++ [String] "no"
+        {+no+}
+
+        [String] ""
+        => ""
+        [String] "no"
+        => "no"
+        [Bool] "" == "no"
+        => false
+        [Bool] false
+        => false
+        [Not Evaluated] true
+
+
+        """
+      )
+    }
   }
 
   func testTryExprSyntax() {
@@ -329,5 +372,18 @@ final class ExprSyntaxTests: XCTestCase {
 
   func testUnresolvedTernaryExprSyntax() {
 
+  }
+
+  func testDiff() {
+    let demoFails = "" == "no"
+    actExp("", "")
+    actExp("ok", "ok")
+    if demoFails {
+      actExp("not", "true", message: "# My message\n")
+      actExp("fail5", "fails")
+      actExp("something in the air", "something or other")
+      actExp("something", "something or other")
+      actExp("something in the air", "something ")
+    }
   }
 }
