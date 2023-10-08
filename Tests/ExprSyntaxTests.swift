@@ -449,6 +449,31 @@ final class ExprSyntaxTests: XCTestCase {
   }
 
   func testIdentifierExprSyntax() {
+    let `class` = "class"
+    captureConsoleOutput {
+      #assert("name" == `class`)
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert("name" == `class`)
+                │      │  │
+                "name" │  "class"
+                       false
+
+        --- [String] "name"
+        +++ [String] `class`
+        [-n-]{+cl+}a[-me-]{+ss+}
+
+        [String] "name"
+        => "name"
+        [String] `class`
+        => "class"
+
+
+        """
+      )
+    }
   }
 
 //  func testIfExprSyntax() {
