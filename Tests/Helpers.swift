@@ -241,47 +241,6 @@ func diffString(_ exp: String, _ act: String) -> String {
   printLast()
   return result
 }
-//  func emitLast(_ current: Int) {
-//    precondition(current > start)
-//    if let insertOrRemove = insRemove {
-//      let prefix = insertOrRemove ? "ins" : "rem"
-//      let range = "\(start)" + (start == current - 1 ? "" : "-\(current)")
-//      let snippet: String
-//      if insertOrRemove { // insert
-//        let s = act.index(act.startIndex, offsetBy: start)
-//        let e = act.index(act.startIndex, offsetBy: current)
-//        snippet = "\(act[s..<e])"
-//      } else {
-//        let s = exp.index(exp.startIndex, offsetBy: start)
-//        let e = exp.index(exp.startIndex, offsetBy: current)
-//        snippet = "\(exp[s..<e])"
-//      }
-//      result += "\(prefix)[\(range)]: \(snippet)\n"
-//      insRemove = nil
-//      start = -1
-//    }
-//  }
-//    //let (next_insert, next_change, next_offset) = ico
-//    switch next {
-//    case let .insert(offset, c, _):
-//      if let d = diff, d.insert { // extend?
-//
-//      }
-//      if insRemove ?? false {
-//        emitLast(offset)
-//        insRemove = true
-//        start = offset
-//      } // otherwise keep accumulating
-//    case let .remove(offset, c, _):
-//      if !(insRemove ?? true) {
-//        emitLast(offset)
-//        insRemove = false
-//        start = offset
-//      } // otherwise keep accumulating
-//    }
-//  }
-//  return result
-//}
 
 func diffSimple(
   _ exp: String,
