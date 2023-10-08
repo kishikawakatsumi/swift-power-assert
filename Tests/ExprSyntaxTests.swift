@@ -233,11 +233,61 @@ final class ExprSyntaxTests: XCTestCase {
   }
 
   func testStringLiteralExprSyntax() {
+    captureConsoleOutput {
+      #assert("0" == "1")
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert("0" == "1")
+                │   │  │
+                "0" │  "1"
+                    false
 
+        --- [String] "0"
+        +++ [String] "1"
+        [-0-]{+1+}
+
+        [String] "0"
+        => "0"
+        [String] "1"
+        => "1"
+
+
+        """
+      )
+    }
   }
 
   func testSubscriptExprSyntax() {
+    let ra = [0, 1]
+    captureConsoleOutput {
+      #assert(0 == ra[1])
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert(0 == ra[1])
+                │ │  │  ││
+                0 │  │  │1
+                  │  │  1
+                  │  [0, 1]
+                  false
 
+        --- [Int] 0
+        +++ [Int] ra[1]
+        –0
+        +1
+
+        [Int] 0
+        => 0
+        [Int] ra[1]
+        => 1
+
+
+        """
+      )
+    }
   }
 
   func testSuperRefExprSyntax() {
@@ -296,11 +346,61 @@ final class ExprSyntaxTests: XCTestCase {
   }
 
   func testTryExprSyntax() {
+    func try1() throws -> String {
+      "1"
+    }
+    captureConsoleOutput {
+      #assert(try try1() == "0")
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert(try try1() == "0")
+                    │      │  │
+                    "1"    │  "0"
+                           false
 
+        --- [String] try1()
+        +++ [String] "0"
+        [-1-]{+0+}
+
+        [String] try1()
+        => "1"
+        [String] "0"
+        => "0"
+
+
+        """
+      )
+    }
   }
 
   func testTupleExprSyntax() {
+    captureConsoleOutput {
+      #assert((0, 2) == (first: 0, second: 1))
+    } completion: { (output) in
+      actExp(
+       output,
+       """
+       #assert((0, 2) == (first: 0, second: 1))
+               ││  │  │  │       │          │
+               │0  2  │  (0, 1)  0          1
+               (0, 2) false
 
+       --- [(Int, Int)] (0, 2)
+       +++ [(Int, Int)] (first: 0, second: 1)
+       –(0, 2)
+       +(0, 1)
+
+       [(Int, Int)] (0, 2)
+       => (0, 2)
+       [(Int, Int)] (first: 0, second: 1)
+       => (0, 1)
+
+
+       """
+      )
+    }
   }
 
   func testTypeExprSyntax() {
