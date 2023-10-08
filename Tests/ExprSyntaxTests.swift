@@ -688,6 +688,38 @@ final class ExprSyntaxTests: XCTestCase {
     }
   }
 
+  func testOptionalStringExprSyntax() {
+    // RFE: avoid quotes around optional string?
+    // RFE: avoid escapes before optional string literals?
+    let s0: String? = "0"
+    let s1: String? = "1"
+    captureConsoleOutput {
+      #assert(s0 == s1)
+    } completion: { (output) in
+      actExp(
+        output,
+        """
+        #assert(s0 == s1)
+                │  │  │
+                │  │  "Optional(\\"1\\")"
+                │  false
+                "Optional(\\"0\\")"
+
+        --- [Optional<String>] s0
+        +++ [Optional<String>] s1
+        [-0-]{+1+}
+
+        [Optional<String>] s0
+        => "Optional(\\"0\\")"
+        [Optional<String>] s1
+        => "Optional(\\"1\\")"
+
+
+        """
+      )
+    }
+  }
+
   func testOptionalIntExprSyntax() {
     let i0: Int? = 0
     let i1: Int? = 1
