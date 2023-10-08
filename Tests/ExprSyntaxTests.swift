@@ -513,6 +513,15 @@ final class ExprSyntaxTests: XCTestCase {
 //  }
 
   func testInOutExprSyntax() {
+    func io(_ i: inout Int) -> Int {
+      i += 1
+      return 2 * i
+    }
+    var i = 1
+    i += 1
+    // XCTExpectFailure("inout variable is constant in macro expansion")
+    // macro fails compile - uncomment to observe:
+    // #assert(0 == io(&i))
   }
 
   func testInfixOperatorExprSyntax() {
