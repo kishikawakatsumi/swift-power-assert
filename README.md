@@ -61,13 +61,10 @@ Assertion APIs, no need to remember them. Just create an expression that returns
 
 ## Getting Started
 
-Swift Power Assert is implemented using [macros](https://github.com/apple/swift-evolution/blob/main/proposals/0382-expression-macros.md), an experimental feature of Swift. Therefore, Xcode 15 beta must be installed to use this library.
+Requirements:
 
-1. Download and extract Xcode 15 beta.
-   https://developer.apple.com/download/all/
-2. (Optional) To use this library from the command line, go to the Xcode menu and select Settings... > Locations > Locations > Command Line Tools and select "Xcode -beta-15.0".
-
-<img width="500px" src="https://github.com/kishikawakatsumi/swift-power-assert/assets/40610/9c98f098-16f8-49dc-b74b-8bc134f0ee1f" />
+- Swift 5.9 or later
+- Xcode 15.0 or later
 
 ### For Xcode Project
 
@@ -143,7 +140,7 @@ Select PowerAssert as the Package Product and specify the **Test Bundle** as the
 For the Swift package, configure Package.swift as follows:
 
 ```swift
-// swift-tools-version:5.8
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
