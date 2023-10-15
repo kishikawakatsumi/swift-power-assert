@@ -24,7 +24,7 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 
 WORKDIR /build
 
-COPY --from=nodebuild /build /build
+COPY --from=nodebuild /build/dist/ /build/dist/
 COPY ./TestModule/ ./TestModule/
 
 RUN echo 'int isatty(int fd) { return 1; }' | \
@@ -33,9 +33,6 @@ RUN echo 'int isatty(int fd) { return 1; }' | \
 
 
 FROM swift:5.9-jammy as swift
-
-COPY --from=swiftbuild /build /build
-RUN swift build --build-tests --package-path ./TestModule/
 
 # Install Deno
 RUN apt-get -qq update \
@@ -46,9 +43,11 @@ RUN apt-get -qq update \
   && apt-get -qq -y autoremove \
   && apt-get -qq clean
 
-WORKDIR /app
-
 ENV PATH "/root/.deno/bin:$PATH"
+
+WORKDIR /app
+COPY --from=swiftbuild /build /app
+# RUN swift build --build-tests --package-path ./TestModule/
 
 COPY ./backend/deps.ts .
 RUN deno cache deps.ts
@@ -57,4 +56,4 @@ ADD ./backend/ .
 RUN deno cache main.ts
 
 EXPOSE 8080
-CMD ["deno", "run", "--allow-net", "--allow-run", "main.ts"]
+CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-run", "--allow-write", "main.ts"]
