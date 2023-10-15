@@ -139,10 +139,8 @@ final class MyLibraryTests: XCTestCase {
 
       while (!result.done) {
         const text = decoder.decode(result.value);
-        console.log(text);
         const lines = text.split("\n");
         for (const line of lines) {
-          console.log(line);
           if (!line) {
             continue;
           }
