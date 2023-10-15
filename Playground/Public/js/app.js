@@ -6,7 +6,6 @@ import { Console } from "./console.js";
 import { WebSocketClient } from "./websocket.js";
 import { clearConsoleButton, formatButton, runButton } from "./ui_control.js";
 import { unescapeHTML } from "./unescape.js";
-import { uuidv4 } from "./uuid.js";
 
 export class App {
   constructor() {
@@ -55,8 +54,6 @@ final class MyLibraryTests: XCTestCase {
       `\x1b[32mhttps://github.com/sponsors/kishikawakatsumi/\x1b[0m`
     );
 
-    this.session = uuidv4();
-
     this.init();
   }
 
@@ -73,32 +70,6 @@ final class MyLibraryTests: XCTestCase {
 
     this.editor.focus();
     this.editor.scrollToBottm();
-
-    const logStream = new WebSocketClient(
-      (() => {
-        const protocol = location.protocol === "https:" ? "wss:" : "ws:";
-        const endpoint = `${protocol}//${location.host}/logs/${this.session}`;
-        return endpoint;
-      })()
-    );
-    let lastLine = "";
-    logStream.onresponse = (response) => {
-      this.terminal.eraseLine();
-      if (lastLine.length) {
-        this.terminal.eraseLines(1);
-      }
-      const lines = response.message.split("\n").filter(Boolean);
-      if (lines.length) {
-        const line = truncateString(
-          lines[lines.length - 1],
-          this.terminal.cols
-        );
-        lastLine = stripDirectoryPath(`${line}\n`);
-        this.terminal.write(lastLine);
-      } else {
-        lastLine = "";
-      }
-    };
 
     const formatter = new WebSocketClient("wss://swift-format.com/api/ws");
     formatter.onresponse = (response) => {
@@ -127,7 +98,7 @@ final class MyLibraryTests: XCTestCase {
     }
   }
 
-  run() {
+  async run() {
     if (runButton.classList.contains("disabled")) {
       return;
     }
@@ -141,52 +112,68 @@ final class MyLibraryTests: XCTestCase {
     this.editor.clearMarkers();
     this.terminal.hideCursor();
 
-    const params = {
-      session: this.session,
-      code: this.editor.getValue(),
-    };
-    const path = `/run`;
-    fetch(path, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
-    })
-      .then((response) => {
-        this.terminal.hideSpinner(cancelToken);
-        this.printTimestamp();
-
-        if (!response.ok) {
-          this.terminal.writeln(
-            `\x1b[37m❌  ${response.status} ${response.statusText}\x1b[0m`
-          );
-        }
-        return response.json();
-      })
-      .then((response) => {
-        if (response.stderr) {
-          const markers = parseErrorMessage(response.stderr);
-          this.editor.updateMarkers(markers);
-          this.terminal.write(`${stripDirectoryPath(response.stderr)}`);
-        }
-        if (response.stdout) {
-          this.terminal.write(`${stripDirectoryPath(response.stdout)}\x1b[0m`);
-        }
-      })
-      .catch((error) => {
-        this.terminal.hideSpinner(cancelToken);
-        this.terminal.writeln(`\x1b[37m❌  ${error}\x1b[0m`);
-      })
-      .finally(() => {
-        runButton.classList.remove("disabled");
-        document.getElementById("run-button-icon").classList.remove("d-none");
-        document.getElementById("run-button-spinner").classList.add("d-none");
-
-        this.terminal.showCursor();
-        this.editor.focus();
+    try {
+      const params = {
+        code: this.editor.getValue(),
+      };
+      const response = await fetch("/run", {
+        method: "POST",
+        body: JSON.stringify(params),
       });
+
+      if (!response.ok) {
+        this.terminal.writeln(
+          `\x1b[37m❌  ${response.status} ${response.statusText}\x1b[0m`
+        );
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let result = await reader.read();
+
+      this.terminal.hideSpinner(cancelToken);
+      this.printTimestamp();
+
+      const modelMarkers = [];
+
+      while (!result.done) {
+        const text = decoder.decode(result.value);
+        const lines = text.split("\n");
+        for (const line of lines) {
+          if (!line) {
+            continue;
+          }
+          const response = JSON.parse(line);
+          const markers = parseErrorMessage(response.text);
+          modelMarkers.push(...markers);
+
+          switch (response.kind) {
+            case "stderr": {
+              this.terminal.write(`${response.text}\x1b[0m`);
+              break;
+            }
+            case "stdout": {
+              this.terminal.write(`\x1b[37m${response.text}\x1b[0m`);
+              break;
+            }
+          }
+        }
+
+        result = await reader.read();
+      }
+
+      this.editor.updateMarkers(modelMarkers);
+    } catch (error) {
+      this.terminal.hideSpinner(cancelToken);
+      this.terminal.writeln(`\x1b[37m❌  ${error}\x1b[0m`);
+    } finally {
+      runButton.classList.remove("disabled");
+      document.getElementById("run-button-icon").classList.remove("d-none");
+      document.getElementById("run-button-spinner").classList.add("d-none");
+
+      this.terminal.showCursor();
+      this.editor.focus();
+    }
   }
 
   printTimestamp() {

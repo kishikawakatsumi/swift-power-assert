@@ -65,7 +65,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       chunks: ["index"],
-      filename: "index.leaf",
+      filename: "index.html",
       template: "./Public/index.html",
     }),
     new MonacoWebpackPlugin({
@@ -76,7 +76,7 @@ module.exports = {
       patterns: [
         { from: "./Public/images/*.*", to: "images/[name][ext]" },
         { from: "./Public/favicons/*.*", to: "[name][ext]" },
-        { from: "./Public/error.html", to: "error.leaf" },
+        { from: "./Public/error.html", to: "error.html" },
         { from: "./Public/robots.txt", to: "robots.txt" },
       ],
     }),
