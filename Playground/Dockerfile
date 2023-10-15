@@ -36,18 +36,18 @@ FROM swift:5.9-jammy as swift
 
 # Install Deno
 RUN apt-get -qq update \
-  && apt-get -qq -y install curl zip unzip \
-  && curl -fsSL https://deno.land/x/install/install.sh | sh \
-  && apt-get -qq remove curl zip unzip \
-  && apt-get -qq remove --purge -y curl zip unzip \
-  && apt-get -qq -y autoremove \
-  && apt-get -qq clean
+    && apt-get -qq -y install curl zip unzip \
+    && curl -fsSL https://deno.land/x/install/install.sh | sh \
+    && apt-get -qq remove curl zip unzip \
+    && apt-get -qq remove --purge -y curl zip unzip \
+    && apt-get -qq -y autoremove \
+    && apt-get -qq clean
 
 ENV PATH "/root/.deno/bin:$PATH"
 
 WORKDIR /app
 COPY --from=swiftbuild /build /app
-# RUN swift build --build-tests --package-path ./TestModule/
+RUN swift build --build-tests --package-path ./TestModule/
 
 COPY ./backend/deps.ts .
 RUN deno cache deps.ts
