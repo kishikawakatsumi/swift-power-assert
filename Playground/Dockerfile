@@ -25,6 +25,7 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 WORKDIR /build
 
 COPY --from=nodebuild /build /build
+COPY ./TestModule/ ./TestModule/
 
 RUN echo 'int isatty(int fd) { return 1; }' | \
     clang -O2 -fpic -shared -ldl -o faketty.so -xc - \
@@ -33,7 +34,7 @@ RUN echo 'int isatty(int fd) { return 1; }' | \
 
 FROM swift:5.9-jammy as swift
 
-COPY ./TestModule/ ./TestModule/
+COPY --from=swiftbuild /build /build
 RUN swift build --build-tests --package-path ./TestModule/
 
 # Install Deno
