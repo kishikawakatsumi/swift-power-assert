@@ -1,15 +1,15 @@
 import { mergeReadableStreams, router, serveFile } from "./deps.ts";
 
 Deno.serve({
-  port: 8000,
+  port: 8080,
   handler: router({
-    "/": (req) => serveFile(req, "./Public/dist/index.html"),
+    "/": (req) => serveFile(req, "./dist/index.html"),
     "/health{z}?{/}?": () => responseJSON({ status: "pass" }),
     "/run{/}?": async (req) => {
       const parameters: RequestParameters = await req.json();
 
       await Deno.writeTextFile(
-        "./Resources/TestModule/Tests/TestTarget/test.swift",
+        "./TestModule/Tests/TestTarget/test.swift",
         parameters.code,
       );
 
@@ -28,7 +28,7 @@ Deno.serve({
             "TERM": "xterm-256color",
             "LD_PRELOAD": "./faketty.so",
           },
-          cwd: "./Resources/TestModule/",
+          cwd: "./TestModule/",
           stdout: "piped",
           stderr: "piped",
         },
@@ -49,8 +49,7 @@ Deno.serve({
         },
       );
     },
-    "/:file": (req, _ctx, match) =>
-      serveFile(req, `./Public/dist/${match.file}`),
+    "/:file": (req, _ctx, match) => serveFile(req, `./dist/${match.file}`),
   }),
 });
 

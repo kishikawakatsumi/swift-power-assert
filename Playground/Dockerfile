@@ -1,4 +1,4 @@
-FROM node:lts-slim as node
+FROM node:lts-slim as nodebuild
 
 WORKDIR /build
 
@@ -9,11 +9,11 @@ RUN echo "@fortawesome:registry=https://npm.fontawesome.com/\n//npm.fontawesome.
     && rm -f ./.npmrc
 
 COPY webpack.*.js ./
-COPY Public ./Public/
+COPY frontend ./frontend/
 RUN npx webpack --config webpack.prod.js
 
 
-FROM swiftlang/swift:nightly-5.9-jammy as swift
+FROM swift:5.9-jammy as swiftbuild
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update && apt-get -q dist-upgrade -y \
@@ -24,44 +24,36 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 
 WORKDIR /build
 
-COPY --from=node /build /build
-COPY ./Package.* ./
-RUN swift package resolve
-
-COPY . .
-RUN swift build -c release --static-swift-stdlib
+COPY --from=nodebuild /build /build
 
 RUN echo 'int isatty(int fd) { return 1; }' | \
-    clang -O2 -fpic -shared -ldl -o faketty.so -xc -
-RUN strip faketty.so && chmod 400 faketty.so && mv faketty.so ./Resources/TestModule/
-
-WORKDIR /staging
-
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/App" ./
-
-RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
-
-RUN [ -d /build/Public ] && { mv /build/Public ./Public && chmod -R a-w ./Public; } || true
-RUN [ -d /build/Resources ] && { mv /build/Resources ./Resources && chmod -R a-w ./Resources; } || true
+    clang -O2 -fpic -shared -ldl -o faketty.so -xc - \
+    && strip faketty.so && chmod 400 faketty.so && mv faketty.so ./TestModule/
 
 
-FROM swiftlang/swift:nightly-5.9-jammy
+FROM swift:5.9-jammy as swift
 
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-    && apt-get -q update \
-    && apt-get -q dist-upgrade -y \
-    && apt-get -q install -y \
-    ca-certificates \
-    tzdata \
-    libcurl4 \
-    && rm -r /var/lib/apt/lists/*
+COPY ./TestModule/ ./TestModule/
+RUN swift build --build-tests --package-path ./TestModule/
+
+# Install Deno
+RUN apt-get -qq update \
+  && apt-get -qq -y install curl zip unzip \
+  && curl -fsSL https://deno.land/x/install/install.sh | sh \
+  && apt-get -qq remove curl zip unzip \
+  && apt-get -qq remove --purge -y curl zip unzip \
+  && apt-get -qq -y autoremove \
+  && apt-get -qq clean
 
 WORKDIR /app
-COPY --from=swift /staging /app
 
-RUN swift build --build-tests --package-path Resources/TestModule
+ENV PATH "/root/.deno/bin:$PATH"
+
+COPY ./backend/deps.ts .
+RUN deno cache deps.ts
+
+ADD ./backend/ .
+RUN deno cache main.ts
 
 EXPOSE 8080
-
-ENTRYPOINT ["./App"]
-CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
+CMD ["deno", "run", "--allow-net", "--allow-run", "main.ts"]

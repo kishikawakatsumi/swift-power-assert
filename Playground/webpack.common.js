@@ -6,13 +6,13 @@ const CopyWebbackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
-    index: "./Public/index.js",
+    index: "./frontend/index.js",
     "editor.worker": "monaco-editor/esm/vs/editor/editor.worker.js",
   },
   output: {
     globalObject: "self",
     filename: "[name].[contenthash].js",
-    path: path.resolve(__dirname, "Public/dist"),
+    path: path.resolve(__dirname, "dist"),
     publicPath: "/",
     clean: true,
   },
@@ -66,7 +66,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       chunks: ["index"],
       filename: "index.html",
-      template: "./Public/index.html",
+      template: "./frontend/index.html",
     }),
     new MonacoWebpackPlugin({
       filename: "[name].[contenthash].worker.js",
@@ -74,10 +74,10 @@ module.exports = {
     }),
     new CopyWebbackPlugin({
       patterns: [
-        { from: "./Public/images/*.*", to: "images/[name][ext]" },
-        { from: "./Public/favicons/*.*", to: "[name][ext]" },
-        { from: "./Public/error.html", to: "error.html" },
-        { from: "./Public/robots.txt", to: "robots.txt" },
+        { from: "./frontend/images/*.*", to: "images/[name][ext]" },
+        { from: "./frontend/favicons/*.*", to: "[name][ext]" },
+        { from: "./frontend/error.html", to: "error.html" },
+        { from: "./frontend/robots.txt", to: "robots.txt" },
       ],
     }),
   ],

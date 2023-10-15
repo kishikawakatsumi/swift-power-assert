@@ -121,18 +121,19 @@ final class MyLibraryTests: XCTestCase {
         body: JSON.stringify(params),
       });
 
-      if (!response.ok) {
-        this.terminal.writeln(
-          `\x1b[37m❌  ${response.status} ${response.statusText}\x1b[0m`
-        );
-      }
-
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let result = await reader.read();
 
       this.terminal.hideSpinner(cancelToken);
       this.printTimestamp();
+
+      if (!response.ok) {
+        this.terminal.writeln(
+          `\x1b[37m❌  ${response.status} ${response.statusText}\x1b[0m`
+        );
+        this.terminal.hideSpinner(cancelToken);
+      }
 
       const modelMarkers = [];
 
