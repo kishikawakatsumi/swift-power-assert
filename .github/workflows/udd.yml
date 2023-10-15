@@ -1,0 +1,35 @@
+name: udd-update-dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "42 19 * * *"
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: vx.x.x
+      - name: Update dependencies
+        run: |
+          deno run -A https://deno.land/x/udd/main.ts Playgroud/backend/deps.ts
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        id: cpr
+        with:
+          commit-message: "Update dependencies"
+          title: Update dependencies
+          body: >
+            Dependencies updated by [udd](https://github.com/hayd/deno-udd).
+          branch: deno-dependency-updates
+          author: GitHub <noreply@github.com>
+          delete-branch: true
+          token: ${{ secrets.GH_PAT }}
+      - name: Enable Pull Request Automerge
+        if: ${{ steps.cpr.outputs.pull-request-url }}
+        run: gh pr merge --merge --auto ${{ steps.cpr.outputs.pull-request-url }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
