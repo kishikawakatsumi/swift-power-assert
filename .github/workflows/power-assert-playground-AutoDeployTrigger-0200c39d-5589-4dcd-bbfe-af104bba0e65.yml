@@ -29,14 +29,12 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}/Playground 
           registryUrl: swiftfiddle.azurecr.io
           registryUsername: ${{ secrets.POWERASSERTPLAYGROUND_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.POWERASSERTPLAYGROUND_REGISTRY_PASSWORD }}
           containerAppName: power-assert-playground
           resourceGroup: swiftfiddle
-          imageToBuild: swiftfiddle.azurecr.io/power-assert-playground:${{ github.sha }}
-          dockerfilePath: Dockerfile
+          imageToDeploy: swiftfiddle.azurecr.io/power-assert.swiftfiddle.com:latest
 
      
 
