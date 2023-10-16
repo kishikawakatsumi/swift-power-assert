@@ -8,7 +8,7 @@ on:
       [ main ]
     paths:
     - 'Playground/**'
-    - '.github/workflows/power-assert-playground-AutoDeployTrigger-ceaf4482-5577-44f9-aeac-e828a404a8be.yml'
+    - '.github/workflows/power-assert-playground-AutoDeployTrigger-0200c39d-5589-4dcd-bbfe-af104bba0e65.yml'
 
   # Allow manual trigger 
   workflow_dispatch:
