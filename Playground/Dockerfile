@@ -46,10 +46,10 @@ RUN apt-get -qq update \
 ENV PATH "/root/.deno/bin:$PATH"
 
 WORKDIR /app
-COPY --from=swiftbuild /build /app
-RUN swift build --build-tests --package-path ./TestModule/
 
-COPY ./backend/deps.ts .
+COPY --from=swiftbuild /build /app
+
+ADD ./backend/deps.ts .
 RUN deno cache deps.ts
 
 ADD ./backend/ .
