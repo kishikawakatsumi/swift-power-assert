@@ -1,4 +1,4 @@
-import { mergeReadableStreams, router, serveFile } from "./deps.ts";
+import { copy, mergeReadableStreams, router, serveFile } from "./deps.ts";
 
 Deno.serve({
   port: 8080,
@@ -8,8 +8,11 @@ Deno.serve({
     "/run{/}?": async (req) => {
       const parameters: RequestParameters = await req.json();
 
+      const tmpDir = crypto.randomUUID();
+      await copy("./TestModule/", tmpDir);
+
       await Deno.writeTextFile(
-        "./TestModule/Tests/TestTarget/test.swift",
+        `${tmpDir}/Tests/TestTarget/test.swift`,
         parameters.code,
       );
 
@@ -28,7 +31,7 @@ Deno.serve({
             "TERM": "xterm-256color",
             "LD_PRELOAD": "./faketty.so",
           },
-          cwd: "./TestModule/",
+          cwd: tmpDir,
           stdout: "piped",
           stderr: "piped",
         },
