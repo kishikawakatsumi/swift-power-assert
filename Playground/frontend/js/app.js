@@ -144,7 +144,11 @@ final class MyLibraryTests: XCTestCase {
           if (!line) {
             continue;
           }
-          const response = JSON.parse(line);
+          const response = (() => {
+            try {
+              return JSON.parse(line);
+            } catch {}
+          })();
           const markers = parseErrorMessage(response.text);
           modelMarkers.push(...markers);
 
