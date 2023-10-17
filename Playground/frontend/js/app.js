@@ -135,47 +135,18 @@ final class MyLibraryTests: XCTestCase {
         this.terminal.hideSpinner(cancelToken);
       }
 
-      const modelMarkers = [];
-
-      // let text = "";
+      const buffer = [];
       while (!result.done) {
         const text = decoder.decode(result.value);
-        this.terminal.write(text);
-        // text += decoder.decode(result.value);
-        // const lines = text.split("\n");
-        // if (lines.length === 1) {
-        //   text = lines[0];
-        //   continue;
-        // }
-        // if (text[text.length - 1] !== "") {
-        //   text = lines.pop();
-        // } else {
-        //   text = "";
-        // }
-        // for (const line of lines) {
-        //   if (!line) {
-        //     continue;
-        //   }
-        //   const response = JSON.parse(line);
-        //   const markers = parseErrorMessage(response.text);
-        //   modelMarkers.push(...markers);
+        buffer.push(text);
 
-        //   switch (response.kind) {
-        //     case "stderr": {
-        //       this.terminal.write(`${response.text}\x1b[0m`);
-        //       break;
-        //     }
-        //     case "stdout": {
-        //       this.terminal.write(`\x1b[37m${response.text}\x1b[0m`);
-        //       break;
-        //     }
-        //   }
-        // }
+        this.terminal.write(text);
 
         result = await reader.read();
       }
 
-      this.editor.updateMarkers(modelMarkers);
+      const markers = parseErrorMessage(buffer.join(""));
+      this.editor.updateMarkers(markers);
     } catch (error) {
       this.terminal.hideSpinner(cancelToken);
       this.terminal.writeln(`\x1b[37m❌  ${error}\x1b[0m`);

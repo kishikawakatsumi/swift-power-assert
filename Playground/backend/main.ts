@@ -43,8 +43,6 @@ Deno.serve({
         mergeReadableStreams(
           process.stdout,
           process.stderr,
-          // makeStreamResponse(process.stdout, "stdout"),
-          // makeStreamResponse(process.stderr, "stderr"),
         ),
         {
           headers: {
@@ -57,24 +55,6 @@ Deno.serve({
     "/:file": (req, _ctx, match) => serveFile(req, `./dist/${match.file}`),
   }),
 });
-
-function makeStreamResponse(
-  stream: ReadableStream<Uint8Array>,
-  key: string,
-): ReadableStream<Uint8Array> {
-  return stream.pipeThrough(
-    new TransformStream<Uint8Array, Uint8Array>({
-      transform(chunk, controller) {
-        const text = new TextDecoder().decode(chunk);
-        controller.enqueue(
-          new TextEncoder().encode(
-            `${JSON.stringify(new StreamResponse(key, text))}\n`,
-          ),
-        );
-      },
-    }),
-  );
-}
 
 function responseJSON(
   json: unknown,
@@ -91,14 +71,4 @@ function responseJSON(
 
 interface RequestParameters {
   code: string;
-}
-
-class StreamResponse {
-  kind: string;
-  text: string;
-
-  constructor(kind: string, text: string) {
-    this.kind = kind;
-    this.text = text;
-  }
 }
