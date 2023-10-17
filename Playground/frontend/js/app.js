@@ -140,7 +140,7 @@ final class MyLibraryTests: XCTestCase {
       // let text = "";
       while (!result.done) {
         const text = decoder.decode(result.value);
-        this.terminal.write(`${text}\x1b[0m`);
+        this.terminal.write(text);
         // text += decoder.decode(result.value);
         // const lines = text.split("\n");
         // if (lines.length === 1) {
