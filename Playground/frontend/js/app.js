@@ -137,18 +137,24 @@ final class MyLibraryTests: XCTestCase {
 
       const modelMarkers = [];
 
+      let text = "";
       while (!result.done) {
-        const text = decoder.decode(result.value);
+        text += decoder.decode(result.value);
         const lines = text.split("\n");
+        if (lines.length === 1) {
+          text = lines[0];
+          continue;
+        }
+        if (text[text.length - 1] !== "") {
+          text = lines.pop();
+        } else {
+          text = "";
+        }
         for (const line of lines) {
           if (!line) {
             continue;
           }
-          const response = (() => {
-            try {
-              return JSON.parse(line);
-            } catch {}
-          })();
+          const response = JSON.parse(line);
           const markers = parseErrorMessage(response.text);
           modelMarkers.push(...markers);
 
