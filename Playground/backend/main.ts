@@ -41,8 +41,10 @@ Deno.serve({
 
       return new Response(
         mergeReadableStreams(
-          makeStreamResponse(process.stdout, "stdout"),
-          makeStreamResponse(process.stderr, "stderr"),
+          process.stdout,
+          process.stderr,
+          // makeStreamResponse(process.stdout, "stdout"),
+          // makeStreamResponse(process.stderr, "stderr"),
         ),
         {
           headers: {
