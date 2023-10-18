@@ -3,6 +3,7 @@
 import { Tooltip } from "bootstrap";
 import { Editor } from "./editor.js";
 import { Console } from "./console.js";
+import { TextLineStream } from "./textlinesteam.js";
 import { WebSocketClient } from "./websocket.js";
 import { clearConsoleButton, formatButton, runButton } from "./ui_control.js";
 import { unescapeHTML } from "./unescape.js";
@@ -121,8 +122,10 @@ final class MyLibraryTests: XCTestCase {
         body: JSON.stringify(params),
       });
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      const reader = response.body
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new TextLineStream())
+        .getReader();
       let result = await reader.read();
 
       this.terminal.hideSpinner(cancelToken);
@@ -135,17 +138,16 @@ final class MyLibraryTests: XCTestCase {
         this.terminal.hideSpinner(cancelToken);
       }
 
-      const buffer = [];
+      const markers = [];
       while (!result.done) {
-        const text = decoder.decode(result.value);
-        buffer.push(text);
+        const text = result.value;
+        this.terminal.writeln(stripDirectoryPath(text));
 
-        this.terminal.write(text);
+        markers.push(...parseErrorMessage(text));
 
         result = await reader.read();
       }
 
-      const markers = parseErrorMessage(buffer.join(""));
       this.editor.updateMarkers(markers);
     } catch (error) {
       this.terminal.hideSpinner(cancelToken);
