@@ -138,15 +138,17 @@ final class MyLibraryTests: XCTestCase {
         this.terminal.hideSpinner(cancelToken);
       }
 
+      const markers = [];
       while (!result.done) {
         const text = result.value;
-        this.terminal.writeln(text);
+        this.terminal.writeln(stripDirectoryPath(text));
+
+        markers.push(...parseErrorMessage(text));
 
         result = await reader.read();
       }
 
-      // const markers = parseErrorMessage(buffer.join("\n"));
-      // this.editor.updateMarkers(markers);
+      this.editor.updateMarkers(markers);
     } catch (error) {
       this.terminal.hideSpinner(cancelToken);
       this.terminal.writeln(`\x1b[37m❌  ${error}\x1b[0m`);
