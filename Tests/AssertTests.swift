@@ -937,7 +937,6 @@ final class AssertTests: XCTestCase {
   }
 
   func testTryExpression1() {
-    XCTExpectFailure("99 vs 116 json encoded count d/t locale difference")
     captureConsoleOutput {
       let landmark = Landmark(
         name: "Tokyo Tower",
@@ -1024,7 +1023,6 @@ final class AssertTests: XCTestCase {
   }
 
   func testTryExpression2() throws {
-    XCTExpectFailure("99 vs 116 json encoded count d/t locale difference")
     captureConsoleOutput {
       let landmark = Landmark(
         name: "Tokyo Tower",
@@ -5909,7 +5907,6 @@ final class AssertTests: XCTestCase {
 
   @available(macOS 13.0, *)
   func testRegexLiteral() {
-    XCTExpectFailure("99 vs 116 String.Index d/t locale difference")
     captureConsoleOutput {
       do {
         let regex = #/(CREDIT|DEBIT)\s+(\d{1,2}/\d{1,2}/\d{4})/#
