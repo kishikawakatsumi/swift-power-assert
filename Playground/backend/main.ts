@@ -46,10 +46,8 @@ Deno.serve({
 
       return new Response(
         mergeReadableStreams(
-          process.stdout.pipeThrough(new TextDecoderStream())
-            .pipeThrough(new TextLineStream()),
-          process.stderr.pipeThrough(new TextDecoderStream())
-            .pipeThrough(new TextLineStream()),
+          process.stdout,
+          process.stderr,
         ),
         {
           headers: {
