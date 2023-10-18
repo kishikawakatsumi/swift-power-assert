@@ -1,4 +1,10 @@
-import { copy, mergeReadableStreams, router, serveFile } from "./deps.ts";
+import {
+  copy,
+  mergeReadableStreams,
+  router,
+  serveFile,
+  TextLineStream,
+} from "./deps.ts";
 
 Deno.serve({
   port: 8080,
@@ -40,8 +46,10 @@ Deno.serve({
 
       return new Response(
         mergeReadableStreams(
-          process.stdout,
-          process.stderr,
+          process.stdout.pipeThrough(new TextDecoderStream())
+            .pipeThrough(new TextLineStream()),
+          process.stderr.pipeThrough(new TextDecoderStream())
+            .pipeThrough(new TextLineStream()),
         ),
         {
           headers: {

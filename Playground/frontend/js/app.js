@@ -138,7 +138,6 @@ final class MyLibraryTests: XCTestCase {
       const buffer = [];
       while (!result.done) {
         const text = decoder.decode(result.value);
-        console.log(text);
         buffer.push(text);
 
         this.terminal.write(text);
