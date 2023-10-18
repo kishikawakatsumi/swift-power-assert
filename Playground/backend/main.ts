@@ -27,7 +27,6 @@ Deno.serve({
             "--skip-update",
           ],
           env: {
-            "NSUnbufferedIO": "YES",
             "TERM": "xterm-256color",
             "LD_PRELOAD": "./faketty.so",
           },

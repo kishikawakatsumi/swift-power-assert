@@ -238,10 +238,3 @@ function stripDirectoryPath(message) {
     return `/${p2}`;
   });
 }
-
-function truncateString(str, length) {
-  if (str.length <= length) {
-    return str;
-  }
-  return str.substring(str.length - length, str.length);
-}
