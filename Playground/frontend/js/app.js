@@ -140,16 +140,13 @@ final class MyLibraryTests: XCTestCase {
 
       const markers = [];
       while (!result.done) {
-        const text = result.value;
-        this.terminal.writeln(
-          stripDirectoryPath(`${text.replaceAll("\u001b[2K", "")}\x1b[0m`)
-        );
-
-        markers.push(...parseErrorMessage(text));
-
+        const text = result.value.replaceAll("\u001b[2K", "");
+        if (text) {
+          this.terminal.writeln(stripDirectoryPath(`${text}\x1b[0m`));
+          markers.push(...parseErrorMessage(text));
+        }
         result = await reader.read();
       }
-
       this.editor.updateMarkers(markers);
     } catch (error) {
       this.terminal.hideSpinner(cancelToken);

@@ -57,6 +57,13 @@ module.exports = {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: "asset/resource",
       },
+      {
+        test: "/.worker.js$/",
+        loader: "worker-loader",
+        options: {
+          filename: "[name].[contenthash].worker.js",
+        },
+      },
     ],
   },
   plugins: [
