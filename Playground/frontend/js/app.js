@@ -124,7 +124,7 @@ final class MyLibraryTests: XCTestCase {
 
       const reader = response.body
         .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new TextLineStream())
+        .pipeThrough(new TextLineStream({ allowCR: true }))
         .getReader();
       let result = await reader.read();
 
@@ -141,7 +141,9 @@ final class MyLibraryTests: XCTestCase {
       const markers = [];
       while (!result.done) {
         const text = result.value;
-        this.terminal.writeln(stripDirectoryPath(`${text}\x1b[0m`));
+        this.terminal.writeln(
+          stripDirectoryPath(`${text.replaceAll("\u001b[2K", "")}\x1b[0m`)
+        );
 
         markers.push(...parseErrorMessage(text));
 
