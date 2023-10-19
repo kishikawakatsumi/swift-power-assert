@@ -1,5 +1,6 @@
 import {
   copy,
+  cryptoRandomString,
   mergeReadableStreams,
   router,
   serveFile,
@@ -16,9 +17,10 @@ Deno.serve({
 
       const tmpDir = crypto.randomUUID();
       await copy("./TestModule/", tmpDir);
+      const filename = cryptoRandomString({ length: 10, type: "alphanumeric" });
 
       await Deno.writeTextFile(
-        `${tmpDir}/Tests/TestTarget/test.swift`,
+        `${tmpDir}/Tests/TestTarget/${filename}.swift`,
         parameters.code,
       );
 
@@ -31,6 +33,10 @@ Deno.serve({
             "--disable-build-manifest-caching",
             "--manifest-cache=none",
             "--skip-update",
+            "--scratch-path",
+            "../scrach",
+            "--cache-path",
+            "../cache",
           ],
           env: {
             "TERM": "xterm-256color",
