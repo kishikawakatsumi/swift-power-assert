@@ -187,7 +187,7 @@ function parseErrorMessage(message) {
       ""
     )
     .matchAll(
-      /\/test\.swift:(\d+):(\d+): (error|warning|note): ([\s\S]*?)\n*(?=(?:\/|$))/gi
+      /\/[A-Za-z0-9]{10}\.swift:(\d+):(\d+): (error|warning|note): ([\s\S]*?)\n*(?=(?:\/|$))/gi
     );
   return [...matches].map((match) => {
     const row = +match[1];
