@@ -46,7 +46,7 @@ export class TextLineStream extends TransformStream {
           crIndex !== chunk.length - 1 &&
           (lfIndex === -1 || lfIndex - 1 > crIndex)
         ) {
-          const curChunk = this.#mapperFun(chunk.slice(0, crOrLfIndex));
+          const curChunk = this.#mapperFun(chunk.slice(0, crIndex));
           if (this.#returnEmptyLines || curChunk) {
             controller.enqueue(curChunk);
           }
