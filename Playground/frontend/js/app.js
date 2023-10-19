@@ -124,7 +124,7 @@ final class MyLibraryTests: XCTestCase {
 
       const reader = response.body
         .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new TextLineStream())
+        .pipeThrough(new TextLineStream({ allowCR: true }))
         .getReader();
       let result = await reader.read();
 
@@ -187,7 +187,7 @@ function parseErrorMessage(message) {
       ""
     )
     .matchAll(
-      /\/test\.swift:(\d+):(\d+): (error|warning|note): ([\s\S]*?)\n*(?=(?:\/|$))/gi
+      /\/[A-Za-z0-9]{10}\.swift:(\d+):(\d+): (error|warning|note): ([\s\S]*?)\n*(?=(?:\/|$))/gi
     );
   return [...matches].map((match) => {
     const row = +match[1];

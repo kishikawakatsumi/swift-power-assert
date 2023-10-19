@@ -49,6 +49,8 @@ WORKDIR /app
 
 COPY --from=swiftbuild /build /app
 
+RUN swift build --build-tests --package-path ./TestModule/ --scratch-path ./scrach --cache-path ./cache
+
 ADD ./backend/deps.ts .
 RUN deno cache deps.ts
 
