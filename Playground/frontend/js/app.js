@@ -141,6 +141,7 @@ final class MyLibraryTests: XCTestCase {
       const markers = [];
       while (!result.done) {
         const text = result.value;
+        console.log(text);
         this.terminal.writeln(
           stripDirectoryPath(`${text.replaceAll("\u001b[2K", "")}\x1b[0m`)
         );
