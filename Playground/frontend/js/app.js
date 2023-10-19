@@ -141,7 +141,7 @@ final class MyLibraryTests: XCTestCase {
       const markers = [];
       while (!result.done) {
         const text = result.value;
-        this.terminal.writeln(stripDirectoryPath(text));
+        this.terminal.writeln(stripDirectoryPath(`${text}\x1b[0m`));
 
         markers.push(...parseErrorMessage(text));
 
