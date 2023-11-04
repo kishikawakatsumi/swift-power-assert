@@ -15,7 +15,7 @@ jobs:
           deno-version: vx.x.x
       - name: Update dependencies
         run: |
-          deno run -A https://deno.land/x/udd/main.ts Playgroud/backend/deps.ts
+          deno run -A https://deno.land/x/udd/main.ts ./Playground/backend/deps.ts
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         id: cpr
