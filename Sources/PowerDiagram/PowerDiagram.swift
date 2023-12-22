@@ -33,11 +33,7 @@ public struct PowerDiagram {
     var labels = self.labels.sorted()
 
     var message = "\(mainLine)\n"
-    var current = 0
-    for label in labels {
-      align(&message, current: &current, column: label.column, string: "│")
-    }
-    message += "\n"
+    renderFirstLine(for: labels, into: &message)
 
     while !labels.isEmpty {
       var current = 0
@@ -58,6 +54,14 @@ public struct PowerDiagram {
     }
 
     return message
+  }
+
+  private func renderFirstLine(for labels: [Label], into message: inout String) {
+    var current = 0
+    for label in labels {
+      align(&message, current: &current, column: label.column, string: "│")
+    }
+    message += "\n"
   }
 
   private func align(_ message: inout String, current: inout Int, column: Int, string: String) {
