@@ -21,18 +21,18 @@ public struct PowerDiagram {
     }
   }
 
-  private let assertion: String
+  private let mainLine: String
   private let labels: [Label]
 
-  public init(assertion: String, labels: [Label] ) {
-    self.assertion = assertion
+  public init(mainLine: String, labels: [Label] ) {
+    self.mainLine = mainLine
     self.labels = labels
   }
 
   public func render() -> String {
     var labels = self.labels.sorted()
 
-    var message = "\(assertion)\n"
+    var message = "\(mainLine)\n"
     var current = 0
     for label in labels {
       align(&message, current: &current, column: label.column, string: "│")
