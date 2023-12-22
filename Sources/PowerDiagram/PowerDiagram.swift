@@ -61,11 +61,8 @@ public struct PowerDiagram {
   }
 
   private func align(_ message: inout String, current: inout Int, column: Int, string: String) {
-    while current < column {
-      message += " "
-      current += 1
-    }
-    message += string
-    current += stringWidth(string)
+    let spacingWidth = max(0, column - current)
+    message += String(repeating: " ", count: spacingWidth) + string
+    current += spacingWidth + stringWidth(string)
   }
 }
