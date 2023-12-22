@@ -171,7 +171,7 @@ public enum PowerAssert {
         }
       }
 
-      return PowerDiagram(assertion: assertion.bold, values: labels).render()
+      return PowerDiagram(assertion: assertion.bold, labels: labels).render()
     }
 
     private func renderErrors() -> String {

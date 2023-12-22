@@ -22,36 +22,35 @@ public struct PowerDiagram {
   }
 
   private let assertion: String
-  private let values: [Label]
+  private let labels: [Label]
 
-  public init(assertion: String, values: [Label] ) {
+  public init(assertion: String, labels: [Label] ) {
     self.assertion = assertion
-    self.values = values
+    self.labels = labels
   }
 
   public func render() -> String {
-    var values = self.values.sorted()
+    var labels = self.labels.sorted()
 
     var message = "\(assertion)\n"
     var current = 0
-    for value in values {
-      align(&message, current: &current, column: value.column, string: "│")
+    for label in labels {
+      align(&message, current: &current, column: label.column, string: "│")
     }
     message += "\n"
 
-    while !values.isEmpty {
+    while !labels.isEmpty {
       var current = 0
       var index = 0
-      while index < values.count {
-        if index == values.count - 1
-            || ((values[index].column + stringWidth(values[index].value) < values[index + 1].column)
-                && values[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty)
+      while index < labels.count {
+        if index == labels.count - 1
+            || ((labels[index].column + stringWidth(labels[index].value) < labels[index + 1].column)
+                && labels[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty)
         {
-          let value = values[index].value
-          align(&message, current: &current, column: values[index].column, string: value)
-          values.remove(at: index)
+          align(&message, current: &current, column: labels[index].column, string: labels[index].value)
+          labels.remove(at: index)
         } else {
-          align(&message, current: &current, column: values[index].column, string: "│")
+          align(&message, current: &current, column: labels[index].column, string: "│")
           index += 1
         }
       }
