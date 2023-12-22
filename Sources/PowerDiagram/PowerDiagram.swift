@@ -41,7 +41,7 @@ public struct PowerDiagram {
       while index < labels.count {
         if index == labels.count - 1
             || ((labels[index].column + stringWidth(labels[index].value) < labels[index + 1].column)
-                && labels[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty)
+                && labels[index].value.unicodeScalars.allSatisfy(\.isASCII))
         {
           align(&message, current: &current, column: labels[index].column, string: labels[index].value)
           labels.remove(at: index)
