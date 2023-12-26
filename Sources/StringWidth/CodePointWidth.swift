@@ -1013,7 +1013,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
   case 11904...11929: return 2
   case 11931...12019: return 2
   case 12032...12245: return 2
-  case 12272...12283: return 2
+  case 12272...12287: return 2
   case 12288...12288: return 2
   case 12289...12350: return 2
   case 12351...12351: return 1
@@ -1022,7 +1022,7 @@ func codePointWidth(_ scalar: UnicodeScalar) -> Int {
   case 12549...12591: return 2
   case 12593...12686: return 2
   case 12688...12771: return 2
-  case 12784...12830: return 2
+  case 12783...12830: return 2
   case 12832...12871: return 2
   case 12872...12879: return 1
   case 12880...19903: return 2
