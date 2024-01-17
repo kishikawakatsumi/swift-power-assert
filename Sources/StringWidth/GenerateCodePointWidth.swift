@@ -5,6 +5,7 @@ func generate() async throws {
   print("import Foundation")
   print("")
   print("func codePointWidth(_ scalar: UnicodeScalar) -> Int {")
+  print("  switch scalar.value {")
 
   do {
     var result = [DerivedGeneralCategory]()
@@ -24,9 +25,7 @@ func generate() async throws {
       }
 
     result.forEach {
-      print("  if (\($0.range.lowerBound)...\($0.range.upperBound)).contains(scalar.value) {")
-      print("    return \($0.width)")
-      print("  }")
+      print("  case \($0.range.lowerBound)...\($0.range.upperBound): return \($0.width)")
     }
   }
 
@@ -48,9 +47,7 @@ func generate() async throws {
       }
 
     result.forEach {
-      print("  if (\($0.range.lowerBound)...\($0.range.upperBound)).contains(scalar.value) {")
-      print("    return \($0.width)")
-      print("  }")
+      print("  case \($0.range.lowerBound)...\($0.range.upperBound): return \($0.width)")
     }
   }
 
@@ -71,12 +68,11 @@ func generate() async throws {
       }
 
     result.forEach {
-      print("  if (\($0.range.lowerBound)...\($0.range.upperBound)).contains(scalar.value) {")
-      print("    return \($0.width)")
-      print("  }")
+      print("  case \($0.range.lowerBound)...\($0.range.upperBound): return \($0.width)")
     }
   }
 
-  print("  return 1")
+  print("  default: return 1")
+  print("  }")
   print("}")
 }

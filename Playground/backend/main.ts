@@ -1,10 +1,9 @@
 import {
   copy,
   cryptoRandomString,
-  mergeReadableStreams,
   router,
   serveFile,
-  TextLineStream,
+  zipReadableStreams,
 } from "./deps.ts";
 
 Deno.serve({
@@ -51,7 +50,7 @@ Deno.serve({
       const process = command.spawn();
 
       return new Response(
-        mergeReadableStreams(
+        zipReadableStreams(
           process.stdout,
           process.stderr,
         ),
