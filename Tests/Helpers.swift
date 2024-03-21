@@ -139,3 +139,15 @@ func captureConsoleOutput(execute: () async throws -> Void, completion: @escapin
     XCTFail("timeout")
   }
 }
+
+/// Skips this test.
+///
+/// Directly using `throw XCTSkip()` will cause a warning on the next line:
+/// ```txt
+/// Code after 'throw' will never be executed
+/// ```
+///
+/// This simpler wrapper makes the throwing opaque, and prevents the warning.
+func skip(_ message: String? = nil, file: StaticString = #filePath, line: UInt = #line) throws {
+  throw XCTSkip(message, file: file, line: line)
+}
