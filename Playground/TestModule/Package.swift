@@ -11,7 +11,7 @@ let package = Package(
     ),
     .package(
       url: "https://github.com/apple/swift-syntax.git",
-      from: "509.1.1"
+      from: "510.0.3"
     ),
   ],
   targets: [
