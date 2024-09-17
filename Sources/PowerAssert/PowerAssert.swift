@@ -524,3 +524,12 @@ extension PowerAssert.Assertion {
     }
   }
 }
+
+extension PowerAssert {
+  /// Test-only access to private ``PowerAssert`` members
+  enum TestOnlyAccess {
+    static func stringify<T>(_ value: T?) -> String {
+      PowerAssert.stringify(value)
+    }
+  }
+}
