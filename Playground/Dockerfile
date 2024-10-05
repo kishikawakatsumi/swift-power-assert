@@ -13,7 +13,7 @@ COPY frontend ./frontend/
 RUN npx webpack --config webpack.prod.js
 
 
-FROM swift:5.10-jammy as swiftbuild
+FROM swift:6.0-jammy as swiftbuild
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update && apt-get -q dist-upgrade -y \
@@ -32,7 +32,7 @@ RUN echo 'int isatty(int fd) { return 1; }' | \
     && strip faketty.so && chmod 400 faketty.so && mv faketty.so ./TestModule/
 
 
-FROM swift:5.10-jammy as swift
+FROM swift:6.0-jammy as swift
 
 # Install Deno
 RUN apt-get -qq update \
