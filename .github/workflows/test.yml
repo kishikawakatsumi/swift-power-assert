@@ -43,7 +43,7 @@ jobs:
             -instr-profile=$BUILD_PATH/codecov/default.profdata \
             -ignore-filename-regex=".build|Tests" > coverage_report.lcov
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: fail
