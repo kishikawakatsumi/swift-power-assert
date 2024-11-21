@@ -11,7 +11,7 @@ env:
 
 jobs:
   test:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v4
