@@ -1,3 +1,4 @@
+import PowerDiagram
 import StringWidth
 import XCTest
 
@@ -158,44 +159,19 @@ public enum PowerAssert {
         store(value: value, column: column, id: id)
       }
 
-      var message = "\(assertion.bold)\n"
-      values.sort()
-      var current = 0
-      for value in values {
-        align(&message, current: &current, column: value.column, string: "│")
-      }
-      message += "\n"
-
-      while !values.isEmpty {
-        var current = 0
-        var index = 0
-        while index < values.count {
-          if index == values.count - 1
-              || ((values[index].column + stringWidth(values[index].value) < values[index + 1].column)
-                  && values[index].value.unicodeScalars.filter({ !$0.isASCII }).isEmpty)
-          {
-            let value: String
-            if equalityExpressions.contains(where: { $0.1 == values[index].id }) ||
-                identicalExpressions.contains(where: { $0.1 == values[index].id }) {
-              value = values[index].value.red
-            } else if equalityExpressions.contains(where: { $0.2 == values[index].id }) ||
-                        identicalExpressions.contains(where: { $0.2 == values[index].id }) {
-              value = values[index].value.green
-            } else {
-              value = values[index].value
-            }
-
-            align(&message, current: &current, column: values[index].column, string: value)
-            values.remove(at: index)
-          } else {
-            align(&message, current: &current, column: values[index].column, string: "│")
-            index += 1
-          }
+      let labels = values.map { rawValue in
+        if equalityExpressions.contains(where: { $0.1 == rawValue.id }) ||
+            identicalExpressions.contains(where: { $0.1 == rawValue.id }) {
+          return PowerDiagram.Label(value: rawValue.value.red, column: rawValue.column)
+        } else if equalityExpressions.contains(where: { $0.2 == rawValue.id }) ||
+                    identicalExpressions.contains(where: { $0.2 == rawValue.id }) {
+          return PowerDiagram.Label(value: rawValue.value.green, column: rawValue.column)
+        } else {
+          return PowerDiagram.Label(value: rawValue.value, column: rawValue.column)
         }
-        message += "\n"
       }
 
-      return message
+      return PowerDiagram(mainLine: assertion.bold, labels: labels).render()
     }
 
     private func renderErrors() -> String {

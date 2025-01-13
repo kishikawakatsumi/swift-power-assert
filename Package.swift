@@ -13,10 +13,8 @@ let package = Package(
     .macCatalyst(.v13)
   ],
   products: [
-    .library(
-      name: "PowerAssert",
-      targets: ["PowerAssert"]
-    ),
+    .library(name: "PowerAssert", targets: ["PowerAssert"]),
+    .library(name: "PowerDiagram", targets: ["PowerDiagram"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-syntax.git", from: "509.1.1"),
@@ -38,6 +36,7 @@ let package = Package(
       dependencies: [
         "PowerAssertPlugin",
         "StringWidth",
+        "PowerDiagram",
       ],
       swiftSettings: [
         .enableUpcomingFeature("ExistentialAny")
@@ -51,6 +50,15 @@ let package = Package(
         "EastAsianWidth.swift",
         "GenerateCodePointWidth.swift",
         "URLSession+Linux.swift",
+      ],
+      swiftSettings: [
+        .enableUpcomingFeature("ExistentialAny")
+      ]
+    ),
+    .target(
+      name: "PowerDiagram",
+      dependencies: [
+        "StringWidth",
       ],
       swiftSettings: [
         .enableUpcomingFeature("ExistentialAny")
