@@ -28,7 +28,7 @@ jobs:
           swift package update --package-path Playground/
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GH_PAT }}
           base: "main"
